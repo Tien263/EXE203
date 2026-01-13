@@ -1,0 +1,177 @@
+@model Exe_Demo.Models.ViewModels.ProductFormViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>Chỉnh Sửa Sản Phẩm</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Products" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <form asp-action="EditProduct" method="post">
+                <input type="hidden" asp-for="ProductId" />
+                
+                <div class="row">
+                    <!-- Thông tin cơ bản -->
+                    <div class="col-md-8">
+                        <h5 class="mb-3">Thông Tin Cơ Bản</h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ProductCode" class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
+                                <input asp-for="ProductCode" class="form-control" placeholder="VD: SP001">
+                                <span asp-validation-for="ProductCode" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label">Danh mục <span class="text-danger">*</span></label>
+                                <select asp-for="CategoryId" class="form-select">
+                                    <option value="">-- Chọn danh mục --</option>
+                                    @foreach (var cat in Model.Categories)
+                                    {
+                                        <option value="@cat.CategoryId">@cat.CategoryName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ProductName" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                            <input asp-for="ProductName" class="form-control" placeholder="Nhập tên sản phẩm">
+                            <span asp-validation-for="ProductName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ShortDescription" class="form-label">Mô tả ngắn</label>
+                            <textarea asp-for="ShortDescription" class="form-control" rows="2" 
+                                      placeholder="Mô tả ngắn gọn về sản phẩm"></textarea>
+                            <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Mô tả chi tiết</label>
+                            <textarea asp-for="Description" class="form-control" rows="5" 
+                                      placeholder="Mô tả chi tiết về sản phẩm"></textarea>
+                        </div>
+
+                        <h5 class="mb-3 mt-4">Giá & Tồn Kho</h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="Price" class="form-label">Giá bán <span class="text-danger">*</span></label>
+                                <input asp-for="Price" type="number" class="form-control" placeholder="0">
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="OriginalPrice" class="form-label">Giá gốc</label>
+                                <input asp-for="OriginalPrice" type="number" class="form-control" placeholder="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="CostPrice" class="form-label">Giá vốn</label>
+                                <input asp-for="CostPrice" type="number" class="form-control" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="DiscountPercent" class="form-label">Giảm giá (%)</label>
+                                <input asp-for="DiscountPercent" type="number" class="form-control" 
+                                       placeholder="0" min="0" max="100">
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="StockQuantity" class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                <input asp-for="StockQuantity" type="number" class="form-control" 
+                                       placeholder="0" min="0">
+                                <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="MinStockLevel" class="form-label">Mức tồn tối thiểu</label>
+                                <input asp-for="MinStockLevel" type="number" class="form-control" 
+                                       placeholder="10" min="0">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Unit" class="form-label">Đơn vị</label>
+                                <input asp-for="Unit" class="form-control" placeholder="gói, chai, hộp...">
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Weight" class="form-label">Trọng lượng</label>
+                                <input asp-for="Weight" class="form-control" placeholder="VD: 500g, 1kg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hình ảnh & Trạng thái -->
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Hình Ảnh & Trạng Thái</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label">URL Hình ảnh</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="/images/product.jpg">
+                            <small class="text-muted">Nhập đường dẫn hình ảnh</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <img id="preview" src="@(Model.ImageUrl ?? "/images/product_1.jpg")" alt="Preview" 
+                                 class="img-fluid rounded" style="max-height: 200px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox">
+                                <label asp-for="IsActive" class="form-check-label">Kích hoạt</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsFeatured" class="form-check-input" type="checkbox">
+                                <label asp-for="IsFeatured" class="form-check-label">Sản phẩm nổi bật</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsNew" class="form-check-input" type="checkbox">
+                                <label asp-for="IsNew" class="form-check-label">Sản phẩm mới</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="text-end">
+                    <a asp-action="Products" class="btn btn-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Cập Nhật Sản Phẩm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Preview image
+        document.querySelector('input[name="ImageUrl"]').addEventListener('change', function(e) {
+            const url = e.target.value;
+            if (url) {
+                document.getElementById('preview').src = url;
+            }
+        });
+    </script>
+}

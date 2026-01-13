@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Voucher API</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        input, button { padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Test Voucher API</h1>
+    
+    <div>
+        <label>Voucher Code:</label><br>
+        <input type="text" id="voucherCode" value="SUMMER2025" style="width: 300px;">
+        <button onclick="testVoucher()">Test Apply Voucher</button>
+    </div>
+    
+    <div id="result" class="result" style="display:none;"></div>
+    
+    <script>
+        function testVoucher() {
+            var code = $('#voucherCode').val();
+            $('#result').html('Loading...').show();
+            
+            $.ajax({
+                url: '/Cart/ApplyVoucher',
+                method: 'POST',
+                data: { voucherCode: code },
+                success: function(response) {
+                    console.log('Response:', response);
+                    if(response.success) {
+                        $('#result').removeClass('error').addClass('success').html(
+                            '<h3>✓ Success!</h3>' +
+                            '<p><strong>Message:</strong> ' + response.message + '</p>' +
+                            '<p><strong>Voucher Code:</strong> ' + response.voucherCode + '</p>' +
+                            '<p><strong>Voucher Name:</strong> ' + response.voucherName + '</p>' +
+                            '<p><strong>Discount Amount:</strong> ' + response.discountAmount.toLocaleString() + ' đ</p>' +
+                            '<p><strong>Final Amount:</strong> ' + response.finalAmount.toLocaleString() + ' đ</p>'
+                        );
+                    } else {
+                        $('#result').removeClass('success').addClass('error').html(
+                            '<h3>✗ Failed</h3>' +
+                            '<p><strong>Message:</strong> ' + response.message + '</p>'
+                        );
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    $('#result').removeClass('success').addClass('error').html(
+                        '<h3>✗ Error</h3>' +
+                        '<p><strong>Status:</strong> ' + xhr.status + '</p>' +
+                        '<p><strong>Error:</strong> ' + error + '</p>' +
+                        '<p><strong>Response:</strong> ' + xhr.responseText + '</p>'
+                    );
+                }
+            });
+        }
+    </script>
+</body>
+</html>

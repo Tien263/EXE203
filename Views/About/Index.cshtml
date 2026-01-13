@@ -1,0 +1,265 @@
+@{
+    ViewData["Title"] = "Giới Thiệu";
+}
+
+<style>
+    .about-section {
+        padding: 80px 0;
+    }
+    
+    .section-title {
+        color: #4f6a4c;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 80px;
+        height: 3px;
+        background: #4f6a4c;
+    }
+    
+    .brand-name {
+        color: #4f6a4c;
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .brand-meaning {
+        font-size: 18px;
+        color: #666;
+        font-style: italic;
+        margin-bottom: 30px;
+    }
+    
+    .story-box {
+        background: #f8f9fa;
+        padding: 40px;
+        border-radius: 10px;
+        border-left: 5px solid #4f6a4c;
+        margin: 30px 0;
+    }
+    
+    .value-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        transition: all 0.3s;
+        border-top: 3px solid #4f6a4c;
+    }
+    
+    .value-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(79, 106, 76, 0.3);
+    }
+    
+    .value-icon {
+        font-size: 40px;
+        color: #4f6a4c;
+        margin-bottom: 15px;
+    }
+    
+    .value-title {
+        color: #4f6a4c;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    
+    .mission-vision-box {
+        background: linear-gradient(135deg, #4f6a4c 0%, #6b8f67 100%);
+        color: white;
+        padding: 50px;
+        border-radius: 15px;
+        margin: 40px 0;
+    }
+    
+    .product-type-card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border-left: 4px solid #4f6a4c;
+    }
+    
+    .usp-badge {
+        background: #4f6a4c;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        display: inline-block;
+        margin: 5px;
+        font-weight: 600;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Về Mộc Vị", "Trang chủ", Url.Action("Index", "Home"), "", "")); }
+
+<!-- Brand Name & Meaning -->
+<section class="about-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-md-10">
+                <h1 class="brand-name">🌿 Mộc Vị</h1>
+                <p class="brand-meaning">Hương vị Mộc Châu - Chân thật từ thiên nhiên</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="story-box text-left">
+                            <h4 style="color: #4f6a4c;"><strong>"Mộc"</strong></h4>
+                            <p>Gợi đến sự mộc mạc, tự nhiên, nguyên bản, cũng gắn với hình ảnh núi rừng, đất trời, cây cỏ. Đây là yếu tố cốt lõi thể hiện sản phẩm sạch, không pha tạp, chân thật. Mộc trong Mộc Châu.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="story-box text-left">
+                            <h4 style="color: #4f6a4c;"><strong>"Vị"</strong></h4>
+                            <p>Là hương vị, nhưng cũng bao hàm "trải nghiệm, cảm nhận" khi thưởng thức. Mộc Vị = Hương vị Mộc Châu, nhấn mạnh sự nguyên bản, chân thật từ thiên nhiên.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Brand Story -->
+<section class="about-section" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h2 class="section-title text-center mb-5">Câu Chuyện Thương Hiệu</h2>
+                <div class="story-box" style="background: white;">
+                    <p style="font-size: 18px; line-height: 1.8; text-align: justify;">
+                        Ở Mộc Châu, mỗi mùa quả chín mang trong mình nắng, gió và đất lành, nhưng hương vị ấy thường khó giữ trọn vẹn. <strong style="color: #4f6a4c;">Mộc Vị</strong> ra đời để níu lại khoảnh khắc ấy – giữ nguyên màu sắc, hương thơm và bản sắc của cao nguyên trong từng lát hoa quả sấy.
+                    </p>
+                    <p style="font-size: 18px; line-height: 1.8; text-align: justify;">
+                        Không chỉ là món ăn, Mộc Vị còn là câu chuyện về bàn tay người nông dân, về sự nâng niu trong chế biến và khát vọng đưa nông sản Việt vươn xa. Tinh hoa tự nhiên được hòa quyện cùng sự tinh tế hiện đại, tạo nên trải nghiệm vừa thuần khiết vừa cao cấp.
+                    </p>
+                    <p style="font-size: 18px; line-height: 1.8; text-align: justify;">
+                        Mộc Vị không chỉ là thương hiệu quả sấy, mà còn là lời ca ngợi đất trời Mộc Châu – một lối sống xanh, bền vững, nơi vị ngọt núi rừng lan tỏa và ở lại dài lâu trong ký ức người thưởng thức.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values -->
+<section class="about-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Giá Trị Cốt Lõi</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">🌱</div>
+                    <h4 class="value-title">Giữ Trọn Tự Nhiên</h4>
+                    <p>Hương vị ngon nhất đến từ sự nguyên bản. Từng lát hoa quả sấy đều giữ nguyên màu sắc, hương vị và dưỡng chất mà thiên nhiên ban tặng.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">🏔️</div>
+                    <h4 class="value-title">Tôn Vinh Bản Sắc</h4>
+                    <p>Mỗi sản phẩm là câu chuyện về núi rừng, về con người Tây Bắc cần mẫn, mang hơi thở vùng cao và bản sắc Việt Nam.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">✓</div>
+                    <h4 class="value-title">Cam Kết Chất Lượng</h4>
+                    <p>Từ khâu chọn nguyên liệu đến quy trình chế biến, chúng tôi đặt sự minh bạch và an toàn lên hàng đầu.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">💡</div>
+                    <h4 class="value-title">Sáng Tạo Lan Tỏa</h4>
+                    <p>Kết hợp công nghệ sấy hiện đại với tinh hoa truyền thống, để đặc sản vùng miền đến gần hơn với người tiêu dùng.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="about-section" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mission-vision-box">
+                    <h3 class="mb-4"><i class="fa fa-bullseye"></i> Sứ Mệnh</h3>
+                    <p style="font-size: 16px; line-height: 1.8;">
+                        Chúng tôi mang trong mình sứ mệnh lan tỏa bản sắc Mộc Châu – vùng đất của những mùa quả ngọt. Mỗi sản phẩm hoa quả sấy không chỉ giữ trọn vẹn hương vị nguyên sơ và dinh dưỡng thiên nhiên, mà còn là nhịp cầu kết nối con người Việt với tình yêu quê hương, tự hào về bản sắc Tây Bắc.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mission-vision-box">
+                    <h3 class="mb-4"><i class="fa fa-eye"></i> Tầm Nhìn</h3>
+                    <p style="font-size: 16px; line-height: 1.8;">
+                        Trở thành thương hiệu tiên phong về hoa quả sấy vùng miền, biểu tượng cho sự kết hợp giữa truyền thống và công nghệ hiện đại. Khát vọng trở thành "đại sứ nông sản Việt", góp phần nâng tầm giá trị nông sản và ẩm thực Việt trên thị trường quốc tế.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Types -->
+<section class="about-section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Danh Mục Sản Phẩm</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="product-type-card">
+                    <h4 style="color: #4f6a4c;"><i class="fa fa-leaf"></i> Hoa Quả Sấy Dẻo</h4>
+                    <p>Sản phẩm được chế biến từ trái cây tươi, qua công nghệ sấy ở nhiệt độ thấp. Sản phẩm có độ thơm, mềm và dẻo dai đặc trưng.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="product-type-card">
+                    <h4 style="color: #4f6a4c;"><i class="fa fa-star"></i> Hoa Quả Sấy Giòn</h4>
+                    <p>Những lát trái cây tươi được chế biến bằng công nghệ sấy hiện đại, giữ nguyên hương vị tự nhiên nhưng có kết cấu giòn rụm, thơm ngon.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="product-type-card">
+                    <h4 style="color: #4f6a4c;"><i class="fa fa-gem"></i> Hoa Quả Sấy Thăng Hoa</h4>
+                    <p>Trái cây tươi được sấy bằng công nghệ hiện đại, giữ nguyên màu sắc và dưỡng chất. Kết cấu giòn xốp, tan ngay trong miệng.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- USPs -->
+<section class="about-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Điểm Khác Biệt</h2>
+        <div class="text-center">
+            <span class="usp-badge">🥇 Tiên Phong Độc Quyền</span>
+            <span class="usp-badge">🏔️ Nguồn Gốc Chuẩn Vùng Miền</span>
+            <span class="usp-badge">♻️ Bao Bì Xanh Bền Vững</span>
+            <span class="usp-badge">💡 Sáng Tạo & Mới Mẻ</span>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="story-box" style="background: white; text-align: center;">
+                    <h4 style="color: #4f6a4c; font-size: 24px; margin-bottom: 20px;">
+                        "Tiên phong dâu sấy Mộc Châu – khác biệt từ bản sắc, tinh tế từ trải nghiệm, bền vững cùng môi trường."
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

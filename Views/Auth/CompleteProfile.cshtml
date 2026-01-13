@@ -1,0 +1,292 @@
+@model Exe_Demo.Models.ViewModels.CompleteProfileViewModel
+@{
+    ViewData["Title"] = "Hoàn Tất Thông Tin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Hoàn Tất Thông Tin - Mộc Vị Store</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4f6a4c 0%, #6b8f67 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .complete-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4f6a4c 0%, #6b8f67 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .icon-wrapper i {
+            font-size: 30px;
+            color: white;
+        }
+
+        h2 {
+            color: #4f6a4c;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+            color: #4f6a4c;
+            font-weight: 500;
+        }
+
+        .user-info i {
+            margin-right: 8px;
+            color: #6b8f67;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #dc3545;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4f6a4c;
+            box-shadow: 0 0 0 3px rgba(79, 106, 76, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #4f6a4c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #3d5239;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 106, 76, 0.3);
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .note {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #0c5460;
+        }
+
+        .note i {
+            margin-right: 8px;
+            color: #2196F3;
+        }
+
+        @@media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .complete-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="complete-container">
+        <div class="header">
+            <div class="logo">
+                <img src="~/images/logo_1_1.png" alt="Mộc Vị Store">
+            </div>
+
+            <div class="icon-wrapper">
+                <i class="fas fa-user-edit"></i>
+            </div>
+
+            <h2>HOÀN TẤT THÔNG TIN</h2>
+            <p class="subtitle">Vui lòng cung cấp thêm thông tin để hoàn tất đăng ký</p>
+        </div>
+
+        <div class="user-info">
+            <p><i class="fas fa-user"></i> <strong>Họ tên:</strong> @Model.FullName</p>
+            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> @Model.Email</p>
+        </div>
+
+        <div class="note">
+            <i class="fas fa-info-circle"></i>
+            <strong>Lưu ý:</strong> Số điện thoại là bắt buộc để chúng tôi có thể liên hệ xác nhận đơn hàng.
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                <span asp-validation-summary="All"></span>
+            </div>
+        }
+
+        <form asp-action="CompleteProfile" asp-controller="Auth" method="post">
+            <input type="hidden" asp-for="Email" />
+            <input type="hidden" asp-for="FullName" />
+
+            <div class="form-group">
+                <label asp-for="PhoneNumber">
+                    <i class="fas fa-phone"></i> Số điện thoại <span class="required">*</span>
+                </label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address">
+                    <i class="fas fa-map-marker-alt"></i> Địa chỉ
+                </label>
+                <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường..." />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="City">
+                        <i class="fas fa-city"></i> Tỉnh/Thành phố
+                    </label>
+                    <input asp-for="City" class="form-control" placeholder="VD: Hà Nội" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="District">
+                        <i class="fas fa-building"></i> Quận/Huyện
+                    </label>
+                    <input asp-for="District" class="form-control" placeholder="VD: Cầu Giấy" />
+                    <span asp-validation-for="District" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Ward">
+                    <i class="fas fa-map-signs"></i> Phường/Xã
+                </label>
+                <input asp-for="Ward" class="form-control" placeholder="VD: Dịch Vọng" />
+                <span asp-validation-for="Ward" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-check-circle"></i> Hoàn Tất Đăng Ký
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{
+  "title": "Hướng Dẫn Bảo Quản Hoa Quả Sấy Mộc Vị",
+  "description": "Để giữ hoa quả sấy luôn tươi ngon, giòn/dẻo và giữ trọn dinh dưỡng, bạn cần bảo quản đúng cách. Dưới đây là hướng dẫn chi tiết cho từng loại sản phẩm.",
+  
+  "general_rules": [
+    "Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp",
+    "Tránh để gần nguồn nhiệt (bếp, lò vi sóng)",
+    "Sau khi mở gói, nên dùng ngay hoặc bảo quản trong hộp/túi kín",
+    "Không để hoa quả sấy tiếp xúc với nước hoặc độ ẩm cao",
+    "Kiểm tra hạn sử dụng trên bao bì trước khi dùng"
+  ],
+  
+  "by_product_type": [
+    {
+      "type": "Hoa quả sấy dẻo",
+      "products": ["Dâu sấy dẻo", "Mận sấy dẻo", "Xoài sấy dẻo", "Đào sấy dẻo", "Hồng sấy dẻo", "Mơ sấy dẻo"],
+      "storage": {
+        "before_opening": {
+          "location": "Nơi khô ráo, thoáng mát, nhiệt độ phòng (20-25°C)",
+          "shelf_life": "6-12 tháng (tùy sản phẩm)",
+          "notes": "Giữ nguyên bao bì, không mở trước khi dùng"
+        },
+        "after_opening": {
+          "location": "Bảo quản trong hộp kín hoặc túi zip, để tủ lạnh ngăn mát (không đông đá)",
+          "shelf_life": "7-10 ngày",
+          "notes": "Lấy ra khỏi tủ lạnh 5-10 phút trước khi ăn để sản phẩm trở lại độ mềm dẻo tự nhiên"
+        }
+      },
+      "tips": [
+        "Nếu sản phẩm hơi khô, có thể phun nhẹ nước rồi để trong hộp kín 1-2 giờ",
+        "Tránh để lâu ngoài không khí sẽ làm sản phẩm khô cứng",
+        "Nếu thấy mốc hoặc mùi lạ, không nên sử dụng"
+      ]
+    },
+    {
+      "type": "Hoa quả sấy giòn",
+      "products": ["Mít sấy giòn", "Chuối sấy giòn", "Táo sấy giòn"],
+      "storage": {
+        "before_opening": {
+          "location": "Nơi khô ráo, thoáng mát, nhiệt độ phòng",
+          "shelf_life": "12 tháng",
+          "notes": "Giữ nguyên bao bì kín"
+        },
+        "after_opening": {
+          "location": "Bảo quản trong hộp kín kỹ, tránh ẩm. KHÔNG để tủ lạnh (sẽ mất độ giòn)",
+          "shelf_life": "5-7 ngày",
+          "notes": "Dùng ngay sau khi mở để giữ độ giòn tốt nhất"
+        }
+      },
+      "tips": [
+        "Sản phẩm sấy giòn rất dễ hút ẩm, cần đóng kín ngay sau khi lấy ra",
+        "Nếu bị mềm do ẩm, có thể sấy lại trong lò nướng 70-80°C trong 5-10 phút",
+        "Bỏ gói hút ẩm (silica gel) vào hộp để giữ độ giòn lâu hơn",
+        "Tránh để gần nước, tủ lạnh, hoặc nơi ẩm ướt"
+      ]
+    },
+    {
+      "type": "Hoa quả sấy thăng hoa (Freeze-dried)",
+      "products": ["Dâu sấy thăng hoa", "Sữa chua sấy thăng hoa"],
+      "storage": {
+        "before_opening": {
+          "location": "Nơi khô ráo, thoáng mát, tránh ánh sáng trực tiếp",
+          "shelf_life": "12-18 tháng",
+          "notes": "Bao bì kín khí, chống ẩm tốt"
+        },
+        "after_opening": {
+          "location": "Bảo quản trong hộp kín hoặc túi zip có khóa kéo, nơi khô ráo",
+          "shelf_life": "Dùng ngay hoặc trong vòng 3-5 ngày",
+          "notes": "Sản phẩm rất dễ hút ẩm, cần đóng kín ngay"
+        }
+      },
+      "tips": [
+        "Sản phẩm sấy thăng hoa cực kỳ nhạy cảm với độ ẩm",
+        "Nếu hút ẩm, sản phẩm sẽ mất độ giòn xốp, trở nên mềm nhũn",
+        "Nên chia nhỏ ra nhiều túi nhỏ để mỗi lần chỉ mở 1 túi",
+        "Bỏ gói hút ẩm vào hộp bảo quản",
+        "Tránh để tủ lạnh vì độ ẩm cao"
+      ]
+    },
+    {
+      "type": "Nho khô",
+      "products": ["Nho khô Mộc Châu"],
+      "storage": {
+        "before_opening": {
+          "location": "Nơi khô ráo, thoáng mát",
+          "shelf_life": "12 tháng",
+          "notes": "Giữ nguyên bao bì"
+        },
+        "after_opening": {
+          "location": "Hộp kín hoặc túi zip, để tủ lạnh ngăn mát hoặc nơi khô ráo",
+          "shelf_life": "1-2 tháng",
+          "notes": "Nho khô bền hơn các loại sấy khác"
+        }
+      },
+      "tips": [
+        "Nho khô có thể bảo quản lâu hơn nhờ hàm lượng đường tự nhiên cao",
+        "Nếu hơi khô cứng, ngâm nước ấm 5-10 phút trước khi dùng",
+        "Có thể bảo quản ở nhiệt độ phòng hoặc tủ lạnh đều được"
+      ]
+    }
+  ],
+  
+  "common_mistakes": [
+    {
+      "mistake": "Để hoa quả sấy giòn vào tủ lạnh",
+      "why_wrong": "Tủ lạnh có độ ẩm cao, làm sản phẩm mất độ giòn, trở nên mềm nhũn",
+      "correct_way": "Bảo quản trong hộp kín ở nhiệt độ phòng, nơi khô ráo"
+    },
+    {
+      "mistake": "Mở gói rồi để nguyên không đóng kín",
+      "why_wrong": "Sản phẩm hút ẩm, mất độ giòn/dẻo, dễ bị mốc",
+      "correct_way": "Đóng kín ngay sau khi lấy ra, dùng túi zip hoặc hộp kín"
+    },
+    {
+      "mistake": "Để gần bếp, lò vi sóng, cửa sổ có nắng",
+      "why_wrong": "Nhiệt độ cao làm sản phẩm chảy nước, mất chất lượng",
+      "correct_way": "Để nơi thoáng mát, tránh ánh nắng và nguồn nhiệt"
+    },
+    {
+      "mistake": "Dùng tay ướt lấy sản phẩm",
+      "why_wrong": "Độ ẩm từ tay làm sản phẩm bị ẩm, dễ mốc",
+      "correct_way": "Rửa tay sạch, lau khô hoặc dùng thìa/kẹp để lấy"
+    }
+  ],
+  
+  "faq": [
+    {
+      "question": "Hoa quả sấy có hạn sử dụng bao lâu?",
+      "answer": "Sấy dẻo: 6-12 tháng (chưa mở), 7-10 ngày (đã mở). Sấy giòn: 12 tháng (chưa mở), 5-7 ngày (đã mở). Sấy thăng hoa: 12-18 tháng (chưa mở), 3-5 ngày (đã mở). Nho khô: 12 tháng (chưa mở), 1-2 tháng (đã mở)."
+    },
+    {
+      "question": "Làm sao biết sản phẩm còn tốt hay đã hỏng?",
+      "answer": "Sản phẩm tốt: màu sắc tự nhiên, mùi thơm đặc trưng, không có mốc, độ ẩm vừa phải. Sản phẩm hỏng: có mùi lạ, chua, mốc, màu sắc thay đổi bất thường, có dấu hiệu côn trùng."
+    },
+    {
+      "question": "Có thể đông đá hoa quả sấy không?",
+      "answer": "KHÔNG nên đông đá. Đông đá sẽ làm thay đổi kết cấu sản phẩm, mất độ giòn/dẻo tự nhiên. Chỉ nên để tủ lạnh ngăn mát (4-8°C) đối với sản phẩm sấy dẻo đã mở."
+    },
+    {
+      "question": "Sản phẩm bị mềm/ẩm, còn ăn được không?",
+      "answer": "Nếu chỉ hơi mềm do hút ẩm nhưng không có mùi lạ, mốc → Có thể sấy lại trong lò 70-80°C trong 5-10 phút. Nếu có mốc, mùi lạ → Không nên sử dụng."
+    },
+    {
+      "question": "Có cần bảo quản trong tủ lạnh không?",
+      "answer": "Sấy dẻo đã mở: NÊN để tủ lạnh ngăn mát. Sấy giòn: KHÔNG để tủ lạnh (mất độ giòn). Sấy thăng hoa: KHÔNG cần (trừ khi thời tiết quá ẩm). Nho khô: Tùy chọn, có thể để tủ lạnh hoặc nhiệt độ phòng."
+    }
+  ]
+}

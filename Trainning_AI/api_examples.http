@@ -1,0 +1,71 @@
+### Mộc Châu Fruits AI API - Examples
+### Sử dụng với REST Client extension trong VS Code
+
+@baseUrl = http://localhost:8000
+
+### 1. Root - Thông tin API
+GET {{baseUrl}}/
+Accept: application/json
+
+### 2. Health Check
+GET {{baseUrl}}/api/health
+Accept: application/json
+
+### 3. Chat - Hỏi về thành phần dinh dưỡng
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{
+  "question": "Mận Mộc Châu có những thành phần dinh dưỡng gì?",
+  "top_k": 3
+}
+
+### 4. Chat - Hỏi về lợi ích sức khỏe
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{
+  "question": "Hoa quả nào tốt cho tim mạch?",
+  "top_k": 3
+}
+
+### 5. Chat - Hỏi về mùa vụ
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{
+  "question": "Mùa nào có thể ăn dâu tây Mộc Châu?",
+  "top_k": 2
+}
+
+### 6. Lấy danh sách tất cả hoa quả
+GET {{baseUrl}}/api/fruits
+Accept: application/json
+
+### 7. Thêm dữ liệu hoa quả mới
+POST {{baseUrl}}/api/train/add
+Content-Type: application/json
+
+{
+  "id": "7",
+  "fruit_name": "Cam Mộc Châu",
+  "description": "Cam Mộc Châu có vị ngọt thanh, giàu vitamin C",
+  "nutrients": {
+    "vitamin_C": "Rất cao, gấp nhiều lần táo",
+    "vitamin_A": "Tốt cho mắt",
+    "kali": "Điều hòa huyết áp",
+    "chất_xơ": "Hỗ trợ tiêu hóa"
+  },
+  "health_benefits": [
+    "Tăng cường hệ miễn dịch mạnh mẽ",
+    "Chống oxy hóa hiệu quả",
+    "Tốt cho da và mắt",
+    "Hỗ trợ tiêu hóa"
+  ],
+  "season": "Tháng 10-12",
+  "usage": "Ăn tươi, vắt nước, làm mứt"
+}
+
+### 8. Reload dữ liệu từ file JSON
+POST {{baseUrl}}/api/train/reload
+Content-Type: application/json

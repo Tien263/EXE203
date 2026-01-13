@@ -1,0 +1,262 @@
+@model Exe_Demo.Models.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Chỉnh Sửa Thông Tin";
+}
+
+<style>
+    .profile-hero {
+        background-image: url('/images/bg_1.jpg');
+        background-size: cover;
+        background-position: 50% 50%;
+        background-attachment: fixed;
+        position: relative;
+        min-height: 100vh;
+        padding: 50px 0;
+    }
+    
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(79, 106, 76, 0.85);
+        z-index: 1;
+    }
+    
+    .edit-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .edit-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        padding: 40px;
+    }
+    
+    .edit-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #4f6a4c;
+    }
+    
+    .edit-header h2 {
+        color: #4f6a4c;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .form-group label .required {
+        color: #dc3545;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #4f6a4c;
+        box-shadow: 0 0 0 3px rgba(79, 106, 76, 0.1);
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .btn-submit {
+        flex: 1;
+        padding: 14px;
+        background: #4f6a4c;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn-submit:hover {
+        background: #3d5239;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 106, 76, 0.3);
+    }
+    
+    .btn-cancel {
+        flex: 1;
+        padding: 14px;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-cancel:hover {
+        background: #5a6268;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+    }
+    
+    .text-danger {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+    
+    @@media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .edit-card {
+            padding: 30px 20px;
+        }
+    }
+</style>
+
+<div class="profile-hero">
+    <div class="edit-container">
+        <div class="edit-card">
+            <div class="edit-header">
+                <h2><i class="fa fa-edit"></i> Chỉnh Sửa Thông Tin</h2>
+                <p style="color: #666; font-size: 14px;">Cập nhật thông tin cá nhân của bạn</p>
+            </div>
+            
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert-danger">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <span asp-validation-summary="All"></span>
+                </div>
+            }
+            
+            <form asp-action="Edit" asp-controller="Profile" method="post">
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="CustomerId" />
+                
+                <div class="form-group">
+                    <label asp-for="FullName">
+                        <i class="fa fa-user"></i> Họ và tên <span class="required">*</span>
+                    </label>
+                    <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Email">
+                        <i class="fa fa-envelope"></i> Email
+                    </label>
+                    <input asp-for="Email" class="form-control" readonly style="background: #f5f5f5; cursor: not-allowed;" />
+                    <small style="color: #666; font-size: 12px;">Email không thể thay đổi</small>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="PhoneNumber">
+                        <i class="fa fa-phone"></i> Số điện thoại
+                    </label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Address">
+                        <i class="fa fa-map-marker"></i> Địa chỉ
+                    </label>
+                    <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường..." />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="City">
+                            <i class="fa fa-building"></i> Tỉnh/Thành phố
+                        </label>
+                        <input asp-for="City" class="form-control" placeholder="VD: Hà Nội" />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="District">
+                            <i class="fa fa-map"></i> Quận/Huyện
+                        </label>
+                        <input asp-for="District" class="form-control" placeholder="VD: Cầu Giấy" />
+                        <span asp-validation-for="District" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Ward">
+                        <i class="fa fa-map-signs"></i> Phường/Xã
+                    </label>
+                    <input asp-for="Ward" class="form-control" placeholder="VD: Dịch Vọng" />
+                    <span asp-validation-for="Ward" class="text-danger"></span>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn-submit">
+                        <i class="fa fa-save"></i> Lưu Thay Đổi
+                    </button>
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="fa fa-times"></i> Hủy Bỏ
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

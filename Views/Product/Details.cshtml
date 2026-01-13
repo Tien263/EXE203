@@ -1,0 +1,224 @@
+@model Exe_Demo.Models.Product
+@{
+    ViewData["Title"] = Model.ProductName;
+    var relatedProducts = ViewBag.RelatedProducts as List<Exe_Demo.Models.Product>;
+}
+
+@{ await Html.RenderPartialAsync("_PageHero", (Model.ProductName, "Trang chủ", Url.Action("Index", "Home"), "Sản phẩm", Url.Action("Index", "Product"))); }
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-5 ftco-animate">
+                <a href="/images/prod-6.jpg" class="image-popup prod-img-bg">
+                    <img src="/images/prod-6.jpg" class="img-fluid" alt="@Model.ProductName">
+                </a>
+            </div>
+            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                <h3>@Model.ProductName</h3>
+                <div class="rating d-flex">
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2">@(Model.Rating ?? 5.0m)</a>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <a href="#"><span class="fa fa-star@(i <= Model.Rating ? "" : "-o")"></span></a>
+                        }
+                    </p>
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2" style="color: #000;">@(Model.ViewCount ?? 0) <span style="color: #bbb;">Lượt xem</span></a>
+                    </p>
+                    <p class="text-left">
+                        <a href="#" class="mr-2" style="color: #000;">@(Model.SoldCount ?? 0) <span style="color: #bbb;">Đã bán</span></a>
+                    </p>
+                </div>
+                <p class="price">
+                    @if (Model.OriginalPrice > Model.Price)
+                    {
+                        <span class="mr-2" style="text-decoration: line-through; color: #999;">@Model.OriginalPrice.Value.ToString("N0") đ</span>
+                    }
+                    <span style="color: #82ae46; font-size: 28px; font-weight: 700;">@Model.Price.ToString("N0") đ</span>
+                </p>
+                <p>@Model.ShortDescription</p>
+                <p>@Model.Description</p>
+                
+                <div class="row mt-4">
+                    <div class="input-group col-md-6 d-flex mb-3">
+                        <span class="input-group-btn mr-2">
+                            <button type="button" class="quantity-left-minus btn" data-type="minus">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </span>
+                        <input type="text" id="quantity" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
+                        <span class="input-group-btn ml-2">
+                            <button type="button" class="quantity-right-plus btn" data-type="plus">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md-12">
+                        <p style="color: #000;"><strong>@(Model.StockQuantity ?? 0)</strong> sản phẩm có sẵn</p>
+                        <p style="color: #666;"><i class="fa fa-cube"></i> Khối lượng: <strong>@Model.Weight</strong></p>
+                        <p style="color: #666;"><i class="fa fa-tag"></i> Danh mục: <strong>@(Model.Category?.CategoryName ?? "N/A")</strong></p>
+                    </div>
+                </div>
+                
+                <form id="addToCartForm" method="post" asp-controller="Cart" asp-action="AddToCart">
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+                    <input type="hidden" name="quantity" id="hiddenQuantity" value="1" />
+                    <p>
+                        <button type="submit" class="btn btn-primary py-3 px-5 mr-2">
+                            <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                        </button>
+                        <a href="@Url.Action("Index", "Product")" class="btn btn-white btn-outline-white py-3 px-5">
+                            <i class="fa fa-arrow-left"></i> Tiếp tục mua
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-12 nav-link-wrap">
+                <div class="nav nav-pills d-flex text-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link ftco-animate active mr-lg-1" id="v-pills-1-tab" data-toggle="pill" href="#v-pills-1" role="tab" aria-controls="v-pills-1" aria-selected="true">Mô tả</a>
+                    <a class="nav-link ftco-animate mr-lg-1" id="v-pills-2-tab" data-toggle="pill" href="#v-pills-2" role="tab" aria-controls="v-pills-2" aria-selected="false">Thông tin</a>
+                    <a class="nav-link ftco-animate" id="v-pills-3-tab" data-toggle="pill" href="#v-pills-3" role="tab" aria-controls="v-pills-3" aria-selected="false">Đánh giá</a>
+                </div>
+            </div>
+            <div class="col-md-12 tab-wrap">
+                <div class="tab-content bg-light" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="day-1-tab">
+                        <div class="p-4">
+                            <h3 class="mb-4">@Model.ProductName</h3>
+                            <p>@Model.Description</p>
+                            <ul>
+                                <li>Sản phẩm chất lượng cao từ Mộc Châu</li>
+                                <li>Không chất bảo quản, an toàn cho sức khỏe</li>
+                                <li>Giữ nguyên hương vị tự nhiên</li>
+                                <li>Bao bì đẹp, thích hợp làm quà tặng</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-day-2-tab">
+                        <div class="p-4">
+                            <h3 class="mb-4">Thông tin sản phẩm</h3>
+                            <table class="table">
+                                <tr>
+                                    <td><strong>Mã sản phẩm:</strong></td>
+                                    <td>@Model.ProductCode</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Danh mục:</strong></td>
+                                    <td>@(Model.Category?.CategoryName ?? "N/A")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Khối lượng:</strong></td>
+                                    <td>@Model.Weight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Đơn vị:</strong></td>
+                                    <td>@Model.Unit</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tình trạng:</strong></td>
+                                    <td><span class="badge badge-success">Còn hàng</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-day-3-tab">
+                        <div class="p-4">
+                            <h3 class="mb-4">Đánh giá sản phẩm</h3>
+                            <p class="text-muted">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (relatedProducts != null && relatedProducts.Any())
+        {
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <h3 class="mb-4">Sản phẩm liên quan</h3>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var product in relatedProducts)
+                {
+                    <div class="col-md-6 col-lg-3 ftco-animate">
+                        <div class="product">
+                            <a href="@Url.Action("Details", new { id = product.ProductId })" class="img-prod">
+                                <img class="img-fluid" src="/images/prod-6.jpg" alt="@product.ProductName">
+                                @if (product.IsNew == true)
+                                {
+                                    <span class="status">Mới</span>
+                                }
+                            </a>
+                            <div class="text py-3 px-3">
+                                <h3><a href="@Url.Action("Details", new { id = product.ProductId })">@product.ProductName</a></h3>
+                                <div class="pricing">
+                                    <p class="price">
+                                        @if (product.OriginalPrice > product.Price)
+                                        {
+                                            <span class="mr-2 price-dc">@product.OriginalPrice.Value.ToString("N0") đ</span>
+                                        }
+                                        <span class="price-sale">@product.Price.ToString("N0") đ</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            var quantitiy=0;
+            $('.quantity-right-plus').click(function(e){
+                e.preventDefault();
+                var quantity = parseInt($('#quantity').val());
+                $('#quantity').val(quantity + 1);
+                $('#hiddenQuantity').val(quantity + 1);
+            });
+
+            $('.quantity-left-minus').click(function(e){
+                e.preventDefault();
+                var quantity = parseInt($('#quantity').val());
+                if(quantity>1){
+                    $('#quantity').val(quantity - 1);
+                    $('#hiddenQuantity').val(quantity - 1);
+                }
+            });
+            
+            $('#quantity').on('change', function(){
+                $('#hiddenQuantity').val($(this).val());
+            });
+            
+            $('#addToCartForm').on('submit', function(e){
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        alert('Đã thêm sản phẩm vào giỏ hàng!');
+                        // Reload để cập nhật số lượng giỏ hàng
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                    }
+                });
+            });
+        });
+    </script>
+}

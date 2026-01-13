@@ -1,0 +1,279 @@
+@model IEnumerable<Exe_Demo.Models.Order>
+@{
+    ViewData["Title"] = "Đơn Hàng Của Tôi";
+}
+
+<style>
+    .orders-section {
+        padding: 50px 0;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+    
+    .order-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    
+    .order-card:hover {
+        box-shadow: 0 5px 20px rgba(79, 106, 76, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    .order-header {
+        background: linear-gradient(135deg, #4f6a4c 0%, #6b8f67 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .order-code {
+        font-size: 20px;
+        font-weight: 700;
+    }
+    
+    .order-status {
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .status-pending {
+        background: #ffc107;
+        color: #000;
+    }
+    
+    .status-processing {
+        background: #17a2b8;
+        color: white;
+    }
+    
+    .status-shipped {
+        background: #007bff;
+        color: white;
+    }
+    
+    .status-delivered {
+        background: #28a745;
+        color: white;
+    }
+    
+    .status-cancelled {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .order-body {
+        padding: 20px;
+    }
+    
+    .order-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .order-products {
+        margin: 20px 0;
+    }
+    
+    .product-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .product-name {
+        flex: 1;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .product-quantity {
+        margin: 0 20px;
+        color: #666;
+    }
+    
+    .product-price {
+        font-weight: 700;
+        color: #4f6a4c;
+    }
+    
+    .order-total {
+        text-align: right;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+    
+    .total-amount {
+        font-size: 24px;
+        font-weight: 700;
+        color: #4f6a4c;
+    }
+    
+    .payment-method-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    
+    .payment-cod {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .payment-bank {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+    
+    .empty-orders {
+        text-align: center;
+        padding: 80px 20px;
+    }
+    
+    .empty-icon {
+        font-size: 80px;
+        color: #ccc;
+        margin-bottom: 20px;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Đơn Hàng Của Tôi", "Trang chủ", Url.Action("Index", "Home"), "Profile", Url.Action("Index", "Profile"))); }
+
+<section class="orders-section">
+    <div class="container">
+        @if (Model.Any())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="mb-4" style="color: #4f6a4c;">
+                        <i class="fa fa-shopping-bag"></i> Tổng số: <strong>@Model.Count()</strong> đơn hàng
+                    </h4>
+                </div>
+            </div>
+
+            @foreach (var order in Model)
+            {
+                <div class="order-card">
+                    <!-- Order Header -->
+                    <div class="order-header">
+                        <div>
+                            <div class="order-code">
+                                <i class="fa fa-file-text"></i> #@order.OrderCode
+                            </div>
+                            <small>@order.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                        <div>
+                            @{
+                                var statusClass = order.OrderStatus switch
+                                {
+                                    "Pending" => "status-pending",
+                                    "Processing" => "status-processing",
+                                    "Shipped" => "status-shipped",
+                                    "Delivered" => "status-delivered",
+                                    "Cancelled" => "status-cancelled",
+                                    _ => "status-pending"
+                                };
+
+                                var statusText = order.OrderStatus switch
+                                {
+                                    "Pending" => "Chờ xử lý",
+                                    "Processing" => "Đang xử lý",
+                                    "Shipped" => "Đang giao",
+                                    "Delivered" => "Đã giao",
+                                    "Cancelled" => "Đã hủy",
+                                    _ => order.OrderStatus
+                                };
+                            }
+                            <span class="order-status @statusClass">@statusText</span>
+                        </div>
+                    </div>
+
+                    <!-- Order Body -->
+                    <div class="order-body">
+                        <!-- Order Info -->
+                        <div class="order-info">
+                            <div>
+                                <strong style="color: #4f6a4c;">Người nhận:</strong> @order.CustomerName<br>
+                                <strong style="color: #4f6a4c;">Điện thoại:</strong> @order.CustomerPhone<br>
+                                <strong style="color: #4f6a4c;">Địa chỉ:</strong> @order.ShippingAddress
+                            </div>
+                            <div class="text-right">
+                                @{
+                                    var paymentClass = order.PaymentMethod == "COD" ? "payment-cod" : "payment-bank";
+                                    var paymentText = order.PaymentMethod == "COD" ? "💵 COD" : "🏦 Chuyển khoản";
+                                }
+                                <span class="payment-method-badge @paymentClass">@paymentText</span><br>
+                                <small class="text-muted">
+                                    @(order.PaymentStatus == "Paid" ? "✓ Đã thanh toán" : "⏳ Chưa thanh toán")
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Products -->
+                        <div class="order-products">
+                            <strong style="color: #4f6a4c; display: block; margin-bottom: 10px;">
+                                <i class="fa fa-cube"></i> Sản phẩm:
+                            </strong>
+                            @if (order.OrderDetails != null && order.OrderDetails.Any())
+                            {
+                                @foreach (var item in order.OrderDetails)
+                                {
+                                    <div class="product-item">
+                                        <span class="product-name">@item.ProductName</span>
+                                        <span class="product-quantity">x @item.Quantity</span>
+                                        <span class="product-price">@item.TotalPrice.ToString("N0") đ</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <!-- Total -->
+                        <div class="order-total">
+                            <div class="mb-2">
+                                <span style="color: #666;">Tổng tiền:</span>
+                                <span class="total-amount">@order.FinalAmount.ToString("N0") đ</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(order.Note))
+                            {
+                                <div class="mt-3 text-left">
+                                    <small style="color: #666;">
+                                        <i class="fa fa-comment"></i> Ghi chú: @order.Note
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-orders">
+                <div class="empty-icon">📦</div>
+                <h3 style="color: #666;">Bạn chưa có đơn hàng nào</h3>
+                <p style="color: #999;">Hãy khám phá và đặt hàng những sản phẩm yêu thích của bạn!</p>
+                <a href="@Url.Action("Index", "Product")" class="btn btn-primary" style="background: #4f6a4c; border: none; padding: 12px 30px; margin-top: 20px;">
+                    <i class="fa fa-shopping-cart"></i> Mua Sắm Ngay
+                </a>
+            </div>
+        }
+    </div>
+</section>

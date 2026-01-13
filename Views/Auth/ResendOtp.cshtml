@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Gửi Lại Mã OTP";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Gửi Lại Mã OTP</h2>
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        Tài khoản của bạn chưa được kích hoạt. Vui lòng nhập mã OTP đã được gửi đến email <strong>@ViewBag.Email</strong>
+                    </div>
+
+                    <form asp-action="ResendOtp" method="post">
+                        <input type="hidden" name="email" value="@ViewBag.Email" />
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane"></i> Gửi Lại Mã OTP
+                            </button>
+                            <a asp-action="VerifyOtp" class="btn btn-outline-secondary">
+                                <i class="fas fa-key"></i> Tôi Đã Có Mã OTP
+                            </a>
+                            <a asp-action="Login" class="btn btn-link">
+                                <i class="fas fa-arrow-left"></i> Quay Lại Đăng Nhập
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

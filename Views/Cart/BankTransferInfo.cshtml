@@ -1,0 +1,323 @@
+@model Exe_Demo.Models.Order
+@{
+    ViewData["Title"] = "Thông Tin Chuyển Khoản";
+    var bankName = ViewBag.BankName ?? "Ngân hàng Thương mại Cổ phần Tiên Phong (TPBank)";
+    var accountNumber = ViewBag.AccountNumber ?? "0398996177";
+    var accountName = ViewBag.AccountName ?? "NGUYEN XUAN TIEN";
+    var bankBranch = ViewBag.BankBranch ?? "Chi nhánh Thái Bình";
+    
+    // Tạo nội dung chuyển khoản
+    var transferContent = $"DH{Model.OrderCode}";
+    var amount = Model.FinalAmount.ToString("0");
+    
+    // Tạo QR Code URL (sử dụng VietQR API - TPBank code: 970423)
+    var bankCode = "970423"; // Mã ngân hàng TPBank
+    var qrCodeUrl = $"https://img.vietqr.io/image/{bankCode}-{accountNumber}-compact2.png?amount={amount}&addInfo={transferContent}&accountName={accountName}";
+}
+
+<style>
+    .bank-transfer-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+    }
+    
+    .success-icon {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .success-icon i {
+        font-size: 80px;
+        color: #28a745;
+    }
+    
+    .bank-info-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-bottom: 20px;
+    }
+    
+    .qr-code-section {
+        text-align: center;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .qr-code-section img {
+        max-width: 300px;
+        border: 5px solid #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .bank-detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .bank-detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .bank-detail-label {
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .bank-detail-value {
+        font-weight: 700;
+        color: #333;
+        font-size: 18px;
+    }
+    
+    .copy-btn {
+        background: #4f6a4c;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+    
+    .copy-btn:hover {
+        background: #3d5239;
+    }
+    
+    .order-summary {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .order-summary .table {
+        margin-bottom: 0;
+    }
+    
+    .order-summary .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        padding: 12px;
+    }
+    
+    .order-summary .table tbody td {
+        padding: 10px 12px;
+        vertical-align: middle;
+    }
+    
+    .order-summary .table tfoot td {
+        padding: 12px;
+        border-top: 2px solid #dee2e6;
+        font-size: 16px;
+    }
+    
+    .note-section {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+    
+    .btn-home {
+        background: #4f6a4c;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+    }
+    
+    .btn-home:hover {
+        background: #3d5239;
+        color: white;
+    }
+</style>
+
+<div class="bank-transfer-container">
+    <!-- Success Icon -->
+    <div class="success-icon">
+        <i class="fa fa-check-circle"></i>
+        <h2 class="mt-3">Đặt Hàng Thành Công!</h2>
+        <p class="text-muted">Mã đơn hàng: <strong>#@Model.OrderCode</strong></p>
+        
+        @{
+            // Tính điểm sẽ nhận được: 10.000đ = 1 điểm
+            int pointsToEarn = (int)(Model.FinalAmount / 10000);
+        }
+        
+        @if (pointsToEarn > 0)
+        {
+            <div class="alert alert-success mt-3" style="max-width: 600px; margin: 0 auto;">
+                <i class="fa fa-star text-warning"></i> 
+                <strong>Tích điểm thưởng:</strong> 
+                Sau khi đơn hàng được giao thành công, bạn sẽ nhận được 
+                <strong class="text-warning">@pointsToEarn điểm</strong> tích lũy!
+                <br>
+                <small class="text-muted">(Quy đổi: 10.000đ = 1 điểm)</small>
+            </div>
+        }
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="qr-code-section">
+        <h4 class="mb-3">Quét Mã QR Để Chuyển Khoản</h4>
+        <img src="@qrCodeUrl" alt="QR Code" class="img-fluid" style="max-width: 400px;" 
+             onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EKh%C3%B4ng t%E1%BA%A3i %C4%91%C6%B0%E1%BB%A3c QR%3C/text%3E%3C/svg%3E';" />
+        <p class="mt-3 text-muted">
+            <i class="fa fa-mobile"></i> Quét mã QR bằng ứng dụng ngân hàng của bạn
+        </p>
+        <p class="text-muted small">
+            <strong>Lưu ý:</strong> Nếu QR không hiển thị, vui lòng chuyển khoản thủ công theo thông tin bên dưới
+        </p>
+    </div>
+
+    <!-- Bank Information -->
+    <div class="bank-info-card">
+        <h4 class="mb-4">
+            <i class="fa fa-university"></i> Thông Tin Chuyển Khoản
+        </h4>
+        
+        <div class="bank-detail-row">
+            <span class="bank-detail-label">Ngân hàng:</span>
+            <span class="bank-detail-value">@bankName</span>
+        </div>
+        
+        <div class="bank-detail-row">
+            <span class="bank-detail-label">Số tài khoản:</span>
+            <span class="bank-detail-value">
+                @accountNumber
+                <button class="copy-btn" onclick="copyToClipboard('@accountNumber')">
+                    <i class="fa fa-copy"></i> Sao chép
+                </button>
+            </span>
+        </div>
+        
+        <div class="bank-detail-row">
+            <span class="bank-detail-label">Chủ tài khoản:</span>
+            <span class="bank-detail-value">@accountName</span>
+        </div>
+        
+        <div class="bank-detail-row">
+            <span class="bank-detail-label">Chi nhánh:</span>
+            <span class="bank-detail-value">@bankBranch</span>
+        </div>
+        
+        <div class="bank-detail-row">
+            <span class="bank-detail-label">Số tiền:</span>
+            <span class="bank-detail-value text-danger">
+                @Model.FinalAmount.ToString("N0") VNĐ
+                <button class="copy-btn" onclick="copyToClipboard('@amount')">
+                    <i class="fa fa-copy"></i> Sao chép
+                </button>
+            </span>
+        </div>
+        
+        <div class="bank-detail-row">
+            <span class="bank-detail-label">Nội dung:</span>
+            <span class="bank-detail-value">
+                @transferContent
+                <button class="copy-btn" onclick="copyToClipboard('@transferContent')">
+                    <i class="fa fa-copy"></i> Sao chép
+                </button>
+            </span>
+        </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+        <h5 class="mb-3">
+            <i class="fa fa-shopping-cart"></i> Thông Tin Đơn Hàng
+        </h5>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th class="text-center">Số lượng</th>
+                    <th class="text-right">Đơn giá</th>
+                    <th class="text-right">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                {
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-right">@item.Price.ToString("N0") VNĐ</td>
+                            <td class="text-right">@item.TotalPrice.ToString("N0") VNĐ</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">Không có sản phẩm</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                @if (Model.TotalAmount != Model.FinalAmount)
+                {
+                    <tr>
+                        <td colspan="3" class="text-right">Tạm tính:</td>
+                        <td class="text-right">@Model.TotalAmount.ToString("N0") VNĐ</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-right"><span class="text-success"><i class="fa fa-tag"></i> Giảm giá:</span></td>
+                        <td class="text-right"><span class="text-success">- @((Model.TotalAmount - Model.FinalAmount).ToString("N0")) VNĐ</span></td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
+                    <td class="text-right"><strong class="text-danger">@Model.FinalAmount.ToString("N0") VNĐ</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Note Section -->
+    <div class="note-section">
+        <h6><i class="fa fa-info-circle"></i> Lưu ý quan trọng:</h6>
+        <ul class="mb-0">
+            <li>Vui lòng chuyển khoản <strong>ĐÚNG số tiền</strong> và <strong>ĐÚNG nội dung</strong> để đơn hàng được xử lý nhanh chóng</li>
+            <li>Đơn hàng sẽ được xác nhận sau khi chúng tôi nhận được thanh toán (thường trong vòng 5-10 phút)</li>
+            <li>Thông tin chi tiết đơn hàng đã được gửi qua email: <strong>@Model.CustomerEmail</strong></li>
+            <li>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ: <strong>1800-xxxx</strong></li>
+        </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center">
+        <a href="@Url.Action("Index", "Home")" class="btn-home">
+            <i class="fa fa-home"></i> Về Trang Chủ
+        </a>
+        <a href="@Url.Action("MyOrders", "Profile")" class="btn btn-outline-secondary ml-2">
+            <i class="fa fa-list"></i> Xem Đơn Hàng Của Tôi
+        </a>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            // Hiển thị thông báo
+            alert('Đã sao chép: ' + text);
+        }, function(err) {
+            console.error('Lỗi sao chép: ', err);
+        });
+    }
+</script>

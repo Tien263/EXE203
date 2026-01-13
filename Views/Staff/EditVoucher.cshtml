@@ -1,0 +1,281 @@
+@model Exe_Demo.Models.Voucher
+@{
+    ViewData["Title"] = "Sửa Voucher";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<!-- Hero Section -->
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <h1 class="mb-0 bread">Sửa Voucher</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a asp-action="Dashboard">Dashboard</a></span> 
+                    <span class="mr-2">/ <a asp-action="Vouchers">Voucher</a></span>
+                    <span>/ Sửa</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-white">
+                        <h4 class="mb-0"><i class="fa fa-edit"></i> Chỉnh Sửa Voucher: @Model.VoucherCode</h4>
+                    </div>
+                    <div class="card-body p-5">
+                        
+                        <!-- Info Box -->
+                        <div class="alert alert-info">
+                            <strong><i class="fa fa-info-circle"></i> Thông tin:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Đã sử dụng: <strong>@Model.UsedCount</strong> lần</li>
+                                <li>Ngày tạo: <strong>@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</strong></li>
+                            </ul>
+                        </div>
+
+                        <form asp-action="EditVoucher" method="post">
+                            <input type="hidden" asp-for="VoucherId" />
+                            <input type="hidden" asp-for="UsedCount" />
+                            <input type="hidden" asp-for="CreatedDate" />
+                            
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <!-- Mã Voucher -->
+                            <div class="form-group row">
+                                <label asp-for="VoucherCode" class="col-md-3 col-form-label">
+                                    Mã Voucher <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <input asp-for="VoucherCode" class="form-control" 
+                                           style="text-transform: uppercase;" />
+                                    <small class="form-text text-muted">
+                                        Mã voucher phải là duy nhất
+                                    </small>
+                                    <span asp-validation-for="VoucherCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Tên Voucher -->
+                            <div class="form-group row">
+                                <label asp-for="VoucherName" class="col-md-3 col-form-label">
+                                    Tên Voucher
+                                </label>
+                                <div class="col-md-9">
+                                    <input asp-for="VoucherName" class="form-control" />
+                                    <span asp-validation-for="VoucherName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- Loại Giảm Giá -->
+                            <div class="form-group row">
+                                <label asp-for="DiscountType" class="col-md-3 col-form-label">
+                                    Loại Giảm Giá <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <select asp-for="DiscountType" class="form-control" id="discountType">
+                                        <option value="">-- Chọn loại --</option>
+                                        <option value="Percent">Phần trăm (%)</option>
+                                        <option value="Fixed">Số tiền cố định (đ)</option>
+                                    </select>
+                                    <span asp-validation-for="DiscountType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Giá Trị Giảm -->
+                            <div class="form-group row">
+                                <label asp-for="DiscountValue" class="col-md-3 col-form-label">
+                                    Giá Trị Giảm <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input asp-for="DiscountValue" type="number" step="0.01" 
+                                               class="form-control" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="discountUnit">
+                                                @(Model.DiscountType == "Percent" ? "%" : "đ")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Giảm Tối Đa -->
+                            <div class="form-group row" id="maxDiscountRow" 
+                                 style="display: @(Model.DiscountType == "Percent" ? "flex" : "none");">
+                                <label asp-for="MaxDiscountAmount" class="col-md-3 col-form-label">
+                                    Giảm Tối Đa
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input asp-for="MaxDiscountAmount" type="number" 
+                                               class="form-control" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">đ</span>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Số tiền giảm tối đa khi dùng voucher phần trăm
+                                    </small>
+                                    <span asp-validation-for="MaxDiscountAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Đơn Hàng Tối Thiểu -->
+                            <div class="form-group row">
+                                <label asp-for="MinOrderAmount" class="col-md-3 col-form-label">
+                                    Đơn Hàng Tối Thiểu
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input asp-for="MinOrderAmount" type="number" 
+                                               class="form-control" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">đ</span>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="MinOrderAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- Số Lần Sử Dụng -->
+                            <div class="form-group row">
+                                <label asp-for="UsageLimit" class="col-md-3 col-form-label">
+                                    Giới Hạn Sử Dụng
+                                </label>
+                                <div class="col-md-9">
+                                    <input asp-for="UsageLimit" type="number" class="form-control" />
+                                    <small class="form-text text-muted">
+                                        Để trống hoặc 0 = không giới hạn. 
+                                        Đã sử dụng: <strong>@Model.UsedCount</strong> lần
+                                    </small>
+                                    <span asp-validation-for="UsageLimit" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Thời Gian Hiệu Lực -->
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">
+                                    Thời Gian Hiệu Lực <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-4">
+                                    <label>Từ ngày</label>
+                                    <input asp-for="ValidFrom" type="date" class="form-control" 
+                                           value="@Model.ValidFrom?.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="ValidFrom" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Đến ngày</label>
+                                    <input asp-for="ValidTo" type="date" class="form-control" 
+                                           value="@Model.ValidTo?.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="ValidTo" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Trạng Thái -->
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">
+                                    Trạng Thái
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" name="IsActive" value="true"
+                                               class="custom-control-input" id="isActiveSwitch" 
+                                               @(Model.IsActive == true ? "checked" : "") />
+                                        <input type="hidden" name="IsActive" value="false" />
+                                        <label class="custom-control-label" for="isActiveSwitch">
+                                            <span id="statusLabel">
+                                                @(Model.IsActive == true ? "Đang hoạt động" : "Không hoạt động")
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- Submit Buttons -->
+                            <div class="form-group row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-warning btn-lg px-5">
+                                        <i class="fa fa-save"></i> Cập Nhật
+                                    </button>
+                                    <a asp-action="Vouchers" class="btn btn-secondary btn-lg px-5 ml-2">
+                                        <i class="fa fa-times"></i> Hủy
+                                    </a>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- Warning Card -->
+                @if (Model.UsedCount > 0)
+                {
+                    <div class="card mt-4 border-warning">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="fa fa-exclamation-triangle"></i> Lưu Ý
+                            </h5>
+                            <p class="mb-0">
+                                Voucher này đã được sử dụng <strong>@Model.UsedCount</strong> lần. 
+                                Hãy cẩn thận khi thay đổi giá trị giảm giá hoặc điều kiện áp dụng.
+                            </p>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        $(document).ready(function() {
+            // Handle discount type change
+            $('#discountType').change(function() {
+                var type = $(this).val();
+                if (type === 'Percent') {
+                    $('#discountUnit').text('%');
+                    $('#maxDiscountRow').show();
+                } else if (type === 'Fixed') {
+                    $('#discountUnit').text('đ');
+                    $('#maxDiscountRow').hide();
+                } else {
+                    $('#maxDiscountRow').hide();
+                }
+            });
+
+            // Auto uppercase voucher code
+            $('input[name="VoucherCode"]').on('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+
+            // Update status label
+            $('#isActiveSwitch').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#statusLabel').text('Đang hoạt động');
+                } else {
+                    $('#statusLabel').text('Không hoạt động');
+                }
+            });
+        });
+    </script>
+}

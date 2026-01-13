@@ -1,0 +1,106 @@
+@model IEnumerable<Exe_Demo.Models.Blog>
+@{
+    ViewData["Title"] = "Blog";
+}
+
+<style>
+    .blog-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        transition: all 0.3s;
+    }
+    
+    .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(79, 106, 76, 0.2);
+    }
+    
+    .blog-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+    
+    .blog-content {
+        padding: 25px;
+    }
+    
+    .blog-title {
+        color: #4f6a4c;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    
+    .blog-title:hover {
+        color: #3d5239;
+    }
+    
+    .blog-meta {
+        color: #999;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    
+    .blog-excerpt {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+    
+    .read-more {
+        color: #4f6a4c;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .read-more:hover {
+        color: #3d5239;
+        text-decoration: underline;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Blog", "Trang chủ", Url.Action("Index", "Home"), "", "")); }
+
+<section class="ftco-section">
+    <div class="container">
+        @if (Model.Any())
+        {
+            <div class="row">
+                @foreach (var blog in Model)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="blog-card">
+                            <a href="@Url.Action("Details", new { id = blog.BlogId })">
+                                <img src="@blog.ImageUrl" alt="@blog.Title" class="blog-image">
+                            </a>
+                            <div class="blog-content">
+                                <h3 class="blog-title">
+                                    <a href="@Url.Action("Details", new { id = blog.BlogId })">@blog.Title</a>
+                                </h3>
+                                <div class="blog-meta">
+                                    <i class="fa fa-user"></i> @blog.AuthorName &nbsp;
+                                    <i class="fa fa-calendar"></i> @blog.PublishedDate?.ToString("dd/MM/yyyy") &nbsp;
+                                    <i class="fa fa-eye"></i> @blog.ViewCount lượt xem
+                                </div>
+                                <p class="blog-excerpt">@blog.ShortDescription</p>
+                                <a href="@Url.Action("Details", new { id = blog.BlogId })" class="read-more">
+                                    Đọc thêm <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <h3>Chưa có bài viết nào</h3>
+            </div>
+        }
+    </div>
+</section>

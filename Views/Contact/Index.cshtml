@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Liên Hệ";
+}
+
+<style>
+    .contact-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border-top: 3px solid #4f6a4c;
+    }
+    
+    .contact-icon {
+        font-size: 40px;
+        color: #4f6a4c;
+        margin-bottom: 15px;
+    }
+    
+    .shipping-card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border-left: 4px solid #4f6a4c;
+        height: 100%;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Liên Hệ", "Trang chủ", Url.Action("Index", "Home"), "", "")); }
+
+<section class="ftco-section">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: #4f6a4c;">Thông Tin Liên Hệ</h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="contact-card text-center">
+                    <div class="contact-icon">📍</div>
+                    <h4 style="color: #4f6a4c;">Địa Chỉ</h4>
+                    <p>Mộc Châu, Sơn La<br>Việt Nam</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-card text-center">
+                    <div class="contact-icon">📧</div>
+                    <h4 style="color: #4f6a4c;">Email</h4>
+                    <p>
+                        <a href="mailto:contact@mocvistore.com" style="color: #4f6a4c;">contact@mocvistore.com</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-card text-center">
+                    <div class="contact-icon">📞</div>
+                    <h4 style="color: #4f6a4c;">Hotline</h4>
+                    <p><strong style="color: #4f6a4c; font-size: 24px;">1800-xxxx</strong><br>(8:00 - 22:00)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section" style="background: #f8f9fa;">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: #4f6a4c;">Đối Tác Vận Chuyển</h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="shipping-card">
+                    <h4 style="color: #4f6a4c;">🚚 GHTK</h4>
+                    <p><strong>Giao Hàng Tiết Kiệm</strong></p>
+                    <ul>
+                        <li>Mạng lưới phủ rộng tỉnh, huyện, xã</li>
+                        <li>Hỗ trợ COD nhanh chóng</li>
+                        <li>Phí vận chuyển cạnh tranh</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="shipping-card">
+                    <h4 style="color: #4f6a4c;">🛒 Shopee Express</h4>
+                    <p><strong>Vận chuyển Shopee</strong></p>
+                    <ul>
+                        <li>Tốc độ giao hàng nhanh</li>
+                        <li>Hệ thống công nghệ tối ưu</li>
+                        <li>Ưu đãi phí vận chuyển</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="shipping-card">
+                    <h4 style="color: #4f6a4c;">📦 J&T Express</h4>
+                    <p><strong>Vận chuyển quốc tế</strong></p>
+                    <ul>
+                        <li>Quy mô Đông Nam Á</li>
+                        <li>Mạng lưới rộng, ổn định</li>
+                        <li>Giao nhanh nội thành</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

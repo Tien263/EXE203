@@ -1,0 +1,298 @@
+@model Exe_Demo.Models.Voucher
+@{
+    ViewData["Title"] = "Thêm Voucher Mới";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<!-- Hero Section -->
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <h1 class="mb-0 bread">Thêm Voucher Mới</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a asp-action="Dashboard">Dashboard</a></span> 
+                    <span class="mr-2">/ <a asp-action="Vouchers">Voucher</a></span>
+                    <span>/ Thêm mới</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fa fa-ticket"></i> Thông Tin Voucher</h4>
+                    </div>
+                    <div class="card-body p-5">
+                        
+                        <form asp-action="CreateVoucher" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <!-- Mã Voucher -->
+                            <div class="form-group row">
+                                <label asp-for="VoucherCode" class="col-md-3 col-form-label">
+                                    Mã Voucher <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <input asp-for="VoucherCode" class="form-control" 
+                                           placeholder="VD: SUMMER2025, NEWUSER50" 
+                                           style="text-transform: uppercase;" />
+                                    <small class="form-text text-muted">
+                                        Mã voucher phải là duy nhất, viết hoa, không dấu
+                                    </small>
+                                    <span asp-validation-for="VoucherCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Tên Voucher -->
+                            <div class="form-group row">
+                                <label asp-for="VoucherName" class="col-md-3 col-form-label">
+                                    Tên Voucher
+                                </label>
+                                <div class="col-md-9">
+                                    <input asp-for="VoucherName" class="form-control" 
+                                           placeholder="VD: Giảm giá mùa hè 2025" />
+                                    <span asp-validation-for="VoucherName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- Loại Giảm Giá -->
+                            <div class="form-group row">
+                                <label asp-for="DiscountType" class="col-md-3 col-form-label">
+                                    Loại Giảm Giá <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <select asp-for="DiscountType" class="form-control" id="discountType">
+                                        <option value="">-- Chọn loại --</option>
+                                        <option value="Percent">Phần trăm (%)</option>
+                                        <option value="Fixed">Số tiền cố định (đ)</option>
+                                    </select>
+                                    <span asp-validation-for="DiscountType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Giá Trị Giảm -->
+                            <div class="form-group row">
+                                <label asp-for="DiscountValue" class="col-md-3 col-form-label">
+                                    Giá Trị Giảm <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input asp-for="DiscountValue" type="number" step="0.01" 
+                                               class="form-control" placeholder="0" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="discountUnit">%</span>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted" id="discountHint">
+                                        Nhập giá trị phần trăm (VD: 10 = giảm 10%)
+                                    </small>
+                                    <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Giảm Tối Đa (chỉ hiện khi chọn Percent) -->
+                            <div class="form-group row" id="maxDiscountRow" style="display: none;">
+                                <label asp-for="MaxDiscountAmount" class="col-md-3 col-form-label">
+                                    Giảm Tối Đa
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input asp-for="MaxDiscountAmount" type="number" 
+                                               class="form-control" placeholder="0" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">đ</span>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Số tiền giảm tối đa khi dùng voucher phần trăm
+                                    </small>
+                                    <span asp-validation-for="MaxDiscountAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Đơn Hàng Tối Thiểu -->
+                            <div class="form-group row">
+                                <label asp-for="MinOrderAmount" class="col-md-3 col-form-label">
+                                    Đơn Hàng Tối Thiểu
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input asp-for="MinOrderAmount" type="number" 
+                                               class="form-control" placeholder="0" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">đ</span>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Giá trị đơn hàng tối thiểu để áp dụng voucher
+                                    </small>
+                                    <span asp-validation-for="MinOrderAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- Số Lần Sử Dụng -->
+                            <div class="form-group row">
+                                <label asp-for="UsageLimit" class="col-md-3 col-form-label">
+                                    Giới Hạn Sử Dụng
+                                </label>
+                                <div class="col-md-9">
+                                    <input asp-for="UsageLimit" type="number" 
+                                           class="form-control" placeholder="Không giới hạn" />
+                                    <small class="form-text text-muted">
+                                        Để trống hoặc 0 = không giới hạn
+                                    </small>
+                                    <span asp-validation-for="UsageLimit" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Thời Gian Hiệu Lực -->
+                            <div class="form-group row">
+                                <label class="col-md-3 col-form-label">
+                                    Thời Gian Hiệu Lực <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-4">
+                                    <label>Từ ngày</label>
+                                    <input asp-for="ValidFrom" type="date" class="form-control" />
+                                    <span asp-validation-for="ValidFrom" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Đến ngày</label>
+                                    <input asp-for="ValidTo" type="date" class="form-control" />
+                                    <span asp-validation-for="ValidTo" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <!-- Preview Box -->
+                            <div class="alert alert-info" id="previewBox" style="display: none;">
+                                <h5><i class="fa fa-eye"></i> Xem Trước</h5>
+                                <div id="previewContent"></div>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="form-group row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="fa fa-save"></i> Lưu Voucher
+                                    </button>
+                                    <a asp-action="Vouchers" class="btn btn-secondary btn-lg px-5 ml-2">
+                                        <i class="fa fa-times"></i> Hủy
+                                    </a>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- Help Card -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5><i class="fa fa-question-circle"></i> Hướng Dẫn</h5>
+                        <ul class="mb-0">
+                            <li><strong>Mã voucher:</strong> Nên ngắn gọn, dễ nhớ, viết hoa (VD: SUMMER2025, NEWUSER50)</li>
+                            <li><strong>Loại giảm giá:</strong> 
+                                <ul>
+                                    <li><em>Phần trăm:</em> Giảm theo % giá trị đơn hàng</li>
+                                    <li><em>Cố định:</em> Giảm một số tiền cố định</li>
+                                </ul>
+                            </li>
+                            <li><strong>Giảm tối đa:</strong> Chỉ áp dụng cho voucher phần trăm, giới hạn số tiền giảm tối đa</li>
+                            <li><strong>Đơn hàng tối thiểu:</strong> Khách phải mua đủ giá trị này mới được dùng voucher</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        $(document).ready(function() {
+            // Handle discount type change
+            $('#discountType').change(function() {
+                var type = $(this).val();
+                if (type === 'Percent') {
+                    $('#discountUnit').text('%');
+                    $('#discountHint').text('Nhập giá trị phần trăm (VD: 10 = giảm 10%)');
+                    $('#maxDiscountRow').show();
+                } else if (type === 'Fixed') {
+                    $('#discountUnit').text('đ');
+                    $('#discountHint').text('Nhập số tiền giảm cố định (VD: 50000 = giảm 50,000đ)');
+                    $('#maxDiscountRow').hide();
+                } else {
+                    $('#maxDiscountRow').hide();
+                }
+                updatePreview();
+            });
+
+            // Auto uppercase voucher code
+            $('input[name="VoucherCode"]').on('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+
+            // Preview update
+            function updatePreview() {
+                var code = $('input[name="VoucherCode"]').val();
+                var name = $('input[name="VoucherName"]').val();
+                var type = $('#discountType').val();
+                var value = $('input[name="DiscountValue"]').val();
+                var minOrder = $('input[name="MinOrderAmount"]').val();
+
+                if (code && type && value) {
+                    var preview = '<strong>Mã:</strong> ' + code + '<br>';
+                    if (name) preview += '<strong>Tên:</strong> ' + name + '<br>';
+                    
+                    if (type === 'Percent') {
+                        preview += '<strong>Giảm:</strong> ' + value + '%';
+                    } else {
+                        preview += '<strong>Giảm:</strong> ' + parseInt(value).toLocaleString('vi-VN') + 'đ';
+                    }
+                    
+                    if (minOrder) {
+                        preview += '<br><strong>Đơn tối thiểu:</strong> ' + parseInt(minOrder).toLocaleString('vi-VN') + 'đ';
+                    }
+
+                    $('#previewContent').html(preview);
+                    $('#previewBox').show();
+                } else {
+                    $('#previewBox').hide();
+                }
+            }
+
+            // Update preview on input
+            $('input, select').on('input change', updatePreview);
+
+            // Set default dates
+            var today = new Date().toISOString().split('T')[0];
+            var nextMonth = new Date();
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            var nextMonthStr = nextMonth.toISOString().split('T')[0];
+            
+            if (!$('input[name="ValidFrom"]').val()) {
+                $('input[name="ValidFrom"]').val(today);
+            }
+            if (!$('input[name="ValidTo"]').val()) {
+                $('input[name="ValidTo"]').val(nextMonthStr);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,58 @@
+@model (string Title, string Breadcrumb1, string Breadcrumb1Url, string Breadcrumb2, string Breadcrumb2Url)
+
+<style>
+    .page-hero {
+        background-image: url('/images/bg_1.jpg');
+        background-size: cover;
+        background-position: 50% 50%;
+        background-attachment: fixed;
+        position: relative;
+        padding: 100px 0 50px 0;
+        margin-top: 0;
+    }
+    
+    .page-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+    
+    .page-hero .container {
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<div class="page-hero">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate mb-5 text-center">
+                <p class="breadcrumbs mb-0">
+                    @if (!string.IsNullOrEmpty(Model.Breadcrumb1))
+                    {
+                        <span class="mr-2">
+                            <a href="@Model.Breadcrumb1Url" style="color: white;">
+                                @Model.Breadcrumb1 <i class="fa fa-chevron-right"></i>
+                            </a>
+                        </span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Breadcrumb2))
+                    {
+                        <span class="mr-2">
+                            <a href="@Model.Breadcrumb2Url" style="color: white;">
+                                @Model.Breadcrumb2 <i class="fa fa-chevron-right"></i>
+                            </a>
+                        </span>
+                    }
+                    <span style="color: white;">@Model.Title</span>
+                </p>
+                <h2 class="mb-0 bread" style="color: white;">@Model.Title</h2>
+            </div>
+        </div>
+    </div>
+</div>

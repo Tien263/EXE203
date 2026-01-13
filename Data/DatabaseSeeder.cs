@@ -1,0 +1,371 @@
+using Exe_Demo.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace Exe_Demo.Data;
+
+public static class DatabaseSeeder
+{
+    private static string HashPassword(string password)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(hashedBytes);
+        }
+    }
+
+    public static void SeedData(ApplicationDbContext context)
+    {
+        // Check if products already exist
+        if (context.Products.Any() || context.Users.Any())
+        {
+            Console.WriteLine("Database already seeded");
+            return;
+        }
+
+        Console.WriteLine("Seeding database...");
+
+        try
+        {
+            // Seed Categories
+            var categories = new List<Category>
+            {
+                new Category { CategoryName = "Hoa Quả Sấy", Description = "Các loại hoa quả sấy khô tự nhiên" },
+                new Category { CategoryName = "Hoa Quả Sấy Dẻo", Description = "Hoa quả sấy giữ độ mềm tự nhiên" },
+                new Category { CategoryName = "Hoa Quả Sấy Thăng Hoa", Description = "Hoa quả sấy công nghệ thăng hoa" },
+                new Category { CategoryName = "Combo Quà Tặng", Description = "Combo hoa quả sấy làm quà" }
+            };
+            context.Categories.AddRange(categories);
+            context.SaveChanges();
+
+            // Seed Products
+            var products = new List<Product>
+            {
+                new Product
+                {
+                    ProductCode = "MIT001",
+                    ProductName = "Mít Sấy Giòn",
+                    CategoryId = 1,
+                    Price = 150000,
+                    StockQuantity = 100,
+                    Description = "Mít sấy giòn tự nhiên, không chất bảo quản",
+                    ImageUrl = "/images/products/mit-say.jpg",
+                    IsActive = true
+                },
+                new Product
+                {
+                    ProductCode = "CHUOI001",
+                    ProductName = "Chuối Sấy Dẻo",
+                    CategoryId = 2,
+                    Price = 120000,
+                    StockQuantity = 150,
+                    Description = "Chuối sấy dẻo thơm ngon, giữ nguyên vị tự nhiên",
+                    ImageUrl = "/images/products/chuoi-say.jpg",
+                    IsActive = true
+                },
+                new Product
+                {
+                    ProductCode = "XOAI001",
+                    ProductName = "Xoài Sấy Dẻo",
+                    CategoryId = 2,
+                    Price = 180000,
+                    StockQuantity = 80,
+                    Description = "Xoài sấy dẻo chua ngọt đậm đà",
+                    ImageUrl = "/images/products/xoai-say.jpg",
+                    IsActive = true
+                },
+                new Product
+                {
+                    ProductCode = "DAU001",
+                    ProductName = "Dâu Tây Sấy Thăng Hoa",
+                    CategoryId = 3,
+                    Price = 250000,
+                    StockQuantity = 50,
+                    Description = "Dâu tây sấy thăng hoa giữ nguyên hương vị",
+                    ImageUrl = "/images/products/dau-say.jpg",
+                    IsActive = true
+                },
+                new Product
+                {
+                    ProductCode = "COMBO001",
+                    ProductName = "Combo Hoa Quả Sấy 5 Loại",
+                    CategoryId = 4,
+                    Price = 350000,
+                    StockQuantity = 30,
+                    Description = "Combo 5 loại hoa quả sấy đa dạng",
+                    ImageUrl = "/images/products/combo-5.jpg",
+                    IsActive = true
+                }
+            };
+            context.Products.AddRange(products);
+            context.SaveChanges();
+
+            // Seed Employees
+            var emp1 = new Employee
+            {
+                EmployeeCode = "NV001",
+                FullName = "Nguyễn Văn A",
+                PhoneNumber = "0901234567",
+                Email = "staff@mocvistore.com",
+                Position = "Nhân viên bán hàng",
+                Department = "Bán hàng",
+                Salary = 8000000,
+                HireDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-2)),
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
+
+            var emp2 = new Employee
+            {
+                EmployeeCode = "ADMIN001",
+                FullName = "Quản Trị Viên",
+                PhoneNumber = "0912345678",
+                Email = "admin@mocvistore.com",
+                Position = "Quản lý",
+                Department = "Quản lý",
+                Salary = 15000000,
+                HireDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-3)),
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
+
+            context.Employees.Add(emp1);
+            context.Employees.Add(emp2);
+            context.SaveChanges();
+
+            // Seed Users with correct passwords from THONG_TIN_TAI_KHOAN.md
+            var user1 = new User
+            {
+                Email = "staff@mocvistore.com",
+                PasswordHash = HashPassword("Staff@123"),
+                FullName = "Nguyễn Văn A",
+                PhoneNumber = "0901234567",
+                Role = "Staff",
+                EmployeeId = emp1.EmployeeId,
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
+
+            var user2 = new User
+            {
+                Email = "admin@mocvistore.com",
+                PasswordHash = HashPassword("Admin@123"),
+                FullName = "Quản Trị Viên",
+                PhoneNumber = "0912345678",
+                Role = "Admin",
+                EmployeeId = emp2.EmployeeId,
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
+
+            context.Users.Add(user1);
+            context.Users.Add(user2);
+            context.SaveChanges();
+
+            // Seed Blog Posts from AI training data
+            var blogs = new List<Blog>
+            {
+                new Blog
+                {
+                    Title = "🍓 Dâu Tây Mộc Châu - Nữ Hoàng Hoa Quả Cao Nguyên",
+                    Slug = "dau-tay-moc-chau-nu-hoang-hoa-qua-cao-nguyen",
+                    ShortDescription = "Khám phá dâu tây Mộc Châu được mệnh danh là 'Nữ hoàng hoa quả cao nguyên' với vitamin C gấp 3 lần cam!",
+                    Content = @"<h2>Nữ Hoàng Hoa Quả Cao Nguyên</h2>
+<p>Dâu tây Mộc Châu được mệnh danh là 'Nữ hoàng hoa quả cao nguyên'! Mỗi trái dâu được chọn lọc kỹ càng từ vườn dâu Mộc Châu 1200m so với mặt nước biển, nơi có khí hậu mát mẻ quanh năm.</p>
+
+<h3>Công Nghệ Sấy Thông Minh</h3>
+<p>Sấy dẻo ở nhiệt độ thấp 50-60°C, giữ trọn 95% vitamin C - gấp 3 lần cam! Màu đỏ tươi rực rỡ 100% tự nhiên, không một giọt màu nhân tạo.</p>
+
+<h3>Dinh Dưỡng Tuyệt Vời</h3>
+<ul>
+<li><strong>Vitamin C:</strong> Siêu cao (180mg/100g) - Gấp 3 lần cam, đáp ứng 200% nhu cầu hàng ngày</li>
+<li><strong>Anthocyanin:</strong> Chất chống oxy hóa mạnh từ màu đỏ tự nhiên - Bảo vệ tim mạch</li>
+<li><strong>Folate (Vitamin B9):</strong> Cao - Tốt cho phụ nữ mang thai và não bộ</li>
+<li><strong>Chất xơ:</strong> 3.5g/100g - Giúp no lâu, hỗ trợ giảm cân hiệu quả</li>
+</ul>
+
+<h3>Lợi Ích Sức Khỏe</h3>
+<p><strong>💪 Tăng Cường Miễn Dịch Vượt Trội</strong> - Vitamin C siêu cao giúp cơ thể chống lại virus, cảm cúm</p>
+<p><strong>✨ Làm Đẹp Da Từ Bên Trong</strong> - Chống oxy hóa mạnh, giảm nám, sạm, da sáng mịn tự nhiên</p>
+<p><strong>❤️ Bảo Vệ Tim Mạch</strong> - Anthocyanin giảm cholesterol xấu, ngăn ngừa đột quỵ</p>
+
+<h3>Cách Dùng Dâu Tây Sấy</h3>
+<ul>
+<li>🍵 Ăn vặt trực tiếp - Thay thế kẹo, bánh không lành mạnh</li>
+<li>🥤 Pha trà dâu detox - Ngâm với nước ấm, thêm mật ong</li>
+<li>🍨 Topping yogurt/kem - Trang trí đẹp mắt, tăng dinh dưỡng</li>
+<li>🎂 Làm bánh, trang trí món ăn - Màu đỏ tự nhiên bắt mắt</li>
+</ul>",
+                    AuthorId = user2.UserId,
+                    IsPublished = true,
+                    PublishedDate = DateTime.Now.AddDays(-5),
+                    CreatedDate = DateTime.Now
+                },
+                new Blog
+                {
+                    Title = "🌟 Công Nghệ Freeze-Dried - Dâu Sấy Thăng Hoa Cao Cấp",
+                    Slug = "cong-nghe-freeze-dried-dau-say-thang-hoa-cao-cap",
+                    ShortDescription = "Khám phá công nghệ freeze-dried hiện đại từ Nhật Bản giữ 98% dinh dưỡng và tạo kết cấu giòn xốp kỳ diệu!",
+                    Content = @"<h2>Đỉnh Cao Công Nghệ - Dâu Sấy Thăng Hoa</h2>
+<p>Bạn đã bao giờ thử dâu tây 'tan như tuyết' trong miệng chưa? Đây là sản phẩm CAO CẤP NHẤT của Mộc Vị!</p>
+
+<h3>Công Nghệ Freeze-Dried Nhật Bản</h3>
+<p>Sử dụng công nghệ Freeze-Dried (sấy đông khô) hiện đại từ Nhật Bản, sấy ở nhiệt độ âm sâu -40°C, giữ trọn 98% dinh dưỡng và màu sắc tự nhiên.</p>
+
+<h3>Đặc Điểm Nổi Bật</h3>
+<ul>
+<li><strong>Kết Cấu Giòn Xốp Kỳ Diệu:</strong> Tan ngay khi chạm lưỡi, trải nghiệm hoàn toàn mới</li>
+<li><strong>Hương Vị Đậm Đà:</strong> Gấp 10 lần dâu tươi, cô đặc tinh túy Mộc Châu</li>
+<li><strong>Màu Sắc Tự Nhiên:</strong> Đỏ rực rỡ như vừa mới hái</li>
+<li><strong>Không Thêm Chất Lạ:</strong> Không đường, không dầu mỡ, không chất bảo quản</li>
+</ul>
+
+<h3>Dinh Dưỡng Siêu Cô Đặc</h3>
+<ul>
+<li><strong>Vitamin C:</strong> 300mg/100g - Gấp 5 lần dâu tươi, gấp 5 lần cam</li>
+<li><strong>Anthocyanin:</strong> Cô đặc gấp 8 lần - Chống oxy hóa mạnh nhất</li>
+<li><strong>Folate:</strong> Cao gấp 6 lần - Tốt cho thai nhi và não bộ</li>
+<li><strong>Kali:</strong> Điều hòa huyết áp hiệu quả</li>
+</ul>
+
+<h3>Ai Nên Thử Dâu Sấy Thăng Hoa?</h3>
+<p>👑 Người thành đạt, yêu chất lượng</p>
+<p>🏋️ Gymer, vận động viên</p>
+<p>🎁 Quà tặng cao cấp dịp lễ, Tết</p>
+<p>👨‍💼 Doanh nhân, CEO</p>",
+                    AuthorId = user2.UserId,
+                    IsPublished = true,
+                    PublishedDate = DateTime.Now.AddDays(-3),
+                    CreatedDate = DateTime.Now
+                },
+                new Blog
+                {
+                    Title = "🍑 Mận Mộc Châu - Vị Chua Ngọt Đỉnh Cao & Chất Xơ Cao Nhất",
+                    Slug = "man-moc-chau-vi-chua-ngot-dinh-cao-chat-xo-cao-nhat",
+                    ShortDescription = "Mận hậu Mộc Châu với vị chua ngọt cân bằng hoàn hảo, chất xơ cao nhất trong các loại sấy!",
+                    Content = @"<h2>Mận Hậu Mộc Châu - Ký Ức Ngọt Ngào</h2>
+<p>Bạn nhớ vị mận hậu Mộc Châu thuở nhỏ chứ? Giờ đây, Mộc Vị đã 'đóng gói' cả ký ức ấy vào từng miếng mận sấy dẻo!</p>
+
+<h3>Vị Chua Ngọt Kích Thích Vị Giác</h3>
+<p>Mận hậu thu hoạch tháng 4-6, chọn trái chín vừa tới, màu tím đen tự nhiên. Sấy dẻo giữ nguyên vị chua thanh kích thích vị giác, ngọt mát hậu vị. Mềm dẻo dai dai, thơm mùi mận chín.</p>
+
+<h3>Dinh Dưỡng Tuyệt Vời</h3>
+<ul>
+<li><strong>Vitamin C:</strong> Rất cao (85mg/100g) - Tăng cường miễn dịch mạnh mẽ</li>
+<li><strong>Vitamin A:</strong> Tốt cho mắt, da sáng khỏe</li>
+<li><strong>Anthocyanin:</strong> Chất chống oxy hóa từ màu tím tự nhiên</li>
+<li><strong>Kali:</strong> Điều hòa huyết áp, tốt cho tim</li>
+<li><strong>Chất Xơ:</strong> 4.2g/100g - CAO NHẤT trong các loại sấy, hỗ trợ tiêu hóa cực tốt</li>
+</ul>
+
+<h3>Lợi Ích Sức Khỏe</h3>
+<p><strong>💪 Tăng Cường Miễn Dịch</strong> - Vitamin C cao, phòng chống cảm cúm</p>
+<p><strong>🚽 Hỗ Trợ Tiêu Hóa Mạnh Mẽ</strong> - Chất xơ cao, chống táo bón hiệu quả</p>
+<p><strong>✨ Làm Đẹp Da Tự Nhiên</strong> - Chống oxy hóa, giảm mụn, da sáng</p>
+<p><strong>⚖️ Hỗ Trợ Giảm Cân</strong> - Ít calo (220 kcal/100g), no lâu</p>
+
+<h3>Gợi Ý Sử Dụng</h3>
+<ul>
+<li>🍬 Ăn vặt trực tiếp - Giải khát, giải ngán tuyệt vời</li>
+<li>🍵 Ngâm trà mận - Thêm đường phèn, uống mát lạnh</li>
+<li>🍲 Nấu chè mận - Món tráng miệng truyền thống</li>
+<li>🍰 Làm mứt, nhân bánh - Vị chua ngọt độc đáo</li>
+</ul>",
+                    AuthorId = user2.UserId,
+                    IsPublished = true,
+                    PublishedDate = DateTime.Now.AddDays(-2),
+                    CreatedDate = DateTime.Now
+                },
+                new Blog
+                {
+                    Title = "🥭 Xoài Mộc Châu - Ngọt Ngào, Thơm Nức & Giàu Vitamin A",
+                    Slug = "xoai-moc-chau-ngot-ngao-thom-nuc-giau-vitamin-a",
+                    ShortDescription = "Xoài Mộc Châu sấy dẻo giữ nguyên màu vàng tự nhiên, ngọt thanh và đặc biệt tốt cho mắt!",
+                    Content = @"<h2>Xoài Mộc Châu - Hương Vị Nhiệt Đới</h2>
+<p>Xoài Mộc Châu có vị ngọt đậm đà, thơm nức mùi xoài chín. Sấy dẻo giữ nguyên màu vàng tự nhiên, mềm dai, không khô cứng.</p>
+
+<h3>Đặc Điểm Nổi Bật</h3>
+<ul>
+<li><strong>Màu Vàng Tự Nhiên:</strong> Không tẩm đường, không chất bảo quản</li>
+<li><strong>Vị Ngọt Đậm Đà:</strong> Thơm nức, ngon cực kỳ</li>
+<li><strong>Kết Cấu Mềm Dai:</strong> Không khô cứng, dễ chếu</li>
+</ul>
+
+<h3>Giàu Vitamin A Cho Mắt Khỏe</h3>
+<ul>
+<li><strong>Vitamin A:</strong> Rất cao - Tốt cho mắt, da</li>
+<li><strong>Vitamin C:</strong> Cao - Tăng miễn dịch</li>
+<li><strong>Beta-Carotene:</strong> Chống oxy hóa mạnh</li>
+<li><strong>Chất Xơ:</strong> Hỗ trợ tiêu hóa tốt</li>
+</ul>
+
+<h3>Lợi Ích Sức Khỏe</h3>
+<p><strong>👁️ Tốt Cho Mắt:</strong> Vitamin A cao, bảo vệ thị lực</p>
+<p><strong>✨ Làm Đẹp Da:</strong> Beta-carotene giúp da sáng khỏe</p>
+<p><strong>💪 Tăng Miễn Dịch:</strong> Vitamin C phòng bệnh</p>
+<p><strong>🚽 Hỗ Trợ Tiêu Hóa:</strong> Chất xơ cao</p>
+
+<h3>Phù Hợp Cho Ai?</h3>
+<p>👶 Trẻ em - Vitamin A giúp phát triển mắt</p>
+<p>👨‍👩‍👧‍👦 Gia đình - An toàn cho cả nhà</p>
+<p>💼 Dân văn phòng - Snack lành mạnh</p>
+<p>🎁 Quà tặng - Giá hợp lý</p>",
+                    AuthorId = user2.UserId,
+                    IsPublished = true,
+                    PublishedDate = DateTime.Now.AddDays(-1),
+                    CreatedDate = DateTime.Now
+                },
+                new Blog
+                {
+                    Title = "🌿 Câu Chuyện Mộc Vị - Từ Nông Dân Tây Bắc Đến Thương Hiệu Cao Cấp",
+                    Slug = "cau-chuyen-moc-vi-tu-nong-dan-tay-bac-den-thuong-hieu-cao-cap",
+                    ShortDescription = "Khám phá hành trình của Mộc Vị - thương hiệu hoa quả sấy cao cấp từ Mộc Châu, Sơn La!",
+                    Content = @"<h2>Mộc Vị - Hương Vị Nguyên Sơ Mộc Châu</h2>
+<p>Mộc Vị là thương hiệu hoa quả sấy cao cấp từ Mộc Châu, Sơn La. 'Mộc' gợi đến sự mộc mạc, tự nhiên, nguyên bản, gắn với hình ảnh núi rừng Tây Bắc. 'Vị' là hương vị, trải nghiệm khi thưởng thức. Mộc Vị = Hương vị Mộc Châu, nhấn mạnh sự nguyên bản, chân thật từ thiên nhiên.</p>
+
+<h3>Câu Chuyện Ra Đời</h3>
+<p>Ở Mộc Châu, mỗi mùa quả chín mang trong mình nắng, gió và đất lành, nhưng hương vị ấy thường khó giữ trọn vẹn. Mộc Vị ra đời để níu lại khoảnh khắc ấy – giữ nguyên màu sắc, hương thơm và bản sắc của cao nguyên trong từng lát hoa quả sấy. Không chỉ là món ăn, Mộc Vị còn là câu chuyện về bàn tay người nông dân, về sự nâng niu trong chế biến và khát vọng đưa nông sản Việt vươn xa.</p>
+
+<h3>Giá Trị Cốt Lõi</h3>
+<p><strong>🌱 Giữ Trọn Tự Nhiên</strong><br/>Hương vị ngon nhất đến từ sự nguyên bản. Từng lát hoa quả sấy đều được làm ra từ trái chín Mộc Châu, giữ nguyên màu sắc, hương vị và dưỡng chất mà thiên nhiên ban tặng.</p>
+
+<p><strong>🏔️ Tôn Vinh Bản Sắc</strong><br/>Mỗi sản phẩm không chỉ là món ăn, mà còn là câu chuyện về núi rừng, về con người Tây Bắc cần mẫn. Chúng tôi muốn để mỗi miếng hoa quả sấy đều mang hơi thở vùng cao, gợi nhớ đến bản sắc Việt Nam.</p>
+
+<p><strong>✅ Cam Kết Chất Lượng</strong><br/>Từ khâu chọn nguyên liệu đến quy trình chế biến, chúng tôi đặt sự minh bạch và an toàn lên hàng đầu. Chất lượng bền vững chính là cách chúng tôi xây dựng niềm tin lâu dài với khách hàng.</p>
+
+<p><strong>🚀 Sáng Tạo Để Lan Tỏa</strong><br/>Chúng tôi kết hợp công nghệ sấy hiện đại với tinh hoa truyền thống, để đặc sản vùng miền không chỉ được bảo tồn mà còn có cơ hội đến gần hơn với người tiêu dùng khắp cả nước.</p>
+
+<h3>Sứ Mệnh & Tầm Nhìn</h3>
+<p><strong>Sứ Mệnh:</strong> Lan tỏa bản sắc Mộc Châu – vùng đất của những mùa quả ngọt. Mỗi sản phẩm hoa quả sấy không chỉ giữ trọn vẹn hương vị nguyên sơ và dinh dưỡng thiên nhiên, mà còn là nhịp cầu kết nối con người Việt với tình yêu quê hương, tự hào về bản sắc Tây Bắc.</p>
+
+<p><strong>Tầm Nhìn:</strong> Trở thành thương hiệu tiên phong về hoa quả sấy vùng miền, biểu tượng cho sự kết hợp giữa truyền thống và công nghệ hiện đại. Từ dâu sấy Mộc Châu – sản phẩm khác biệt đầu tiên – chúng tôi khát vọng trở thành 'đại sứ nông sản Việt', góp phần nâng tầm giá trị nông sản và ẩm thực Việt trên thị trường quốc tế.</p>
+
+<h3>Những Điểm Khác Biệt</h3>
+<ul>
+<li>✅ Tiên phong độc quyền – Thương hiệu đầu tiên đưa dâu tây Mộc Châu sấy ra thị trường</li>
+<li>✅ Nguồn gốc chuẩn vùng miền – Trực tiếp từ cao nguyên Mộc Châu 1200m</li>
+<li>✅ Bao bì xanh bền vững – Giấy phân hủy sinh học, bảo vệ môi trường</li>
+<li>✅ Công nghệ sấy hiện đại – Giữ 98% dinh dưỡng, không chất bảo quản</li>
+<li>✅ Liên tục đổi mới – Nhiều phiên bản, combo mix cho khách hàng chọn lựa</li>
+</ul>",
+                    AuthorId = user2.UserId,
+                    IsPublished = true,
+                    PublishedDate = DateTime.Now,
+                    CreatedDate = DateTime.Now
+                }
+            };
+
+            context.Blogs.AddRange(blogs);
+            context.SaveChanges();
+
+            Console.WriteLine("✅ Database seeded successfully with products, employees, users and 5 blog posts!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during seeding: {ex.Message}");
+            throw;
+        }
+    }
+}

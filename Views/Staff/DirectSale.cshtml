@@ -1,0 +1,368 @@
+@model Exe_Demo.Models.ViewModels.DirectSaleViewModel
+@{
+    ViewData["Title"] = "Bán hàng trực tiếp";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>Bán Hàng Trực Tiếp</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Dashboard" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Danh sách sản phẩm -->
+        <div class="col-md-7 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Chọn Sản Phẩm</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Tìm kiếm -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <input type="text" id="searchProduct" class="form-control" 
+                                   placeholder="Tìm kiếm sản phẩm..." value="@Model.SearchTerm">
+                        </div>
+                        <div class="col-md-4">
+                            <select id="categoryFilter" class="form-select">
+                                <option value="">Tất cả danh mục</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.CategoryId" selected="@(Model.CategoryFilter == cat.CategoryId)">
+                                        @cat.CategoryName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách sản phẩm -->
+                    <div id="productList" style="max-height: 600px; overflow-y: auto;">
+                        <div class="row">
+                            @foreach (var product in Model.Products)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100 product-card" style="cursor: pointer;" 
+                                         onclick="addToCart(@product.ProductId, '@product.ProductCode', '@product.ProductName', @product.Price, @(product.DiscountPercent ?? 0), @(product.StockQuantity ?? 0), '@(product.ImageUrl ?? "/images/product_1.jpg")')">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex">
+                                                <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" 
+                                                     alt="@product.ProductName" class="rounded me-2" 
+                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">@product.ProductName</h6>
+                                                    <div class="text-primary"><strong>@product.Price.ToString("N0") đ</strong></div>
+                                                    <small class="text-muted">Tồn: @product.StockQuantity</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Giỏ hàng & Thanh toán -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Thông Tin Khách Hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <div class="input-group">
+                            <input type="text" id="customerPhone" class="form-control" 
+                                   placeholder="Số điện thoại khách hàng">
+                            <button class="btn btn-outline-primary" type="button" onclick="searchCustomer()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" id="customerName" class="form-control" 
+                               placeholder="Tên khách hàng" required>
+                    </div>
+                    <div class="mb-2">
+                        <input type="email" id="customerEmail" class="form-control" 
+                               placeholder="Email (không bắt buộc)">
+                    </div>
+                    <input type="hidden" id="customerId" value="">
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Giỏ Hàng</h5>
+                    <button class="btn btn-sm btn-outline-danger" onclick="clearCart()">
+                        <i class="fas fa-trash"></i> Xóa tất cả
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div id="cartItems" style="max-height: 300px; overflow-y: auto;">
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-shopping-cart fa-3x mb-2"></i>
+                            <p>Giỏ hàng trống</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tạm tính:</span>
+                        <strong id="subtotal">0 đ</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Giảm giá:</span>
+                        <input type="number" id="discountAmount" class="form-control form-control-sm w-50" 
+                               value="0" min="0" onchange="updateTotal()">
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Tổng cộng:</strong>
+                        <h5 class="text-primary mb-0" id="finalAmount">0 đ</h5>
+                    </div>
+                    <div class="mb-3">
+                        <select id="paymentMethod" class="form-select">
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Chuyển khoản">Chuyển khoản</option>
+                            <option value="Thẻ">Thẻ</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100 btn-lg" onclick="createOrder()">
+                        <i class="fas fa-check"></i> Thanh Toán
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let cart = [];
+
+        function addToCart(productId, productCode, productName, price, discountPercent, stockQuantity, imageUrl) {
+            const existingItem = cart.find(item => item.productId === productId);
+            
+            if (existingItem) {
+                if (existingItem.quantity >= stockQuantity) {
+                    alert('Không đủ hàng trong kho!');
+                    return;
+                }
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    productId: productId,
+                    productCode: productCode,
+                    productName: productName,
+                    price: price,
+                    quantity: 1,
+                    discountPercent: discountPercent,
+                    stockQuantity: stockQuantity,
+                    imageUrl: imageUrl
+                });
+            }
+            
+            renderCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.productId !== productId);
+            renderCart();
+        }
+
+        function updateQuantity(productId, quantity) {
+            const item = cart.find(item => item.productId === productId);
+            if (item) {
+                if (quantity > item.stockQuantity) {
+                    alert('Không đủ hàng trong kho!');
+                    return;
+                }
+                if (quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    item.quantity = quantity;
+                    renderCart();
+                }
+            }
+        }
+
+        function clearCart() {
+            if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm?')) {
+                cart = [];
+                renderCart();
+            }
+        }
+
+        function renderCart() {
+            const cartContainer = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-shopping-cart fa-3x mb-2"></i>
+                        <p>Giỏ hàng trống</p>
+                    </div>
+                `;
+            } else {
+                let html = '<div class="p-2">';
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity * (100 - item.discountPercent) / 100;
+                    html += `
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <img src="${item.imageUrl}" alt="${item.productName}" 
+                                 class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${item.productName}</h6>
+                                <small class="text-muted">${item.price.toLocaleString()} đ</small>
+                                ${item.discountPercent > 0 ? `<span class="badge bg-danger ms-1">-${item.discountPercent}%</span>` : ''}
+                            </div>
+                            <div class="text-end">
+                                <div class="input-group input-group-sm mb-1" style="width: 100px;">
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            onclick="updateQuantity(${item.productId}, ${item.quantity - 1})">-</button>
+                                    <input type="number" class="form-control text-center" value="${item.quantity}" 
+                                           onchange="updateQuantity(${item.productId}, parseInt(this.value))" min="1">
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            onclick="updateQuantity(${item.productId}, ${item.quantity + 1})">+</button>
+                                </div>
+                                <strong>${itemTotal.toLocaleString()} đ</strong>
+                                <button class="btn btn-sm btn-link text-danger p-0 ms-2" 
+                                        onclick="removeFromCart(${item.productId})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                cartContainer.innerHTML = html;
+            }
+            
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity * (100 - item.discountPercent) / 100;
+            });
+            
+            const discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
+            const finalAmount = subtotal - discountAmount;
+            
+            document.getElementById('subtotal').textContent = subtotal.toLocaleString() + ' đ';
+            document.getElementById('finalAmount').textContent = finalAmount.toLocaleString() + ' đ';
+        }
+
+        function searchCustomer() {
+            const phone = document.getElementById('customerPhone').value;
+            if (!phone) {
+                alert('Vui lòng nhập số điện thoại');
+                return;
+            }
+
+            fetch('/Staff/SearchCustomer?phone=' + phone)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('customerId').value = data.customer.customerId;
+                        document.getElementById('customerName').value = data.customer.fullName;
+                        document.getElementById('customerEmail').value = data.customer.email || '';
+                        alert('Đã tìm thấy khách hàng!');
+                    } else {
+                        document.getElementById('customerId').value = '';
+                        alert('Không tìm thấy khách hàng. Vui lòng nhập thông tin mới.');
+                    }
+                })
+                .catch(error => {
+                    alert('Có lỗi xảy ra: ' + error);
+                });
+        }
+
+        function createOrder() {
+            if (cart.length === 0) {
+                alert('Giỏ hàng trống!');
+                return;
+            }
+
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+            
+            if (!customerName || !customerPhone) {
+                alert('Vui lòng nhập thông tin khách hàng!');
+                return;
+            }
+
+            const orderData = {
+                customerName: customerName,
+                customerPhone: customerPhone,
+                customerEmail: document.getElementById('customerEmail').value,
+                customerId: document.getElementById('customerId').value || null,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                discountAmount: parseFloat(document.getElementById('discountAmount').value) || 0,
+                items: cart.map(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    price: item.price,
+                    discountPercent: item.discountPercent
+                }))
+            };
+
+            fetch('/Staff/CreateDirectSaleOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Tạo đơn hàng thành công! Mã đơn: ' + data.orderCode);
+                    cart = [];
+                    renderCart();
+                    document.getElementById('customerName').value = '';
+                    document.getElementById('customerPhone').value = '';
+                    document.getElementById('customerEmail').value = '';
+                    document.getElementById('customerId').value = '';
+                    document.getElementById('discountAmount').value = 0;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                alert('Có lỗi xảy ra: ' + error);
+            });
+        }
+
+        // Search and filter
+        document.getElementById('searchProduct').addEventListener('input', function(e) {
+            const search = e.target.value;
+            const category = document.getElementById('categoryFilter').value;
+            window.location.href = '/Staff/DirectSale?search=' + search + '&category=' + category;
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', function(e) {
+            const search = document.getElementById('searchProduct').value;
+            const category = e.target.value;
+            window.location.href = '/Staff/DirectSale?search=' + search + '&category=' + category;
+        });
+    </script>
+}
+
+<style>
+    .product-card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-2px);
+        transition: all 0.2s;
+    }
+</style>

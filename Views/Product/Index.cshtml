@@ -1,0 +1,314 @@
+@model Exe_Demo.Models.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "Sản Phẩm";
+}
+
+<style>
+    /* Chỉ dùng 3 màu: #4F6A4C (xanh), Trắng, Đen */
+    
+    .sidebar-box h3 {
+        color: #4f6a4c;
+        border-bottom: 2px solid #4f6a4c;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .categories li a {
+        color: #000;
+    }
+    
+    .categories li a.active,
+    .categories li a:hover {
+        background: #4f6a4c;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    
+    .search-form .btn-primary {
+        background: #4f6a4c;
+        border-color: #4f6a4c;
+        color: white;
+    }
+    
+    .search-form .btn-primary:hover {
+        background: #3d5239;
+        border-color: #3d5239;
+    }
+    
+    .product {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .product .img-prod {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        padding-top: 50%; /* Tỷ lệ 2:1 - chiều ngang rất rộng */
+    }
+    
+    .product .img-prod img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .product:hover {
+        border-color: #4f6a4c;
+        box-shadow: 0 5px 20px rgba(79, 106, 76, 0.2);
+        transform: translateY(-5px);
+    }
+    
+    .product .text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .product .bottom-area {
+        margin-top: auto;
+    }
+    
+    /* Responsive spacing */
+    @@media (max-width: 767px) {
+        .col-sm-6 {
+            margin-bottom: 20px;
+        }
+    }
+    
+    .product .status {
+        background: #4f6a4c !important;
+        color: white !important;
+    }
+    
+    .product h3 a {
+        color: #000;
+        transition: color 0.3s;
+    }
+    
+    .product h3 a:hover {
+        color: #4f6a4c;
+    }
+    
+    .rating i.fa-star {
+        color: #4f6a4c;
+    }
+    
+    .add-to-cart {
+        background: #4f6a4c;
+        color: white !important;
+        border: none;
+    }
+    
+    .add-to-cart:hover {
+        background: #3d5239;
+    }
+    
+    .buy-now {
+        background: #4f6a4c;
+        color: white !important;
+        border: none;
+    }
+    
+    .buy-now:hover {
+        background: #3d5239;
+    }
+    
+    .badge-danger {
+        background: #4f6a4c !important;
+        color: white !important;
+    }
+    
+    .form-control {
+        border-color: #ddd;
+        color: #000;
+    }
+    
+    .form-control:focus {
+        border-color: #4f6a4c;
+        box-shadow: 0 0 0 0.2rem rgba(79, 106, 76, 0.25);
+    }
+    
+    select.form-control {
+        border-color: #4f6a4c;
+        color: #000;
+    }
+    
+    .price-sale {
+        color: #4f6a4c !important;
+    }
+    
+    .price-dc {
+        color: #999 !important;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Sản Phẩm Hoa Quả Sấy", "Trang chủ", Url.Action("Index", "Home"), "", "")); }
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 sidebar">
+                <!-- Categories -->
+                <div class="sidebar-box ftco-animate">
+                    <h3>Danh Mục</h3>
+                    <ul class="categories">
+                        <li><a href="@Url.Action("Index")" class="@(Model.CurrentCategory == null ? "active" : "")">Tất cả <span>(@Model.TotalCount)</span></a></li>
+                        @if (Model.Categories != null)
+                        {
+                            foreach (var cat in Model.Categories)
+                            {
+                                <li><a href="@Url.Action("Index", new { categoryId = cat.CategoryId })" class="@(Model.CurrentCategory == cat.CategoryId ? "active" : "")">@cat.CategoryName</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+
+                <!-- Search -->
+                <div class="sidebar-box ftco-animate">
+                    <h3>Tìm Kiếm</h3>
+                    <form asp-action="Index" method="get" class="search-form">
+                        <div class="form-group">
+                            <input type="text" name="search" class="form-control" placeholder="Tìm sản phẩm..." value="@Model.CurrentSearch">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Products -->
+            <div class="col-lg-9">
+                <!-- Filter & Sort -->
+                <div class="row mb-4">
+                    <div class="col-md-12 d-flex justify-content-between align-items-center">
+                        <p class="text-muted">Hiển thị @Model.Products.Count() sản phẩm</p>
+                        <div class="form-group mb-0">
+                            <select class="form-control" id="sortSelect" onchange="location = this.value;">
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch })">Sắp xếp mặc định</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "price_asc" })" selected="@(Model.CurrentSort == "price_asc" ? "selected" : null)">Giá: Thấp đến Cao</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "price_desc" })" selected="@(Model.CurrentSort == "price_desc" ? "selected" : null)">Giá: Cao đến Thấp</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "name" })" selected="@(Model.CurrentSort == "name" ? "selected" : null)">Tên A-Z</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "newest" })" selected="@(Model.CurrentSort == "newest" ? "selected" : null)">Mới nhất</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                @if (Model.Products.Any())
+                {
+                    <div class="row">
+                        @foreach (var product in Model.Products)
+                        {
+                            <div class="col-sm-6 col-md-4 col-lg-4 mb-4 ftco-animate">
+                                <div class="product">
+                                    <a href="@Url.Action("Details", new { id = product.ProductId })" class="img-prod">
+                                        <img class="img-fluid" src="/images/prod-6.jpg" alt="@product.ProductName">
+                                        @if (product.IsNew == true)
+                                        {
+                                            <span class="status">Mới</span>
+                                        }
+                                        @if (product.DiscountPercent > 0)
+                                        {
+                                            <div class="overlay"></div>
+                                        }
+                                    </a>
+                                    <div class="text py-3 px-3">
+                                        <div class="d-flex">
+                                            <div class="cat">
+                                                <span>@product.Category.CategoryName</span>
+                                            </div>
+                                            @if (product.Rating > 0)
+                                            {
+                                                <div class="rating">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <i class="fa fa-star@(i <= product.Rating ? "" : "-o")"></i>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                        <h3><a href="@Url.Action("Details", new { id = product.ProductId })">@product.ProductName</a></h3>
+                                        <p class="mb-3" style="color: #000; font-size: 14px;">
+                                            <i class="fa fa-cube"></i> @product.Weight
+                                        </p>
+                                        <div class="pricing">
+                                            @if (product.OriginalPrice > product.Price)
+                                            {
+                                                <p class="price mb-1">
+                                                    <span class="price-dc" style="text-decoration: line-through; color: #999; font-size: 14px;">@product.OriginalPrice.Value.ToString("N0") đ</span>
+                                                </p>
+                                                <p class="price mb-2">
+                                                    <span class="price-sale" style="color: #4f6a4c; font-size: 20px; font-weight: 700;">@product.Price.ToString("N0") đ</span>
+                                                    <span class="badge badge-danger ml-2">-@(((product.OriginalPrice - product.Price) / product.OriginalPrice * 100).Value.ToString("0"))%</span>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p class="price mb-2">
+                                                    <span class="price-sale" style="color: #4f6a4c; font-size: 20px; font-weight: 700;">@product.Price.ToString("N0") đ</span>
+                                                </p>
+                                            }
+                                        </div>
+                                        <p class="bottom-area d-flex px-3">
+                                            <a href="@Url.Action("Details", new { id = product.ProductId })" class="add-to-cart text-center py-2 mr-1"><span>Xem chi tiết <i class="fa fa-eye"></i></span></a>
+                                            <a href="#" class="buy-now text-center py-2 btn-add-to-cart" 
+                                               data-product-id="@product.ProductId"
+                                               data-product-name="@product.ProductName"
+                                               data-product-price="@product.Price"
+                                               data-product-stock="@product.StockQuantity"
+                                               data-product-image="/images/prod-6.jpg">Mua ngay<span><i class="fa fa-shopping-cart"></i></span></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i> Không tìm thấy sản phẩm nào.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Include Add to Cart Modal -->
+@await Html.PartialAsync("_AddToCartModal")
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            // Xử lý nút "Mua ngay" - Show modal
+            $('.btn-add-to-cart').click(function(e){
+                e.preventDefault();
+                var productId = $(this).data('product-id');
+                var productName = $(this).data('product-name');
+                var productPrice = $(this).data('product-price');
+                var productStock = $(this).data('product-stock');
+                var productImage = $(this).data('product-image');
+                
+                showAddToCartModal(productId, productName, productPrice, productStock, productImage);
+            });
+            
+            // Load số lượng giỏ hàng khi trang load
+            updateCartCount();
+        });
+    </script>
+}

@@ -1,0 +1,383 @@
+[
+  {
+    "id": "dau_say_deo",
+    "fruit_name": "Dâu Tây Sấy Dẻo Mộc Châu - Mộc Vị",
+    "category": "Sấy dẻo",
+    "description": "🍓 SIÊU PHẨM DÂU TÂY MỘC CHÂU - NGỌT THANH TỰ NHIÊN! Bạn có biết? Dâu tây Mộc Châu được mệnh danh là 'Nữ hoàng hoa quả cao nguyên'! Mỗi trái dâu được chọn lọc kỹ càng từ vườn dâu Mộc Châu 1200m so với mặt nước biển, nơi có khí hậu mát mẻ quanh năm. Sấy dẻo ở nhiệt độ thấp 50-60°C, giữ trọn 95% vitamin C - gấp 3 lần cam! Màu đỏ tươi rực rỡ 100% tự nhiên, không một giọt màu nhân tạo. Mềm dẻo dai dai, tan chậm trong miệng với vị ngọt thanh chua nhẹ đặc trưng. Giá chỉ 90.000đ/200g hoặc 25.000đ/50g mini (mua từ 4 gói). Snack lành mạnh số 1 cho phụ nữ yêu làm đẹp!",
+    "selling_points": [
+      "🏔️ Nguồn gốc cao nguyên Mộc Châu 1200m - Vùng trồng dâu nổi tiếng nhất Việt Nam",
+      "💎 Chọn lọc 100% trái chín tự nhiên - Không dùng chất tăng trưởng",
+      "🌡️ Công nghệ sấy nhiệt độ thấp - Giữ 95% vitamin C và dưỡng chất",
+      "🎨 Màu đỏ tươi tự nhiên - Không màu nhân tạo, không chất bảo quản",
+      "❤️ Vitamin C gấp 3 lần cam - Làm đẹp da, tăng miễn dịch cực mạnh",
+      "🎁 Bao bì xanh cao cấp - Giấy phân hủy sinh học, sang trọng làm quà"
+    ],
+    "nutrients": {
+      "vitamin_C": "Siêu cao (180mg/100g) - Gấp 3 lần cam, đáp ứng 200% nhu cầu hàng ngày",
+      "anthocyanin": "Chất chống oxy hóa mạnh từ màu đỏ tự nhiên - Bảo vệ tim mạch",
+      "folate": "Vitamin B9 cao - Tốt cho phụ nữ mang thai và não bộ",
+      "mangan": "Khoáng chất quý - Hỗ trợ xương khớp và chuyển hóa năng lượng",
+      "chất_xơ": "3.5g/100g - Giúp no lâu, hỗ trợ giảm cân hiệu quả"
+    },
+    "health_benefits": [
+      "💪 TĂNG CƯỜNG MIỄN DỊCH VƯỢT TRỘI - Vitamin C siêu cao giúp cơ thể chống lại virus, cảm cúm",
+      "✨ LÀM ĐẸP DA TỪ BÊN TRONG - Chống oxy hóa mạnh, giảm nám, sạm, da sáng mịn tự nhiên",
+      "❤️ BẢO VỆ TIM MẠCH - Anthocyanin giảm cholesterol xấu, ngăn ngừa đột quỵ",
+      "🎯 HỖ TRỢ GIẢM CÂN THÔNG MINH - Ít calo (250 kcal/100g), nhiều chất xơ, no lâu",
+      "🧠 TĂNG CƯỜNG TRÍ NHỚ - Folate tốt cho não bộ, giảm stress công sở"
+    ],
+    "target_customers": "👩 Phụ nữ 20-40 tuổi yêu làm đẹp | 💼 Dân văn phòng cần snack healthy | 🏋️ Người ăn kiêng, gymer | 🎁 Mua quà tặng bạn bè, người thân",
+    "usage_ideas": [
+      "🍵 Ăn vặt trực tiếp - Thay thế kẹo, bánh không lành mạnh",
+      "🥤 Pha trà dâu detox - Ngâm với nước ấm, thêm mật ong",
+      "🍨 Topping yogurt/kem - Trang trí đẹp mắt, tăng dinh dưỡng",
+      "🎂 Làm bánh, trang trí món ăn - Màu đỏ tự nhiên bắt mắt",
+      "🍲 Nấu chè dâu - Món tráng miệng healthy"
+    ],
+    "price": {
+      "200g": "90.000đ - Dùng 1 tuần (ăn mỗi ngày)",
+      "50g_mini": "25.000đ/gói (mua tối thiểu 4 gói) - Thích hợp thử nghiệm hoặc mix nhiều loại"
+    },
+    "season": "Tháng 11 - Tháng 4 (cao điểm), Quanh năm (nhà kính)",
+    "storage": "Bảo quản nơi khô ráo, thoáng mát. Sau khi mở để hộp kín, tủ lạnh ngăn mát. Dùng trong 7-10 ngày để giữ độ tươi ngon.",
+    "customer_reviews": [
+      "⭐⭐⭐⭐⭐ 'Dâu ngon quá! Mềm dẻo, ngọt tự nhiên, không hóa chất. Con gái mình rất thích!' - Chị Hương, Hà Nội",
+      "⭐⭐⭐⭐⭐ 'Ăn mỗi ngày da mình sáng hẳn lên, mụn cũng giảm. Sẽ mua thêm!' - Bạn Linh, 28 tuổi",
+      "⭐⭐⭐⭐⭐ 'Bao bì đẹp, làm quà tặng rất sang. Giá hợp lý so với chất lượng!' - Anh Tuấn, TPHCM"
+    ]
+  },
+  {
+    "id": "dau_say_thang_hoa",
+    "fruit_name": "Dâu Tây Sấy Thăng Hoa Mộc Châu - Mộc Vị PREMIUM",
+    "category": "Sấy thăng hoa (Freeze-dried)",
+    "description": "🌟 ĐỈNH CAO CÔNG NGHỆ - DÂU SẤY THĂNG HOA CAO CẤP! Bạn đã bao giờ thử dâu tây 'tan như tuyết' trong miệng chưa? Đây là sản phẩm CAO CẤP NHẤT của Mộc Vị! Sử dụng công nghệ Freeze-Dried (sấy đông khô) hiện đại từ Nhật Bản, sấy ở nhiệt độ âm sâu -40°C, giữ trọn 98% dinh dưỡng và màu sắc tự nhiên. Kết cấu giòn xốp kỳ diệu, tan ngay khi chạm lưỡi, hương vị đậm đà gấp 10 lần dâu tươi! Màu đỏ rực rỡ như vừa mới hái. Không đường, không dầu mỡ, không chất bảo quản. Giá 140.000đ/100g hoặc 75.000đ/50g mini. Sản phẩm dành cho người sành ăn, yêu chất lượng!",
+    "selling_points": [
+      "🔬 Công nghệ Freeze-Dried Nhật Bản - Giữ 98% dinh dưỡng, đắt nhất thị trường",
+      "❄️ Sấy ở -40°C - Giữ nguyên cấu trúc tế bào, màu sắc tự nhiên 100%",
+      "🎭 Giòn xốp tan như tuyết - Trải nghiệm hoàn toàn mới, không giống bất kỳ loại sấy nào",
+      "🍓 Hương vị đậm đà gấp 10 lần - Cô đặc tinh túy dâu tây Mộc Châu",
+      "💎 Sản phẩm cao cấp nhất - Xứng đáng làm quà tặng VIP",
+      "📸 Đẹp mắt cực kỳ - Màu đỏ rực, chụp ảnh 'ảo diệu'"
+    ],
+    "nutrients": {
+      "vitamin_C": "Siêu cô đặc (300mg/100g) - Gấp 5 lần dâu tươi, gấp 5 lần cam",
+      "anthocyanin": "Cô đặc gấp 8 lần - Chống oxy hóa mạnh nhất",
+      "folate": "Cao gấp 6 lần - Tốt cho thai nhi và não bộ",
+      "kali": "Điều hòa huyết áp hiệu quả",
+      "chất_xơ": "Giữ nguyên 100% - Hỗ trợ tiêu hóa"
+    },
+    "health_benefits": [
+      "🛡️ TĂNG MIỄN DỊCH SIÊU MẠNH - Vitamin C gấp 5 lần cam, phòng chống cảm cúm tối đa",
+      "👑 CHỐNG LÃO HÓA ĐỈNH CAO - Anthocyanin cô đặc gấp 8 lần, da căng mịn, trẻ lâu",
+      "💖 BẢO VỆ TIM MẠCH TỐI ƯU - Giảm nguy cơ đột quỵ, nhồi máu cơ tim",
+      "🏃 HỖ TRỢ GIẢM CÂN HIỆU QUẢ - Chỉ 280 kcal/100g, không đường, không dầu",
+      "🧘 GIẢM STRESS, TĂNG TẬP TRUNG - Tốt cho dân văn phòng, học sinh"
+    ],
+    "target_customers": "💼 Người thành đạt, yêu chất lượng | 🏋️ Gymer, vận động viên | 🎁 Quà tặng cao cấp dịp lễ, Tết | 👨‍💼 Doanh nhân, CEO",
+    "usage_ideas": [
+      "🥂 Ăn vặt cao cấp - Thay thế snack nhập khẩu đắt tiền",
+      "🍹 Pha trà detox sang trọng - Ngâm với nước ấm, thêm chanh mật ong",
+      "🥗 Topping smoothie bowl - Instagram-worthy, healthy lifestyle",
+      "🎂 Trang trí bánh kem cao cấp - Màu đỏ rực, giòn xốp độc đáo",
+      "🎁 Quà tặng VIP - Bao bì sang trọng, ý nghĩa sức khỏe"
+    ],
+    "price": {
+      "100g": "140.000đ - Sản phẩm cao cấp nhất",
+      "50g_mini": "75.000đ/gói (mua tối thiểu 4 gói)"
+    },
+    "season": "Quanh năm (sản phẩm chế biến)",
+    "storage": "Bảo quản nơi khô ráo, tránh ánh sáng. Sau khi mở dùng ngay hoặc hộp kín. Hạn sử dụng 12 tháng.",
+    "customer_reviews": [
+      "⭐⭐⭐⭐⭐ 'Wow! Giòn xốp tan trong miệng, chưa ăn loại nào ngon thế này!' - Chị Mai, CEO",
+      "⭐⭐⭐⭐⭐ 'Mua làm quà tặng khách VIP, ai cũng khen đẹp và ngon!' - Anh Khoa, Doanh nhân",
+      "⭐⭐⭐⭐⭐ 'Đắt nhưng xứng đáng! Chất lượng cao cấp, ăn là nghiện!' - Bạn Trang, 32 tuổi"
+    ]
+  },
+  {
+    "id": "man_say_deo",
+    "fruit_name": "Mận Mộc Châu Sấy Dẻo - Mộc Vị",
+    "category": "Sấy dẻo",
+    "description": "🍑 MẬN HẬU MỘC CHÂU - VỊ CHUA NGỌT ĐỈNH CAO! Bạn nhớ vị mận hậu Mộc Châu thuở nhỏ chứ? Giờ đây, Mộc Vị đã 'đóng gói' cả ký ức ấy vào từng miếng mận sấy dẻo! Mận hậu thu hoạch tháng 4-6, chọn trái chín vừa tới, màu tím đen tự nhiên. Sấy dẻo giữ nguyên vị chua thanh kích thích vị giác, ngọt mát hậu vị. Mềm dẻo dai dai, thơm mùi mận chín. Giàu vitamin C và chất xơ, tốt cho tiêu hóa. Giá chỉ 65.000đ/200g hoặc 18.000đ/50g mini. Snack giải khát, giải ngán số 1!",
+    "selling_points": [
+      "🏔️ Mận hậu Mộc Châu chính gốc - Đặc sản nổi tiếng từ xưa",
+      "⚖️ Vị chua ngọt cân bằng hoàn hảo - Kích thích vị giác, ăn hoài không ngán",
+      "🎨 Màu tím đen tự nhiên - Từ anthocyanin, chống oxy hóa mạnh",
+      "💰 Giá cả phải chăng - Chỉ 65.000đ/200g, phù hợp mọi gia đình",
+      "🍵 Giải khát tuyệt vời - Ăn vặt hoặc ngâm trà đều ngon",
+      "👨‍👩‍👧‍👦 Cả nhà đều thích - Từ trẻ em đến người lớn tuổi"
+    ],
+    "nutrients": {
+      "vitamin_C": "Rất cao (85mg/100g) - Tăng cường miễn dịch mạnh mẽ",
+      "vitamin_A": "Tốt cho mắt, da sáng khỏe",
+      "anthocyanin": "Chất chống oxy hóa từ màu tím tự nhiên",
+      "kali": "Điều hòa huyết áp, tốt cho tim",
+      "chất_xơ": "4.2g/100g - Cao nhất trong các loại sấy, hỗ trợ tiêu hóa cực tốt"
+    },
+    "health_benefits": [
+      "💪 TĂNG CƯỜNG MIỄN DỊCH - Vitamin C cao, phòng chống cảm cúm",
+      "🚽 HỖ TRỢ TIÊU HÓA MẠNH MẼ - Chất xơ cao, chống táo bón hiệu quả",
+      "✨ LÀM ĐẸP DA TỰ NHIÊN - Chống oxy hóa, giảm mụn, da sáng",
+      "⚖️ HỖ TRỢ GIẢM CÂN - Ít calo (220 kcal/100g), no lâu",
+      "❤️ TỐT CHO TIM MẠCH - Giảm cholesterol, ổn định huyết áp"
+    ],
+    "target_customers": "👨‍👩‍👧‍👦 Mọi lứa tuổi | 🍵 Người thích vị chua ngọt | 💼 Dân văn phòng giải khát | 🎁 Quà tặng bình dân",
+    "usage_ideas": [
+      "🍬 Ăn vặt trực tiếp - Giải khát, giải ngán tuyệt vời",
+      "🍵 Ngâm trà mận - Thêm đường phèn, uống mát lạnh",
+      "🍲 Nấu chè mận - Món tráng miệng truyền thống",
+      "🍰 Làm mứt, nhân bánh - Vị chua ngọt độc đáo",
+      "🍷 Ngâm rượu mận - Món quà sức khỏe"
+    ],
+    "price": {
+      "200g": "65.000đ - Giá rẻ nhất, phù hợp mọi nhà",
+      "50g_mini": "18.000đ/gói (mua tối thiểu 4 gói)"
+    },
+    "season": "Tháng 4 - Tháng 6 (chính vụ)",
+    "storage": "Bảo quản nơi khô ráo. Sau khi mở để hộp kín, tủ lạnh. Dùng trong 7-10 ngày.",
+    "customer_reviews": [
+      "⭐⭐⭐⭐⭐ 'Mận ngon y như hồi nhỏ! Chua ngọt vừa miệng, cả nhà đều thích!' - Chị Lan, Hải Phòng",
+      "⭐⭐⭐⭐⭐ 'Giá rẻ mà chất lượng tốt. Mua về ăn dần, tiêu hóa tốt hẳn!' - Anh Nam, 45 tuổi",
+      "⭐⭐⭐⭐⭐ 'Ngâm trà mận uống mát lạnh, ngon tuyệt! Sẽ ủng hộ dài dài!' - Bạn Hà, Đà Nẵng"
+    ]
+  },
+  {
+    "id": "xoai_say_deo",
+    "fruit_name": "Xoài Sấy Dẻo Mộc Châu - Mộc Vị",
+    "category": "Sấy dẻo",
+    "description": "🥭 XOÀI MỘC CHÂU - NGỌT NGÀO NHIỆT ĐỚI! Xoài Mộc Châu có vị ngọt đậm đà, thơm nức mùi xoài chín. Sấy dẻo giữ nguyên màu vàng tự nhiên, mềm dai, không khô cứng. Giàu vitamin A, C và chất xơ. Giá 70.000đ/200g hoặc 20.000đ/50g mini (mua tối thiểu 4 gói). Snack nhiệt đới yêu thích!",
+    "selling_points": [
+      "🥭 Xoài Mộc Châu chín tự nhiên - Ngọt thanh, thơm nức",
+      "🌞 Màu vàng tự nhiên - Không tẩm đường, không chất bảo quản",
+      "💛 Vitamin A cao - Tốt cho mắt, da đẹp",
+      "🎯 Giá hợp lý - Chỉ 70.000đ/200g",
+      "👶 An toàn cho trẻ em - Không phụ gia"
+    ],
+    "nutrients": {
+      "vitamin_A": "Rất cao - Tốt cho mắt, da",
+      "vitamin_C": "Cao - Tăng miễn dịch",
+      "chất_xơ": "Hỗ trợ tiêu hóa",
+      "beta_carotene": "Chống oxy hóa mạnh"
+    },
+    "health_benefits": [
+      "👁️ TỐT CHO MẮT - Vitamin A cao, bảo vệ thị lực",
+      "✨ LÀM ĐẸP DA - Beta-carotene giúp da sáng khỏe",
+      "💪 TĂNG MIỄN DỊCH - Vitamin C phòng bệnh",
+      "🚽 HỖ TRỢ TIÊU HÓA - Chất xơ cao"
+    ],
+    "target_customers": "👶 Trẻ em | 👨‍👩‍👧‍👦 Gia đình | 🎁 Quà tặng",
+    "usage_ideas": [
+      "🍬 Ăn vặt trực tiếp",
+      "🥤 Pha sinh tố xoài",
+      "🍨 Topping yogurt",
+      "🎂 Làm bánh, trang trí"
+    ],
+    "price": {
+      "200g": "70.000đ",
+      "50g_mini": "20.000đ/gói (mua tối thiểu 4 gói) - Mix nhiều vị"
+    },
+    "season": "Tháng 5 - Tháng 7",
+    "storage": "Bảo quản nơi khô ráo, tủ lạnh sau khi mở."
+  },
+  {
+    "id": "dao_say_deo",
+    "fruit_name": "Đào Sấy Dẻo Mộc Châu - Mộc Vị",
+    "category": "Sấy dẻo",
+    "description": "🍑 ĐÀO MỘC CHÂU - NGỌT THANH MÁT LÀNH! Đào Mộc Châu có vị ngọt nhẹ, thơm mát. Sấy dẻo giữ màu hồng cam tự nhiên, mềm mại. Giàu vitamin C, kali. Giá 68.000đ/200g hoặc 18.000đ/50g mini (mua tối thiểu 4 gói).",
+    "selling_points": [
+      "🍑 Đào Mộc Châu ngọt thanh",
+      "🌸 Màu hồng cam tự nhiên",
+      "💖 Vitamin C cao",
+      "💰 Giá tốt - 68.000đ/200g"
+    ],
+    "nutrients": {
+      "vitamin_C": "Cao - Tăng miễn dịch",
+      "kali": "Tốt cho tim mạch",
+      "chất_xơ": "Hỗ trợ tiêu hóa"
+    },
+    "health_benefits": [
+      "💪 TĂNG MIỄN DỊCH",
+      "❤️ TỐT CHO TIM MẠCH",
+      "✨ LÀM ĐẸP DA"
+    ],
+    "target_customers": "👨‍👩‍👧‍👦 Mọi lứa tuổi",
+    "usage_ideas": [
+      "🍬 Ăn vặt",
+      "🍵 Pha trà đào",
+      "🍨 Topping"
+    ],
+    "price": {
+      "200g": "68.000đ",
+      "50g_mini": "18.000đ/gói (mua tối thiểu 4 gói) - Mix nhiều vị"
+    },
+    "season": "Tháng 6 - Tháng 8",
+    "storage": "Bảo quản khô ráo, tủ lạnh sau khi mở."
+  },
+  {
+    "id": "hong_say_deo",
+    "fruit_name": "Hồng Giòn Sấy Dẻo Mộc Châu - Mộc Vị",
+    "category": "Sấy dẻo",
+    "description": "🧡 HỒNG GIÒN MỘC CHÂU - NGỌT BÉO ĐẬM ĐÀ! Hồng giòn Mộc Châu sấy dẻo giữ vị ngọt béo đặc trưng, màu cam đỏ tự nhiên. Giàu vitamin A, C. Giá 75.000đ/200g hoặc 28.000đ/50g mini (mua tối thiểu 4 gói).",
+    "selling_points": [
+      "🧡 Hồng giòn Mộc Châu chính gốc",
+      "🍊 Vị ngọt béo đậm đà",
+      "🎨 Màu cam đỏ tự nhiên",
+      "💎 Cao cấp hơn"
+    ],
+    "nutrients": {
+      "vitamin_A": "Rất cao",
+      "vitamin_C": "Cao",
+      "chất_xơ": "Tốt cho tiêu hóa"
+    },
+    "health_benefits": [
+      "👁️ TỐT CHO MẮT",
+      "✨ LÀM ĐẸP DA",
+      "💪 TĂNG MIỄN DỊCH"
+    ],
+    "target_customers": "💼 Người thành đạt | 🎁 Quà tặng",
+    "usage_ideas": [
+      "🍬 Ăn vặt cao cấp",
+      "🍵 Pha trà hồng",
+      "🎂 Trang trí bánh"
+    ],
+    "price": {
+      "200g": "75.000đ",
+      "50g_mini": "28.000đ/gói (mua tối thiểu 4 gói) - Mix nhiều vị"
+    },
+    "season": "Tháng 7 - Tháng 9",
+    "storage": "Bảo quản khô ráo, tủ lạnh sau khi mở."
+  },
+  {
+    "id": "mit_say_gion",
+    "fruit_name": "Mít Sấy Giòn Mộc Châu - Mộc Vị",
+    "category": "Sấy giòn",
+    "description": "🍈 MÍT SẤY GIÒN - GIÒN TAN, NGỌT THƠM! Mít Mộc Châu sấy giòn tan, thơm nức mùi mít chín. Giòn rụm từng miếng, không ngấy. Giá 80.000đ/200g hoặc 22.000đ/50g mini (mua tối thiểu 4 gói).",
+    "selling_points": [
+      "🍈 Mít Mộc Châu thơm ngọt",
+      "💥 Giòn tan, không ngấy",
+      "🌟 Công nghệ sấy chân không",
+      "🎯 Snack giòn số 1"
+    ],
+    "nutrients": {
+      "vitamin_C": "Cao",
+      "chất_xơ": "Rất cao",
+      "kali": "Tốt cho tim"
+    },
+    "health_benefits": [
+      "💪 TĂNG NĂNG LƯỢNG",
+      "🚽 HỖ TRỢ TIÊU HÓA",
+      "❤️ TỐT CHO TIM MẠCH"
+    ],
+    "target_customers": "👨‍👩‍👧‍👦 Mọi lứa tuổi | 🍺 Snack nhậu",
+    "usage_ideas": [
+      "🍬 Ăn vặt giòn tan",
+      "🍺 Snack nhậu",
+      "🎂 Topping"
+    ],
+    "price": {
+      "200g": "80.000đ",
+      "50g_mini": "22.000đ/gói (mua tối thiểu 4 gói) - Mix nhiều vị"
+    },
+    "season": "Tháng 7 - Tháng 8",
+    "storage": "Bảo quản khô ráo, KHÔNG để tủ lạnh (mất độ giòn)."
+  },
+  {
+    "id": "chuoi_say_gion",
+    "fruit_name": "Chuối Sấy Giòn Mộc Châu - Mộc Vị",
+    "category": "Sấy giòn",
+    "description": "🍌 CHUỐI SẤY GIÒN - GIÒN NGỌT TỰ NHIÊN! Chuối Mộc Châu sấy giòn, ngọt thanh tự nhiên. Giòn rụm, thơm mùi chuối chín. Giá 75.000đ/200g hoặc 22.000đ/50g mini (mua tối thiểu 4 gói).",
+    "selling_points": [
+      "🍌 Chuối Mộc Châu ngọt thanh",
+      "💥 Giòn rụm tự nhiên",
+      "🌟 Không dầu mỡ",
+      "💰 Giá tốt"
+    ],
+    "nutrients": {
+      "kali": "Rất cao - Tốt cho tim",
+      "vitamin_B6": "Cao - Tăng năng lượng",
+      "chất_xơ": "Hỗ trợ tiêu hóa"
+    },
+    "health_benefits": [
+      "⚡ TĂNG NĂNG LƯỢNG",
+      "❤️ TỐT CHO TIM MẠCH",
+      "🏋️ TỐT CHO VẬN ĐỘNG VIÊN"
+    ],
+    "target_customers": "🏋️ Gymer | 👨‍👩‍👧‍👦 Gia đình | 👶 Trẻ em",
+    "usage_ideas": [
+      "🍬 Ăn vặt giòn ngọt",
+      "🥤 Pha smoothie",
+      "🥣 Ăn với sữa chua"
+    ],
+    "price": {
+      "200g": "75.000đ",
+      "50g_mini": "22.000đ/gói (mua tối thiểu 4 gói) - Mix nhiều vị"
+    },
+    "season": "Quanh năm",
+    "storage": "Bảo quản khô ráo, KHÔNG để tủ lạnh."
+  },
+  {
+    "id": "sua_chua_say_thang_hoa",
+    "fruit_name": "Sữa Chua Sấy Thăng Hoa - Mộc Vị PREMIUM",
+    "category": "Sấy thăng hoa (Freeze-dried)",
+    "description": "🥛 SỮA CHUA SẤY THĂNG HOA - TAN NHƯ TUYẾT! Sữa chua sấy thăng hoa giòn xốp, tan ngay trong miệng. Vị chua ngọt thanh mát. Công nghệ Freeze-Dried cao cấp. Giá 120.000đ/100g hoặc 50.000đ/50g mini (mua tối thiểu 4 gói).",
+    "selling_points": [
+      "🥛 Sữa chua cao cấp",
+      "❄️ Công nghệ Freeze-Dried",
+      "💎 Giòn xốp tan như tuyết",
+      "🌟 Độc đáo, mới lạ"
+    ],
+    "nutrients": {
+      "protein": "Cao - Tốt cho cơ bắp",
+      "canxi": "Rất cao - Tốt cho xương",
+      "probiotic": "Men vi sinh tốt"
+    },
+    "health_benefits": [
+      "🦴 TỐT CHO XƯƠNG",
+      "💪 TĂNG CƠ BẮP",
+      "🚽 HỖ TRỢ TIÊU HÓA"
+    ],
+    "target_customers": "👶 Trẻ em | 🏋️ Gymer | 💼 Người bận rộn",
+    "usage_ideas": [
+      "🍬 Ăn vặt cao cấp",
+      "🥣 Ăn với ngũ cốc",
+      "🍨 Topping"
+    ],
+    "price": {
+      "100g": "120.000đ",
+      "50g_mini": "50.000đ/gói (mua tối thiểu 4 gói) - Mix nhiều vị"
+    },
+    "season": "Quanh năm",
+    "storage": "Bảo quản khô ráo, tránh ẩm. Dùng ngay sau khi mở."
+  },
+  {
+    "id": "mini_pack_info",
+    "fruit_name": "Gói Mini 50g - Mix Nhiều Vị (Mua Tối Thiểu 4 Gói)",
+    "category": "Combo Mini Pack",
+    "description": "🎁 GÓI MINI 50G - MIX NHIỀU VỊ ĐỂ TRẢI NGHIỆM! Bạn muốn thử nhiều vị khác nhau? Gói mini 50g là lựa chọn hoàn hảo! MUA TỐI THIỂU 4 GÓI để mix tự do các vị yêu thích. Giá ưu đãi khi mua combo!",
+    "selling_points": [
+      "🎯 MUA TỐI THIỂU 4 GÓI - Không bán lẻ",
+      "🎨 MIX TỰ DO các vị yêu thích",
+      "💰 GIÁ ƯU ĐÃI khi mua combo",
+      "🎁 THÍCH HỢP làm quà, thử nghiệm",
+      "📦 BAO BÌ nhỏ gọn, tiện lợi"
+    ],
+    "price": {
+      "Sấy dẻo - Mận": "18.000đ/gói 50g",
+      "Sấy dẻo - Xoài": "20.000đ/gói 50g",
+      "Sấy dẻo - Đào": "18.000đ/gói 50g",
+      "Sấy dẻo - Dâu": "25.000đ/gói 50g",
+      "Sấy dẻo - Hồng": "28.000đ/gói 50g",
+      "Sấy giòn - Mít": "22.000đ/gói 50g",
+      "Sấy giòn - Chuối": "22.000đ/gói 50g",
+      "Sấy thăng hoa - Dâu": "75.000đ/gói 50g",
+      "Sấy thăng hoa - Sữa chua": "50.000đ/gói 50g"
+    },
+    "usage_ideas": [
+      "🎁 Làm quà tặng mix nhiều vị",
+      "🍬 Thử nghiệm trước khi mua gói lớn",
+      "📦 Mang đi du lịch, picnic",
+      "🎉 Chia sẻ với bạn bè"
+    ],
+    "season": "Quanh năm",
+    "notes": "⚠️ LƯU Ý: Gói mini 50g chỉ bán theo combo tối thiểu 4 gói, không bán lẻ. Bạn có thể mix tự do các vị khác nhau!"
+  }
+]

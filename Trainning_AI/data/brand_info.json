@@ -1,0 +1,55 @@
+{
+  "brand_name": "Mộc Vị",
+  "tagline": "Hương vị Mộc Châu - Nguyên bản từ thiên nhiên",
+  "description": "Mộc Vị là thương hiệu hoa quả sấy cao cấp từ Mộc Châu, Sơn La. 'Mộc' gợi đến sự mộc mạc, tự nhiên, nguyên bản, gắn với hình ảnh núi rừng Tây Bắc. 'Vị' là hương vị, trải nghiệm khi thưởng thức. Mộc Vị = Hương vị Mộc Châu, nhấn mạnh sự nguyên bản, chân thật từ thiên nhiên.",
+  
+  "founding_story": "Ở Mộc Châu, mỗi mùa quả chín mang trong mình nắng, gió và đất lành, nhưng hương vị ấy thường khó giữ trọn vẹn. Mộc Vị ra đời để níu lại khoảnh khắc ấy – giữ nguyên màu sắc, hương thơm và bản sắc của cao nguyên trong từng lát hoa quả sấy. Không chỉ là món ăn, Mộc Vị còn là câu chuyện về bàn tay người nông dân, về sự nâng niu trong chế biến và khát vọng đưa nông sản Việt vươn xa.",
+  
+  "core_values": [
+    {
+      "title": "Giữ trọn tự nhiên",
+      "description": "Hương vị ngon nhất đến từ sự nguyên bản. Từng lát hoa quả sấy đều được làm ra từ trái chín Mộc Châu, giữ nguyên màu sắc, hương vị và dưỡng chất mà thiên nhiên ban tặng."
+    },
+    {
+      "title": "Tôn vinh bản sắc",
+      "description": "Mỗi sản phẩm không chỉ là món ăn, mà còn là câu chuyện về núi rừng, về con người Tây Bắc cần mẫn. Chúng tôi muốn để mỗi miếng hoa quả sấy đều mang hơi thở vùng cao, gợi nhớ đến bản sắc Việt Nam."
+    },
+    {
+      "title": "Cam kết chất lượng",
+      "description": "Từ khâu chọn nguyên liệu đến quy trình chế biến, chúng tôi đặt sự minh bạch và an toàn lên hàng đầu. Chất lượng bền vững chính là cách chúng tôi xây dựng niềm tin lâu dài với khách hàng."
+    },
+    {
+      "title": "Sáng tạo để lan tỏa",
+      "description": "Chúng tôi kết hợp công nghệ sấy hiện đại với tinh hoa truyền thống, để đặc sản vùng miền không chỉ được bảo tồn mà còn có cơ hội đến gần hơn với người tiêu dùng khắp cả nước."
+    }
+  ],
+  
+  "mission": "Lan tỏa bản sắc Mộc Châu – vùng đất của những mùa quả ngọt. Mỗi sản phẩm hoa quả sấy không chỉ giữ trọn vẹn hương vị nguyên sơ và dinh dưỡng thiên nhiên, mà còn là nhịp cầu kết nối con người Việt với tình yêu quê hương, tự hào về bản sắc Tây Bắc.",
+  
+  "vision": "Trở thành thương hiệu tiên phong về hoa quả sấy vùng miền, biểu tượng cho sự kết hợp giữa truyền thống và công nghệ hiện đại. Từ dâu sấy Mộc Châu – sản phẩm khác biệt đầu tiên – chúng tôi không ngừng mở rộng sản phẩm, gìn giữ hương vị nguyên sơ núi rừng và lan tỏa trái ngọt Mộc Châu. Xa hơn, chúng tôi khát vọng trở thành 'đại sứ nông sản Việt', góp phần nâng tầm giá trị nông sản và ẩm thực Việt trên thị trường quốc tế.",
+  
+  "unique_selling_points": [
+    "Tiên phong độc quyền – Thương hiệu đầu tiên đưa dâu tây Mộc Châu sấy ra thị trường, tạo sự khác biệt hoàn toàn",
+    "Nguồn gốc chuẩn vùng miền – Dâu tây được chọn lọc trực tiếp tại cao nguyên Mộc Châu, giữ trọn hương vị nguyên bản",
+    "Bao bì xanh bền vững – Sử dụng giấy phân hủy sinh học và mực in thực vật, vừa sang trọng vừa bảo vệ môi trường",
+    "Công nghệ sấy thăng hoa – Giữ 98% dinh dưỡng, màu sắc tự nhiên, không chất bảo quản",
+    "Sáng tạo & mới mẻ – Liên tục đổi mới với nhiều phiên bản: dâu sấy giòn, dâu phủ socola, combo mix"
+  ],
+  
+  "contact": {
+    "hotline": "0123456789",
+    "email": "contact@mocvi.vn",
+    "website": "www.mocvi.vn",
+    "shopee": "shopee.vn/mocvi",
+    "tiktok_shop": "@mocvi.official",
+    "facebook": "facebook.com/mocvi",
+    "address": "Mộc Châu, Sơn La, Việt Nam"
+  },
+  
+  "certifications": [
+    "Chứng nhận VSATTP (Vệ sinh An toàn Thực phẩm)",
+    "Sản phẩm OCOP 3 sao",
+    "Không chất bảo quản, không màu nhân tạo",
+    "Nguồn gốc xuất xứ rõ ràng từ Mộc Châu"
+  ]
+}

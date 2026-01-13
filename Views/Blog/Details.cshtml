@@ -1,0 +1,131 @@
+@model Exe_Demo.Models.Blog
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<style>
+    .blog-detail {
+        padding: 50px 0;
+        background: #f8f9fa;
+    }
+    
+    .blog-header {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .blog-title {
+        color: #4f6a4c;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    
+    .blog-meta {
+        color: #999;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .blog-image-main {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .blog-content-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .blog-content-box h2,
+    .blog-content-box h3,
+    .blog-content-box h4 {
+        color: #4f6a4c;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    
+    .blog-content-box p {
+        line-height: 1.8;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .blog-content-box ul,
+    .blog-content-box ol {
+        margin-bottom: 20px;
+        padding-left: 30px;
+    }
+    
+    .blog-content-box li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+    
+    .back-button {
+        background: #4f6a4c;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 30px;
+    }
+    
+    .back-button:hover {
+        background: #3d5239;
+        color: white;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", (Model.Title, "Trang chủ", Url.Action("Index", "Home"), "Blog", Url.Action("Index", "Blog"))); }
+
+<section class="blog-detail">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Blog Header -->
+                <div class="blog-header">
+                    <h1 class="blog-title">@Model.Title</h1>
+                    <div class="blog-meta">
+                        <i class="fa fa-user"></i> <strong>@Model.AuthorName</strong> &nbsp;&nbsp;
+                        <i class="fa fa-calendar"></i> @Model.PublishedDate?.ToString("dd/MM/yyyy HH:mm") &nbsp;&nbsp;
+                        <i class="fa fa-eye"></i> @Model.ViewCount lượt xem
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                    {
+                        <p style="font-size: 18px; font-style: italic; color: #666;">
+                            @Model.ShortDescription
+                        </p>
+                    }
+                </div>
+
+                <!-- Blog Image -->
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Title" class="blog-image-main">
+                }
+
+                <!-- Blog Content -->
+                <div class="blog-content-box">
+                    @Html.Raw(Model.Content)
+                </div>
+
+                <!-- Back Button -->
+                <div class="text-center">
+                    <a href="@Url.Action("Index", "Blog")" class="back-button">
+                        <i class="fa fa-arrow-left"></i> Quay lại danh sách blog
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

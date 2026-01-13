@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Chat with History</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Test AI Chat với Conversation History</h1>
+    <div id="output"></div>
+    
+    <script>
+        async function testChat() {
+            const output = document.getElementById('output');
+            
+            // Test 1: Hỏi về dâu tây
+            output.innerHTML += '<h3>Test 1: Hỏi về dâu tây</h3>';
+            const response1 = await fetch('http://localhost:8000/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    question: "Dâu tây Mộc Châu có những lợi ích gì?",
+                    top_k: 3,
+                    conversation_history: []
+                })
+            });
+            const data1 = await response1.json();
+            output.innerHTML += `<p><strong>Q:</strong> Dâu tây Mộc Châu có những lợi ích gì?</p>`;
+            output.innerHTML += `<p><strong>A:</strong> ${data1.answer}</p>`;
+            
+            // Test 2: Hỏi thêm thông tin (với history)
+            output.innerHTML += '<h3>Test 2: Hỏi thêm thông tin (với history)</h3>';
+            const response2 = await fetch('http://localhost:8000/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    question: "Tôi muốn thông tin chi tiết",
+                    top_k: 3,
+                    conversation_history: [
+                        {role: 'user', content: 'Dâu tây Mộc Châu có những lợi ích gì?'},
+                        {role: 'assistant', content: data1.answer}
+                    ]
+                })
+            });
+            const data2 = await response2.json();
+            output.innerHTML += `<p><strong>Q:</strong> Tôi muốn thông tin chi tiết</p>`;
+            output.innerHTML += `<p><strong>A:</strong> ${data2.answer}</p>`;
+            
+            output.innerHTML += '<p style="color: green;"><strong>✅ Test hoàn tất! Kiểm tra console AI server để xem debug log.</strong></p>';
+        }
+        
+        testChat();
+    </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+@{
+    ViewData["Title"] = "Đặt Hàng";
+    var customer = ViewBag.Customer as Exe_Demo.Models.Customer;
+    var cartItems = ViewBag.CartItems as List<Exe_Demo.Models.Cart>;
+    var total = ViewBag.Total as decimal?;
+}
+
+<style>
+    .billing-heading {
+        color: #4f6a4c;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+    
+    .form-control:focus {
+        border-color: #4f6a4c;
+        box-shadow: 0 0 0 0.2rem rgba(79, 106, 76, 0.25);
+    }
+    
+    .cart-total {
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px solid #4f6a4c;
+    }
+    
+    .btn-primary {
+        background: #4f6a4c;
+        border-color: #4f6a4c;
+    }
+    
+    .btn-primary:hover {
+        background: #3d5239;
+        border-color: #3d5239;
+    }
+</style>
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Đặt Hàng", "Trang chủ", Url.Action("Index", "Home"), "Giỏ hàng", Url.Action("Index", "Cart"))); }
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 ftco-animate">
+                <form asp-action="PlaceOrder" asp-controller="Cart" method="post" id="checkoutForm">
+                    <h3 class="billing-heading">Thông Tin Giao Hàng</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" name="FullName" class="form-control" value="@customer.FullName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Số điện thoại <span class="text-danger">*</span></label>
+                                <input type="tel" name="Phone" class="form-control" value="@customer.PhoneNumber" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="Email" class="form-control" value="@customer.Email">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Địa chỉ giao hàng <span class="text-danger">*</span></label>
+                                <textarea name="Address" class="form-control" rows="3" required>@customer.Address</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Ghi chú đơn hàng (tùy chọn)</label>
+                                <textarea name="Note" class="form-control" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="cart-total p-4">
+                                <h3 class="billing-heading">Đơn Hàng Của Bạn</h3>
+                                <hr>
+                                @foreach (var item in cartItems)
+                                {
+                                    <p class="d-flex justify-content-between">
+                                        <span>@item.Product.ProductName x @item.Quantity</span>
+                                        <span>@((item.Quantity * item.Product.Price).ToString("N0")) đ</span>
+                                    </p>
+                                }
+                                <hr>
+                                <p class="d-flex justify-content-between">
+                                    <span>Tạm tính</span>
+                                    <span>@total.Value.ToString("N0") đ</span>
+                                </p>
+                                <p class="d-flex justify-content-between">
+                                    <span>Phí vận chuyển</span>
+                                    <span>Miễn phí</span>
+                                </p>
+                                
+                                <!-- Voucher Section -->
+                                <div class="mt-3 mb-3">
+                                    <label><i class="fa fa-ticket"></i> <strong>Mã giảm giá</strong></label>
+                                    <div class="input-group">
+                                        <input type="text" name="VoucherCode" id="voucherCode" class="form-control" placeholder="Nhập mã giảm giá">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="applyVoucher()">
+                                                <i class="fa fa-check"></i> Áp dụng
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Nhập mã voucher để được giảm giá</small>
+                                    <div id="voucherMessage" class="mt-2"></div>
+                                </div>
+                                
+                                <p class="d-flex justify-content-between text-success" id="discountRow" style="display: none !important;">
+                                    <span><i class="fa fa-tag"></i> Giảm giá</span>
+                                    <span id="discountAmount">- 0 đ</span>
+                                </p>
+                                
+                                <!-- Loyalty Points Section -->
+                                <div class="mt-3 mb-3 p-3" style="background: #fff3cd; border-radius: 5px; border: 1px solid #ffc107;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fa fa-star text-warning"></i> <strong>Điểm tích lũy</strong>
+                                            <p class="mb-0 small text-muted">Bạn có: <strong class="text-warning">@(customer?.LoyaltyPoints ?? 0) điểm</strong></p>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="usePoints" name="UsePoints">
+                                            <label class="custom-control-label" for="usePoints">Sử dụng điểm</label>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">100 điểm = 10.000đ giảm giá</small>
+                                </div>
+                                
+                                <p class="d-flex justify-content-between text-info" id="pointsDiscountRow" style="display: none !important;">
+                                    <span><i class="fa fa-star"></i> Giảm từ điểm</span>
+                                    <span id="pointsDiscountAmount">- 0 đ</span>
+                                </p>
+                                
+                                <hr>
+                                <p class="d-flex justify-content-between" style="font-size: 20px; font-weight: 700; color: #4f6a4c;">
+                                    <span>Tổng cộng</span>
+                                    <span id="finalTotal">@total.Value.ToString("N0") đ</span>
+                                </p>
+                                <input type="hidden" name="FinalAmount" id="finalAmountInput" value="@total.Value">
+                                <input type="hidden" name="VoucherCode" id="voucherCodeInput" value="">
+                                <input type="hidden" name="DiscountAmount" id="discountAmountInput" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="cart-total p-4">
+                                <h3 class="billing-heading">Phương Thức Thanh Toán</h3>
+                                <hr>
+                                <div class="form-group">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="cod" name="PaymentMethod" value="COD" class="custom-control-input" checked>
+                                        <label class="custom-control-label" for="cod">
+                                            <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                            <p class="text-muted small mb-0">Thanh toán bằng tiền mặt khi nhận hàng</p>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="bank" name="PaymentMethod" value="Bank" class="custom-control-input">
+                                        <label class="custom-control-label" for="bank">
+                                            <strong>Chuyển khoản ngân hàng</strong>
+                                            <p class="text-muted small mb-0">Chuyển khoản trực tiếp vào tài khoản ngân hàng</p>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="terms" required>
+                                        <label class="custom-control-label" for="terms">
+                                            Tôi đã đọc và đồng ý với <a href="#" style="color: #4f6a4c;">điều khoản và điều kiện</a> <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-block py-3 mt-3">
+                                    <i class="fa fa-check-circle"></i> Đặt Hàng
+                                </button>
+                                
+                                <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-secondary btn-block py-3 mt-2">
+                                    <i class="fa fa-arrow-left"></i> Quay Lại Giỏ Hàng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let originalTotal = @total.Value;
+        let voucherDiscount = 0;
+        let pointsDiscount = 0;
+        
+        $(document).ready(function(){
+            // Log form data before submit
+            $('form').on('submit', function(e) {
+                console.log('Form submitting with:');
+                console.log('VoucherCode:', $('#voucherCodeInput').val());
+                console.log('DiscountAmount:', $('#discountAmountInput').val());
+                console.log('FinalAmount:', $('#finalAmountInput').val());
+            });
+            $('#checkoutForm').submit(function(e){
+                if(!$('#terms').is(':checked')) {
+                    e.preventDefault();
+                    alert('Vui lòng đồng ý với điều khoản và điều kiện!');
+                    return false;
+                }
+            });
+            
+            // Handle points checkbox
+            $('#usePoints').change(function(){
+                if($(this).is(':checked')) {
+                    let customerPoints = @(customer?.LoyaltyPoints ?? 0);
+                    pointsDiscount = Math.floor(customerPoints / 100) * 10000;
+                    $('#pointsDiscountRow').show();
+                    $('#pointsDiscountAmount').text('- ' + pointsDiscount.toLocaleString() + ' đ');
+                } else {
+                    pointsDiscount = 0;
+                    $('#pointsDiscountRow').hide();
+                }
+                updateTotal();
+            });
+        });
+        
+        function applyVoucher() {
+            let voucherCode = $('#voucherCode').val().trim();
+            if(!voucherCode) {
+                $('#voucherMessage').html('<small class="text-danger">Vui lòng nhập mã voucher</small>');
+                return;
+            }
+            
+            // Call API to apply voucher
+            $.ajax({
+                url: '@Url.Action("ApplyVoucher", "Cart")',
+                method: 'POST',
+                data: { voucherCode: voucherCode },
+                success: function(response) {
+                    if(response.success) {
+                        voucherDiscount = response.discountAmount;
+                        $('#discountRow').show();
+                        $('#discountAmount').text('- ' + voucherDiscount.toLocaleString() + ' đ');
+                        $('#voucherMessage').html('<small class="text-success"><i class="fa fa-check"></i> ' + response.message + '</small>');
+                        
+                        // Lưu voucher code và discount amount vào hidden inputs
+                        $('#voucherCodeInput').val(response.voucherCode);
+                        $('#discountAmountInput').val(voucherDiscount);
+                        
+                        updateTotal();
+                    } else {
+                        $('#voucherMessage').html('<small class="text-danger"><i class="fa fa-times"></i> ' + response.message + '</small>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Voucher error:', error);
+                    $('#voucherMessage').html('<small class="text-danger">Lỗi khi áp dụng voucher. Vui lòng thử lại.</small>');
+                }
+            });
+        }
+        
+        function updateTotal() {
+            let finalTotal = originalTotal - voucherDiscount - pointsDiscount;
+            if(finalTotal < 0) finalTotal = 0;
+            
+            $('#finalTotal').text(finalTotal.toLocaleString() + ' đ');
+            $('#finalAmountInput').val(finalTotal);
+        }
+    </script>
+}

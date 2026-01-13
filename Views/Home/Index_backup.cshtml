@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Mộc Vị Store</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,700;0,800;1,200;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="css/animate.css">
+    
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+
+  	<div class="wrap">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 d-flex align-items-center">
+						<p class="mb-0 phone pl-md-2">
+							<a href="#" class="mr-2"><span class="fa fa-phone mr-1"></span> +00 1234 567</a> 
+							<a href="#"><span class="fa fa-paper-plane mr-1"></span> youremail@email.com</a>
+						</p>
+					</div>
+					<div class="col-md-6 d-flex justify-content-md-end">
+						<div class="social-media mr-4">
+			    		<p class="mb-0 d-flex">
+			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-facebook"><i class="sr-only">Facebook</i></span></a>
+			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-twitter"><i class="sr-only">Twitter</i></span></a>
+			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-instagram"><i class="sr-only">Instagram</i></span></a>
+			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span></a>
+			    		</p>
+		        </div>
+		        <div class="reg">
+		        	<p class="mb-0">
+						@if (User.Identity?.IsAuthenticated == true)
+						{
+							<span class="mr-2">Xin chào, @User.Identity.Name</span>
+							<form asp-action="Logout" asp-controller="Auth" method="post" style="display:inline;">
+								<button type="submit" class="btn btn-link p-0" style="color: inherit; text-decoration: none;">Đăng Xuất</button>
+							</form>
+						}
+						else
+						{
+							<a href="@Url.Action("Register", "Auth")" class="mr-2">Đăng Kí</a> 
+							<a href="@Url.Action("Login", "Auth")">Đăng Nhập</a>
+						}
+					</p>
+		        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+    
+	  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+	      <a class="navbar-brand" href="index.html">
+			<img src="/images/logo_1_1.png" alt="Mộc Vị Logo" class="navbar-logo">
+		</a>
+	      <div class="order-lg-last btn-group">
+          <a href="#" class="btn-cart dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          	<span class="flaticon-shopping-bag"></span>
+          	<div class="d-flex justify-content-center align-items-center"><small>3</small></div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+				    <div class="dropdown-item d-flex align-items-start" href="#">
+				    	<div class="img" style="background-image: url(/images/prod-1.jpg);"></div>
+				    	<div class="text pl-3">
+				    		<h4>Bacardi 151</h4>
+				    		<p class="mb-0"><a href="#" class="price">$25.99</a><span class="quantity ml-3">Quantity: 01</span></p>
+				    	</div>
+				    </div>
+				    <div class="dropdown-item d-flex align-items-start" href="#">
+				    	<div class="img" style="background-image: url(/images/prod-2.jpg);"></div>
+				    	<div class="text pl-3">
+				    		<h4>Jim Beam Kentucky Straight</h4>
+				    		<p class="mb-0"><a href="#" class="price">$30.89</a><span class="quantity ml-3">Quantity: 02</span></p>
+				    	</div>
+				    </div>
+				    <div class="dropdown-item d-flex align-items-start" href="#">
+				    	<div class="img" style="background-image: url(/images/prod-3.jpg);"></div>
+				    	<div class="text pl-3">
+				    		<h4>Citadelle</h4>
+				    		<p class="mb-0"><a href="#" class="price">$22.50</a><span class="quantity ml-3">Quantity: 01</span></p>
+				    	</div>
+				    </div>
+				    <a class="dropdown-item text-center btn-link d-block w-100" href="cart.html">
+				    	View All
+				    	<span class="ion-ios-arrow-round-forward"></span>
+				    </a>
+				  </div>
+        </div>
+
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span> Menu
+	      </button>
+
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav ml-auto">
+	          <li class="nav-item active"><a href="index.html" class="nav-link">Trang chủ</a></li>
+	          <li class="nav-item"><a href="about.html" class="nav-link">Chúng tôi</a></li>
+	          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="product.html" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sản phẩm</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown04">
+              	<a class="dropdown-item" href="product.html">Sản phẩm</a>
+                <a class="dropdown-item" href="product-single.html">Single Product</a>
+                <a class="dropdown-item" href="cart.html">Cart</a>
+                <a class="dropdown-item" href="checkout.html">Checkout</a>
+              </div>
+            </li>
+	          <li class="nav-item"><a href="blog.html" class="nav-link">Thông tin</a></li>
+	          <li class="nav-item"><a href="contact.html" class="nav-link">Liên Lạc</a></li>
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+    
+    <div class="hero-wrap" style="background-image: url('/images/bg_2.jpg');" data-stellar-background-ratio="0.5">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-8 ftco-animate d-flex align-items-end">
+          	<div class="text w-100 text-center hero-text">
+  <h1 class="mb-4">Chất mộc, <span>vị nguyên vẹn</span>.</h1>
+  <p>
+    <a href="#" class="btn btn-primary py-2 px-4">Mua ngay</a>
+    <a href="#" class="btn btn-white btn-outline-white py-2 px-4">Xem thêm</a>
+  </p>
+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="ftco-intro">
+    	<div class="container">
+    		<div class="row no-gutters">
+    			<div class="col-md-4 d-flex">
+    				<div class="intro d-lg-flex w-100 ftco-animate">
+    					<div class="icon">
+    						<span class="flaticon-support"></span>
+    					</div>
+    					<div class="text">
+    						<h2>Hỗ trợ nhiệt tình 24/7</h2>
+    						<p>Luôn sẵn sàng lắng nghe và giải đáp mọi thắc mắc để bạn yên tâm lựa chọn đặc sản hoa quả sấy Mộc Châu bất cứ lúc nào.</p>
+    					</div>
+    				</div>
+    			</div>
+    			<div class="col-md-4 d-flex">
+    				<div class="intro color-1 d-lg-flex w-100 ftco-animate">
+    					<div class="icon">
+    						<span class="flaticon-cashback"></span>
+    					</div>
+    					<div class="text">
+    						<h2>CAM KẾT HOÀN TIỀN</h2>
+    						<p>Nếu sản phẩm không đúng cam kết, chúng tôi sẵn sàng hoàn tiền 100%. Mỗi gói hoa quả sấy đều được tuyển chọn kỹ lưỡng, đảm bảo an toàn và thơm ngon tự nhiên.</p>
+    					</div>
+    				</div>
+    			</div>
+    			<div class="col-md-4 d-flex">
+    				<div class="intro color-2 d-lg-flex w-100 ftco-animate">
+    					<div class="icon">
+    						<span class="flaticon-free-delivery"></span>
+    					</div>
+    					<div class="text">
+    						<h2>GIAO HÀNG MIỄN PHÍ &amp; ĐỔI TRẢ DỄ DÀNG</h2>
+    						<p>Miễn phí vận chuyển toàn quốc, hỗ trợ đổi trả linh hoạt để bạn luôn hài lòng với hương vị tinh túy từ Mộc Châu.</p>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    </section>
+
+    <section class="ftco-section ftco-no-pb">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 d-flex justify-content-center align-items-center">
+						<video class="w-100 h-100" autoplay muted loop>
+							<source src="videos/about1.mp4" type="video/mp4">
+							Your browser does not support the video tag.
+						</video>
+					</div>
+					<div class="col-md-6 wrap-about pl-md-5 ftco-animate py-5">
+	          <div class="heading-section">
+				<span class="subheading">Mộc Vị – Hoa Quả Sấy Mộc Châu</span>
+				<h2 class="mb-4">Hương Vị Nguyên Bản Từ Núi Rừng</h2>
+
+				<p>Hoa trái Mộc Châu mang trong mình vị ngọt của đất trời, nhưng niềm vui ấy thường trôi qua nhanh, bởi trái tươi khó giữ trọn vẹn để đến được với người xa.</p>
+				<p>Mộc Vị ra đời để níu giữ khoảnh khắc ấy – lưu lại sắc hồng nguyên bản của quả, hương thơm tinh khiết từ núi rừng, và bản sắc ngàn đời của cao nguyên.</p>
+				<p>Với công nghệ sấy hiện đại, từng lát hoa quả được giữ nguyên hương vị tự nhiên, vừa giòn ngọt vừa bổ dưỡng. Với Mộc Vị, chúng tôi mang đến không chỉ sản phẩm hoa quả sấy, mà còn là một lối sống xanh – trọn vẹn, thuần khiết và bền vững.</p>
+
+				<p class="year">
+					<strong class="number">New</strong>
+					<span>Khởi đầu hành trình cùng khách hàng</span>
+				</p>
+			</div>
+
+
+					</div>
+				</div>
+			</div>
+	</section>
+
+		<section class="ftco-section ftco-no-pb">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-3 col-md-4 ">
+						<div class="sort w-100 text-center ftco-animate">
+							<div class="img" style="background-image: url(/images/prod-1.jpg);"></div>
+							<h3>Sản phẩm sấy dẻo</h3>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-4 ">
+						<div class="sort w-100 text-center ftco-animate">
+							<div class="img" style="background-image: url(/images/prod-2.jpg);"></div>
+							<h3>Sản phẩm sấy giòn</h3>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-4 ">
+						<div class="sort w-100 text-center ftco-animate">
+							<div class="img" style="background-image: url(/images/prod-3.jpg);"></div>
+							<h3>Sản phẩm sấy thăng hoa</h3>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-4 ">
+						<div class="sort w-100 text-center ftco-animate">
+							<div class="img" style="background-image: url(/images/prod-4.jpg);"></div>
+							<h3>Sản phẩm dịp lễ, Tết</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="ftco-section">
+			<div class="container">
+				<div class="row justify-content-center pb-5">
+          <div class="col-md-7 heading-section text-center ftco-animate">
+          	<span class="subheading">Tinh Hoa Từ Mộc Châu</span>
+            <h2>Trao Trọn Vị Ngọt Tự Nhiên</h2>
+          </div>
+        </div>
+				<div class="row">
+					<div class="col-md-3 d-flex">
+						<div class="product ftco-animate">
+							<div class="img d-flex align-items-center justify-content-center" style="background-image: url(/images/prod-5.jpg);">
+								<div class="desc">
+									<p class="meta-prod d-flex">
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-shopping-bag"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-heart"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-visibility"></span></a>
+									</p>
+								</div>
+							</div>
+							<div class="text text-center">
+								<span class="sale">Giảm giá</span>
+								<span class="category">Sản phẩm sấy dẻo</span>
+								<h2>Mận sấy dẻo</h2>
+								<span class="weight">Trọng lượng: 200g</span>
+								<p class="mb-0"><span class="price price-sale">70.000VND</span> <span class="price">65.000 VND</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3 d-flex">
+						<div class="product ftco-animate">
+							<div class="img d-flex align-items-center justify-content-center" style="background-image: url(/images/prod-2.jpg);">
+								<div class="desc">
+									<p class="meta-prod d-flex">
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-shopping-bag"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-heart"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-visibility"></span></a>
+									</p>
+								</div>
+							</div>
+							<div class="text text-center">
+								<span class="seller">Bán chạy</span>
+								<span class="category">Sản phẩm sấy thăng hoa</span>
+								<h2>Dâu sấy thăng hoa</h2>
+								<span class="weight">Trọng lượng: 50g</span><br>
+								<span class="price">75.000 VND</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3 d-flex">
+						<div class="product ftco-animate">
+							<div class="img d-flex align-items-center justify-content-center" style="background-image: url(/images/prod-6.jpg);">
+								<div class="desc">
+									<p class="meta-prod d-flex">
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-shopping-bag"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-heart"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-visibility"></span></a>
+									</p>
+								</div>
+							</div>
+							<div class="text text-center">
+								<span class="new">Sản phẩm mới</span>
+								<span class="category">Sản phẩm sấy dẻo</span>
+								<h2>Đào sấy dẻo</h2>
+								<span class="weight">Trọng lượng: 200g</span><br>
+								<span class="price">65.000 VND</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3 d-flex">
+						<div class="product ftco-animate">
+							<div class="img d-flex align-items-center justify-content-center" style="background-image: url(/images/prod-7.jpg);">
+								<div class="desc">
+									<p class="meta-prod d-flex">
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-shopping-bag"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-heart"></span></a>
+										<a href="#" class="d-flex align-items-center justify-content-center"><span class="flaticon-visibility"></span></a>
+									</p>
+								</div>
+							</div>
+							<div class="text text-center">
+								<span class="category">Sản phẩm sấy dẻo</span>
+								<h2>Hồng sấy dẻo</h2>
+								<span class="weight">Trọng lượng: 200g</span><br>
+								<span class="price">95.000 VND</span>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-md-4">
+						<a href="product.html" class="btn btn-primary d-block">View All Products <span class="fa fa-long-arrow-right"></span></a>
+					</div>
+				</div>
+			</div>
+		</section>
+  
+    <section class="ftco-section testimony-section">
+    <video autoplay muted loop class="video-bg">
+        <source src="videos/about2.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-7 text-center heading-section heading-section-white ftco-animate">
+                <span class="subheading">Cảm nhận khách hàng</span>
+                <h2 class="mb-3">Niềm Tin & Sự Hài Lòng</h2>
+            </div>
+        </div>
+        <div class="row ftco-animate">
+			<div class="col-md-12">
+				<div class="carousel-testimony owl-carousel ftco-owl">
+					<div class="item">
+						<div class="testimony-wrap py-4">
+							<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-quote-left"></span></div>
+							<div class="text">
+								<p class="mb-4">Hoa quả sấy Mộc Châu thật sự ngon và tự nhiên. Mình rất yên tâm khi mua cho gia đình sử dụng.</p>
+								<div class="d-flex align-items-center">
+									<div class="user-img" style="background-image: url(/images/person_1.jpg)"></div>
+									<div class="pl-3">
+										<p class="name">Nguyễn Thị Lan</p>
+										<span class="position">Khách hàng Hà Nội</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<div class="testimony-wrap py-4">
+							<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-quote-left"></span></div>
+							<div class="text">
+								<p class="mb-4">Sản phẩm sấy giòn mà vẫn giữ được vị ngọt tự nhiên của trái cây, rất đáng để thử!</p>
+								<div class="d-flex align-items-center">
+									<div class="user-img" style="background-image: url(/images/person_2.jpg)"></div>
+									<div class="pl-3">
+										<p class="name">Trần Văn Minh</p>
+										<span class="position">Doanh nhân TP.HCM</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<div class="testimony-wrap py-4">
+							<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-quote-left"></span></div>
+							<div class="text">
+								<p class="mb-4">Mình rất thích hoa quả sấy của Mộc Châu vì vừa tiện lợi, vừa tốt cho sức khỏe.</p>
+								<div class="d-flex align-items-center">
+									<div class="user-img" style="background-image: url(/images/person_3.jpg)"></div>
+									<div class="pl-3">
+										<p class="name">Lê Thu Hằng</p>
+										<span class="position">Giáo viên - Hải Phòng</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<div class="testimony-wrap py-4">
+							<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-quote-left"></span></div>
+							<div class="text">
+								<p class="mb-4">Lần đầu mua thử nhưng mình thật sự ấn tượng, chắc chắn sẽ ủng hộ dài lâu.</p>
+								<div class="d-flex align-items-center">
+									<div class="user-img" style="background-image: url(/images/person_1.jpg)"></div>
+									<div class="pl-3">
+										<p class="name">Phạm Quang Huy</p>
+										<span class="position">Nhân viên văn phòng</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<div class="testimony-wrap py-4">
+							<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-quote-left"></span></div>
+							<div class="text">
+								<p class="mb-4">Hoa quả sấy thơm ngon, đóng gói đẹp mắt, phù hợp làm quà biếu cho người thân.</p>
+								<div class="d-flex align-items-center">
+									<div class="user-img" style="background-image: url(/images/person_2.jpg)"></div>
+									<div class="pl-3">
+										<p class="name">Vũ Thị Mai</p>
+										<span class="position">Khách hàng Đà Nẵng</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        </div>
+    </div>
+	<style>
+		.video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+	</style>
+    </section>
+
+
+		
+    <section class="ftco-section">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-7 heading-section text-center ftco-animate">
+          	<span class="subheading">Blog</span>
+            <h2>Câu Chuyện & Bí Quyết</h2>
+          </div>
+        </div>
+        <div class="row d-flex">
+			<div class="col-lg-6 d-flex align-items-stretch ftco-animate">
+				<div class="blog-entry d-flex">
+				<a href="blog-single.html" class="block-20 img" style="background-image: url('images/image_1.jpg');">
+				</a>
+				<div class="text p-4 bg-light">
+					<div class="meta">
+					<p><span class="fa fa-calendar"></span> 12 Tháng 9, 2025</p>
+					</div>
+					<h3 class="heading mb-3"><a href="#">Bí quyết sấy giữ trọn vị ngọt tự nhiên</a></h3>
+					<p>Khám phá công nghệ sấy hiện đại giúp hoa quả Mộc Châu giòn ngọt, vẫn giữ nguyên màu sắc và dinh dưỡng tự nhiên.</p>
+					<a href="#" class="btn-custom">Đọc thêm <span class="fa fa-long-arrow-right"></span></a>
+				</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6 d-flex align-items-stretch ftco-animate">
+				<div class="blog-entry d-flex">
+				<a href="blog-single.html" class="block-20 img" style="background-image: url('images/image_2.jpg');">
+				</a>
+				<div class="text p-4 bg-light">
+					<div class="meta">
+					<p><span class="fa fa-calendar"></span> 18 Tháng 9, 2025</p>
+					</div>
+					<h3 class="heading mb-3"><a href="#">Từ nông trại Mộc Châu đến bàn ăn</a></h3>
+					<p>Câu chuyện hành trình của những trái cây tươi ngon được thu hoạch và chế biến thành sản phẩm hoa quả sấy chất lượng cao.</p>
+					<a href="#" class="btn-custom">Đọc thêm <span class="fa fa-long-arrow-right"></span></a>
+				</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6 d-flex align-items-stretch ftco-animate">
+				<div class="blog-entry d-flex">
+				<a href="blog-single.html" class="block-20 img" style="background-image: url('images/image_3.jpg');">
+				</a>
+				<div class="text p-4 bg-light">
+					<div class="meta">
+					<p><span class="fa fa-calendar"></span> 22 Tháng 9, 2025</p>
+					</div>
+					<h3 class="heading mb-3"><a href="#">Lợi ích sức khỏe từ hoa quả sấy</a></h3>
+					<p>Không chỉ tiện lợi và ngon miệng, hoa quả sấy Mộc Châu còn cung cấp nhiều vitamin, chất xơ tốt cho sức khỏe mỗi ngày.</p>
+					<a href="#" class="btn-custom">Đọc thêm <span class="fa fa-long-arrow-right"></span></a>
+				</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6 d-flex align-items-stretch ftco-animate">
+				<div class="blog-entry d-flex">
+				<a href="blog-single.html" class="block-20 img" style="background-image: url('images/image_4.jpg');">
+				</a>
+				<div class="text p-4 bg-light">
+					<div class="meta">
+					<p><span class="fa fa-calendar"></span> 25 Tháng 9, 2025</p>
+					</div>
+					<h3 class="heading mb-3"><a href="#">Gợi ý món ngon với hoa quả sấy</a></h3>
+					<p>Hoa quả sấy không chỉ ăn vặt mà còn có thể biến tấu thành các món salad, bánh ngọt và thức uống bổ dưỡng.</p>
+					<a href="#" class="btn-custom">Đọc thêm <span class="fa fa-long-arrow-right"></span></a>
+				</div>
+				</div>
+			</div>
+			</div>
+      </div>
+    </section>	
+
+    <footer class="ftco-footer">
+	<div class="container">
+		<div class="row mb-5">
+		<div class="col-sm-12 col-md">
+			<div class="ftco-footer-widget mb-4">
+			<h2 class="ftco-heading-2 logo">
+  				<a href="#">
+    				<img src="/images/logo_02.png" alt="Mộc Vị Logo" class="logo-img" style="width: 100%;">
+  				</a>
+			</h2>
+			<p>Hoa quả sấy Mộc Châu – giữ trọn hương vị tự nhiên, trao gửi sức khỏe và niềm vui đến mọi gia đình.</p>
+			<ul class="ftco-footer-social list-unstyled mt-2">
+				<li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+				<li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+				<li class="ftco-animate"><a href="#"><span class="fa fa-youtube"></span></a></li>
+			</ul>
+			</div>
+		</div>
+
+		<div class="col-sm-12 col-md">
+			<div class="ftco-footer-widget mb-4 ml-md-4">
+			<h2 class="ftco-heading-2">Tài Khoản Của Tôi</h2>
+			<ul class="list-unstyled">
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Tài khoản</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Đăng ký</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Đăng nhập</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Đơn hàng của tôi</a></li>
+			</ul>
+			</div>
+		</div>
+
+		<div class="col-sm-12 col-md">
+			<div class="ftco-footer-widget mb-4 ml-md-4">
+			<h2 class="ftco-heading-2">Thông Tin</h2>
+			<ul class="list-unstyled">
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Về chúng tôi</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Sản phẩm</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Liên hệ</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Điều khoản &amp; Chính sách</a></li>
+			</ul>
+			</div>
+		</div>
+
+		<div class="col-sm-12 col-md">
+			<div class="ftco-footer-widget mb-4">
+			<h2 class="ftco-heading-2">Liên Kết Nhanh</h2>
+			<ul class="list-unstyled">
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Người dùng mới</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Trung tâm trợ giúp</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Báo cáo sự cố</a></li>
+				<li><a href="#"><span class="fa fa-chevron-right mr-2"></span>Câu hỏi thường gặp</a></li>
+			</ul>
+			</div>
+		</div>
+
+		<div class="col-sm-12 col-md">
+			<div class="ftco-footer-widget mb-4">
+			<h2 class="ftco-heading-2">Bạn Cần Hỗ Trợ?</h2>
+			<div class="block-23 mb-3">
+				<ul>
+				<li><span class="icon fa fa-map-marker"></span><span class="text">Số 123, Mộc Châu, Sơn La, Việt Nam</span></li>
+				<li><a href="#"><span class="icon fa fa-phone"></span><span class="text">+84 912 345 678</span></a></li>
+				<li><a href="#"><span class="icon fa fa-paper-plane pr-4"></span><span class="text">support@mocvi.vn</span></a></li>
+				</ul>
+			</div>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<div class="container-fluid px-0 py-5 bg-black">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+			<p class="mb-0" style="color: rgba(255,255,255,.5);">
+				Bản quyền &copy;<script>document.write(new Date().getFullYear());</script> Mộc Vị. Mọi quyền được bảo lưu.
+			</p>
+			</div>
+		</div>
+		</div>
+	</div>
+	</footer>
+
+    
+  
+
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.easing.1.3.js"></script>
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/jquery.animateNumber.min.js"></script>
+  <script src="js/scrollax.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+  <script src="js/google-map.js"></script>
+  <script src="js/main.js"></script>
+    
+  </body>
+</html>

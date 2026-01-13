@@ -1,0 +1,450 @@
+@model Exe_Demo.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng Ký";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Đăng Ký - Mộc Vị Store</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4f6a4c 0%, #6b8f67 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            display: flex;
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .register-form-section {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .register-video-section {
+            flex: 1;
+            position: relative;
+            background: #4f6a4c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .register-video-section video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .register-video-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(79, 106, 76, 0.3);
+            z-index: 1;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo img {
+            max-width: 100px;
+        }
+
+        h2 {
+            color: #4f6a4c;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4f6a4c;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 15px 11px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4f6a4c;
+            box-shadow: 0 0 0 3px rgba(79, 106, 76, 0.1);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 13px;
+            background: #4f6a4c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 18px;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            background: #3d5239;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 106, 76, 0.3);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 18px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 11px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn-social:hover {
+            border-color: #4f6a4c;
+            background: #f8f9fa;
+        }
+
+        .btn-google {
+            color: #db4437;
+        }
+
+        .btn-facebook {
+            color: #4267B2;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #4f6a4c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .back-home a {
+            color: #999;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-home a:hover {
+            color: #4f6a4c;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .register-container {
+                flex-direction: column-reverse;
+            }
+
+            .register-video-section {
+                min-height: 180px;
+            }
+
+            .register-form-section {
+                padding: 35px 25px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Form Section - Left -->
+        <div class="register-form-section">
+            <div class="logo">
+                <img src="~/images/logo_1_1.png" alt="Mộc Vị Store">
+            </div>
+
+            <h2>ĐĂNG KÝ</h2>
+            <p class="subtitle">Tạo tài khoản để bắt đầu mua sắm tại Mộc Vị Store</p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span asp-validation-summary="All"></span>
+                </div>
+            }
+
+            <form asp-action="Register" asp-controller="Auth" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="FullName">Họ và tên</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên đầy đủ" />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber">Số điện thoại</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại" />
+                        </div>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email">Địa chỉ Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Password">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input asp-for="Password" class="form-control" placeholder="Tối thiểu 6 ký tự" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword">Xác nhận mật khẩu</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Address">Địa chỉ (Tùy chọn)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input asp-for="Address" class="form-control" placeholder="Địa chỉ của bạn" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="City">Thành phố (Tùy chọn)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-city"></i>
+                            <input asp-for="City" class="form-control" placeholder="Thành phố" />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    <i class="fas fa-user-plus"></i> Đăng Ký Ngay
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Hoặc đăng ký với</span>
+            </div>
+
+            <div class="social-login">
+                <a href="@Url.Action("ExternalLogin", "Auth", new { provider = "Google" })" class="btn-social btn-google">
+                    <i class="fab fa-google"></i> Google
+                </a>
+                <button class="btn-social btn-facebook" onclick="registerWithFacebook()">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </button>
+            </div>
+
+            <div class="login-link">
+                Đã có tài khoản? <a href="@Url.Action("Login", "Auth")">Đăng nhập ngay</a>
+            </div>
+
+            <div class="back-home">
+                <a href="@Url.Action("Index", "Home")">
+                    <i class="fas fa-arrow-left"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
+
+        <!-- Video Section - Right -->
+        <div class="register-video-section">
+            <video autoplay muted loop playsinline>
+                <source src="~/videos/about1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        function registerWithGoogle() {
+            alert('Chức năng đăng ký Google sẽ được tích hợp sau!');
+            // TODO: Implement Google OAuth
+        }
+
+        function registerWithFacebook() {
+            alert('Chức năng đăng ký Facebook sẽ được tích hợp sau!');
+            // TODO: Implement Facebook OAuth
+        }
+    </script>
+</body>
+</html>

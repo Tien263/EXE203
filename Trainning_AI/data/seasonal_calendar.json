@@ -1,0 +1,296 @@
+{
+  "title": "Lịch Mùa Vụ Hoa Quả Mộc Châu Theo 12 Tháng",
+  "description": "Mộc Châu có khí hậu ôn đới, mát mẻ quanh năm, thuận lợi trồng nhiều loại hoa quả đặc sản. Mỗi tháng đều có hoa quả tươi ngon để chế biến thành sản phẩm sấy chất lượng cao.",
+  
+  "calendar": [
+    {
+      "month": "Tháng 1",
+      "season": "Mùa Đông - Xuân",
+      "fruits": [
+        {
+          "name": "Dâu tây",
+          "status": "Chính vụ",
+          "quality": "Cao điểm, chất lượng tốt nhất",
+          "products": ["Dâu tươi", "Dâu sấy dẻo", "Dâu sấy thăng hoa", "Mứt dâu"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 2",
+      "season": "Xuân",
+      "fruits": [
+        {
+          "name": "Dâu tây",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Dâu tươi", "Dâu sấy dẻo", "Dâu sấy thăng hoa"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 3",
+      "season": "Xuân",
+      "fruits": [
+        {
+          "name": "Dâu tây",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Dâu tươi", "Dâu sấy"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 4",
+      "season": "Xuân - Hè",
+      "fruits": [
+        {
+          "name": "Mận hậu",
+          "status": "Đầu vụ",
+          "quality": "Bắt đầu thu hoạch",
+          "products": ["Mận tươi", "Mận sấy dẻo", "Mứt mận", "Rượu mận"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 5",
+      "season": "Hè",
+      "fruits": [
+        {
+          "name": "Mận hậu",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Mận sấy dẻo", "Mứt mận"]
+        },
+        {
+          "name": "Xoài",
+          "status": "Đầu vụ",
+          "quality": "Bắt đầu",
+          "products": ["Xoài sấy dẻo"]
+        },
+        {
+          "name": "Đào",
+          "status": "Đầu vụ",
+          "quality": "Bắt đầu",
+          "products": ["Đào sấy dẻo"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 6",
+      "season": "Hè",
+      "fruits": [
+        {
+          "name": "Mận hậu",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Mận sấy"]
+        },
+        {
+          "name": "Xoài",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Xoài sấy dẻo"]
+        },
+        {
+          "name": "Đào",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Đào sấy dẻo"]
+        },
+        {
+          "name": "Chuối",
+          "status": "Bắt đầu mùa thu hoạch tập trung",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        },
+        {
+          "name": "Mơ",
+          "status": "Đầu vụ",
+          "quality": "Bắt đầu",
+          "products": ["Mơ sấy dẻo"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 7",
+      "season": "Hè",
+      "fruits": [
+        {
+          "name": "Xoài",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Xoài sấy"]
+        },
+        {
+          "name": "Đào",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Đào sấy dẻo"]
+        },
+        {
+          "name": "Mít",
+          "status": "Đầu vụ, rộ Th7-8",
+          "quality": "Cao điểm",
+          "products": ["Mít sấy giòn"]
+        },
+        {
+          "name": "Hồng giòn",
+          "status": "Đầu vụ (từ cuối Th7)",
+          "quality": "Bắt đầu",
+          "products": ["Hồng sấy dẻo"]
+        },
+        {
+          "name": "Chuối",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        },
+        {
+          "name": "Mơ",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Mơ sấy dẻo"]
+        },
+        {
+          "name": "Nho",
+          "status": "Đầu vụ",
+          "quality": "Bắt đầu",
+          "products": ["Nho khô"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 8",
+      "season": "Hè - Thu",
+      "fruits": [
+        {
+          "name": "Mít",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Mít sấy giòn"]
+        },
+        {
+          "name": "Hồng giòn",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Hồng sấy dẻo"]
+        },
+        {
+          "name": "Chuối",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        },
+        {
+          "name": "Mơ",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Mơ sấy"]
+        },
+        {
+          "name": "Nho",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Nho khô"]
+        },
+        {
+          "name": "Táo",
+          "status": "Đầu vụ",
+          "quality": "Bắt đầu",
+          "products": ["Táo sấy giòn"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 9",
+      "season": "Thu",
+      "fruits": [
+        {
+          "name": "Hồng giòn",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Hồng sấy"]
+        },
+        {
+          "name": "Chuối",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        },
+        {
+          "name": "Nho",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Nho khô"]
+        },
+        {
+          "name": "Táo",
+          "status": "Chính vụ",
+          "quality": "Cao điểm",
+          "products": ["Táo sấy giòn"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 10",
+      "season": "Thu",
+      "fruits": [
+        {
+          "name": "Chuối",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        },
+        {
+          "name": "Táo",
+          "status": "Cuối vụ",
+          "quality": "Vẫn tốt",
+          "products": ["Táo sấy giòn"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 11",
+      "season": "Thu - Đông",
+      "fruits": [
+        {
+          "name": "Dâu tây",
+          "status": "Đầu vụ (Th11-Th3)",
+          "quality": "Bắt đầu",
+          "products": ["Dâu tươi", "Dâu sấy"]
+        },
+        {
+          "name": "Chuối",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        }
+      ]
+    },
+    {
+      "month": "Tháng 12",
+      "season": "Đông",
+      "fruits": [
+        {
+          "name": "Dâu tây",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Dâu tươi", "Dâu sấy dẻo", "Dâu sấy thăng hoa"]
+        },
+        {
+          "name": "Chuối",
+          "status": "Tiếp tục",
+          "quality": "Tốt",
+          "products": ["Chuối sấy giòn"]
+        }
+      ]
+    }
+  ],
+  
+  "notes": [
+    "Chuối Mộc Châu có thể thu hoạch quanh năm nhờ khí hậu ôn hòa",
+    "Dâu tây có 2 vụ chính: Tháng 11-4 (cao điểm) và quanh năm (nhà kính)",
+    "Mùa hè (Th5-8) là thời điểm đa dạng nhất với nhiều loại quả: mận, xoài, đào, mít, hồng, nho",
+    "Mỗi loại quả đều được thu hoạch đúng độ chín để đảm bảo chất lượng sản phẩm sấy tốt nhất"
+  ]
+}

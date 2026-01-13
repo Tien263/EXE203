@@ -1,0 +1,174 @@
+@model List<Exe_Demo.Models.Cart>
+@{
+    ViewData["Title"] = "Giỏ Hàng";
+    decimal total = Model.Sum(c => c.Quantity * c.Product.Price);
+}
+
+@{ await Html.RenderPartialAsync("_PageHero", ("Giỏ Hàng Của Bạn", "Trang chủ", Url.Action("Index", "Home"), "", "")); }
+
+<section class="ftco-section ftco-cart">
+    <div class="container">
+        @if (Model.Any())
+        {
+            <div class="row">
+                <div class="col-md-12 ftco-animate">
+                    <div class="cart-list">
+                        <table class="table">
+                            <thead class="thead-primary">
+                                <tr class="text-center">
+                                    <th>&nbsp;</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="text-center">
+                                        <td class="product-remove">
+                                            <a href="#" class="btn-remove-cart" data-cart-id="@item.CartId">
+                                                <span class="fa fa-close"></span>
+                                            </a>
+                                        </td>
+                                        
+                                        <td class="image-prod">
+                                            <div class="img" style="background-image:url(/images/prod-6.jpg);"></div>
+                                        </td>
+                                        
+                                        <td class="product-name">
+                                            <h3>@item.Product.ProductName</h3>
+                                            <p>@item.Product.ShortDescription</p>
+                                        </td>
+                                        
+                                        <td class="price">@item.Product.Price.ToString("N0") đ</td>
+                                        
+                                        <td class="quantity">
+                                            <div class="input-group mb-3">
+                                                <input type="number" name="quantity" class="quantity form-control input-number cart-quantity" 
+                                                       value="@item.Quantity" min="1" max="100" data-cart-id="@item.CartId">
+                                            </div>
+                                        </td>
+                                        
+                                        <td class="total">@((item.Quantity * item.Product.Price).ToString("N0")) đ</td>
+                                        
+                                        <td>
+                                            <button class="btn btn-primary btn-update-cart" data-cart-id="@item.CartId">
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row justify-content-end">
+                <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+                    <div class="cart-total mb-3">
+                        <h3>Tổng Giỏ Hàng</h3>
+                        <p class="d-flex">
+                            <span>Tạm tính</span>
+                            <span>@total.ToString("N0") đ</span>
+                        </p>
+                        <p class="d-flex">
+                            <span>Phí vận chuyển</span>
+                            <span>Miễn phí</span>
+                        </p>
+                        <hr>
+                        <p class="d-flex total-price">
+                            <span>Tổng cộng</span>
+                            <span>@total.ToString("N0") đ</span>
+                        </p>
+                    </div>
+                    <p>
+                        <a href="@Url.Action("Checkout", "Cart")" class="btn btn-primary py-3 px-4">
+                            Tiến Hành Đặt Hàng
+                        </a>
+                    </p>
+                    <p>
+                        <a href="@Url.Action("Index", "Product")" class="btn btn-white btn-outline-white py-3 px-4">
+                            <i class="fa fa-arrow-left"></i> Tiếp Tục Mua Hàng
+                        </a>
+                    </p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12 text-center ftco-animate">
+                    <div class="alert alert-info" style="padding: 50px;">
+                        <i class="fa fa-shopping-cart" style="font-size: 60px; color: #82ae46;"></i>
+                        <h3 class="mt-4">Giỏ hàng của bạn đang trống</h3>
+                        <p>Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
+                        <a href="@Url.Action("Index", "Product")" class="btn btn-primary py-3 px-5 mt-3">
+                            <i class="fa fa-shopping-bag"></i> Mua Sắm Ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            // Xóa sản phẩm khỏi giỏ hàng
+            $('.btn-remove-cart').click(function(e){
+                e.preventDefault();
+                var cartId = $(this).data('cart-id');
+                
+                if(confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+                    $.ajax({
+                        url: '@Url.Action("RemoveFromCart", "Cart")',
+                        type: 'POST',
+                        data: { cartId: cartId },
+                        success: function(response) {
+                            if(response.success) {
+                                location.reload();
+                            } else {
+                                alert(response.message || 'Có lỗi xảy ra!');
+                            }
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                        }
+                    });
+                }
+            });
+            
+            // Cập nhật số lượng
+            $('.btn-update-cart').click(function(e){
+                e.preventDefault();
+                var cartId = $(this).data('cart-id');
+                var quantity = $('input[data-cart-id="' + cartId + '"]').val();
+                
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "Cart")',
+                    type: 'POST',
+                    data: { 
+                        cartId: cartId,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra!');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                    }
+                });
+            });
+        });
+    </script>
+}

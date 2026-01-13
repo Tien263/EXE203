@@ -1,0 +1,262 @@
+@model Exe_Demo.Models.ViewModels.SalesReportViewModel
+@{
+    ViewData["Title"] = "Thống kê doanh số";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>Thống Kê Doanh Số</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Dashboard" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" asp-action="SalesReport">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Từ ngày:</label>
+                        <input type="date" name="fromDate" class="form-control" 
+                               value="@Model.FromDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Đến ngày:</label>
+                        <input type="date" name="toDate" class="form-control" 
+                               value="@Model.ToDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Loại báo cáo:</label>
+                        <select name="reportType" class="form-select">
+                            <option value="daily" selected="@(Model.ReportType == "daily")">Theo ngày</option>
+                            <option value="weekly" selected="@(Model.ReportType == "weekly")">Theo tuần</option>
+                            <option value="monthly" selected="@(Model.ReportType == "monthly")">Theo tháng</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-chart-bar"></i> Xem Báo Cáo
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tổng quan -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Tổng Doanh Thu</h6>
+                    <h3 class="text-primary mb-0">@Model.TotalRevenue.ToString("N0") đ</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Lợi Nhuận</h6>
+                    <h3 class="text-success mb-0">@Model.TotalProfit.ToString("N0") đ</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Tổng Đơn Hàng</h6>
+                    <h3 class="text-info mb-0">@Model.TotalOrders</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Giá Trị TB/Đơn</h6>
+                    <h3 class="text-warning mb-0">@Model.AverageOrderValue.ToString("N0") đ</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Biểu đồ doanh thu -->
+        <div class="col-md-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Biểu Đồ Doanh Thu</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="80"></canvas>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Top Sản Phẩm Bán Chạy</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Đã bán</th>
+                                    <th>Doanh thu</th>
+                                    <th>Lợi nhuận</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.TopProducts.Count; i++)
+                                {
+                                    var product = Model.TopProducts[i];
+                                    <tr>
+                                        <td><strong>@(i + 1)</strong></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" 
+                                                     alt="@product.ProductName" class="rounded me-2" 
+                                                     style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <div>@product.ProductName</div>
+                                                    <small class="text-muted">@product.ProductCode</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><strong>@product.QuantitySold</strong></td>
+                                        <td><strong>@product.Revenue.ToString("N0") đ</strong></td>
+                                        <td class="text-success"><strong>@product.Profit.ToString("N0") đ</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thống kê phụ -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Doanh Thu Theo Danh Mục</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Phương Thức Thanh Toán</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var payment in Model.RevenueByPaymentMethod)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>@payment.PaymentMethod</span>
+                                <strong>@payment.Amount.ToString("N0") đ</strong>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: @payment.Percentage%">
+                                    @payment.Percentage.ToString("N1")%
+                                </div>
+                            </div>
+                            <small class="text-muted">@payment.OrderCount đơn hàng</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Biểu đồ doanh thu theo thời gian
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.RevenueByDate.Select(r => $"'{r.Date:dd/MM}'")))],
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: [@string.Join(",", Model.RevenueByDate.Select(r => r.Revenue))],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Doanh thu: ' + context.parsed.y.toLocaleString() + ' đ';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Biểu đồ doanh thu theo danh mục
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.RevenueByCategory.Select(c => $"'{c.CategoryName}'")))],
+                datasets: [{
+                    data: [@string.Join(",", Model.RevenueByCategory.Select(c => c.Revenue))],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)',
+                        'rgba(255, 159, 64, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.toLocaleString() + ' đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

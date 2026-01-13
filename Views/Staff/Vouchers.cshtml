@@ -1,0 +1,272 @@
+@model IEnumerable<Exe_Demo.Models.Voucher>
+@{
+    ViewData["Title"] = "Quản Lý Voucher";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<!-- Hero Section -->
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <h1 class="mb-0 bread">Quản Lý Voucher</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a asp-action="Dashboard">Dashboard</a></span> 
+                    <span>/ Voucher</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="ftco-section">
+    <div class="container">
+        
+        <!-- Success Message -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Thành công!</strong> @TempData["SuccessMessage"]
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        }
+
+        <!-- Header Actions -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3 class="mb-0">Danh Sách Voucher</h3>
+            </div>
+            <div class="col-md-6 text-right">
+                <a asp-action="CreateVoucher" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Thêm Voucher Mới
+                </a>
+            </div>
+        </div>
+
+        <!-- Search & Filter -->
+        <form method="get" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" 
+                           placeholder="Tìm theo mã hoặc tên voucher..." 
+                           value="@ViewBag.SearchTerm">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-control">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active" selected="@(ViewBag.StatusFilter == "active")">Đang hoạt động</option>
+                        <option value="expired" selected="@(ViewBag.StatusFilter == "expired")">Đã hết hạn</option>
+                        <option value="inactive" selected="@(ViewBag.StatusFilter == "inactive")">Không hoạt động</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <a asp-action="Vouchers" class="btn btn-secondary btn-block">
+                        <i class="fa fa-refresh"></i> Làm mới
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Vouchers Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-primary">
+                    <tr>
+                        <th width="15%">Mã Voucher</th>
+                        <th width="20%">Tên Voucher</th>
+                        <th width="12%">Loại</th>
+                        <th width="12%">Giá trị</th>
+                        <th width="15%">Thời gian</th>
+                        <th width="10%">Sử dụng</th>
+                        <th width="10%">Trạng thái</th>
+                        <th width="6%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        @foreach (var voucher in Model)
+                        {
+                            var isExpired = voucher.ValidTo < DateTime.Now;
+                            var isActive = voucher.IsActive == true && !isExpired;
+                            
+                            <tr class="@(isActive ? "" : "table-secondary")">
+                                <td>
+                                    <strong>@voucher.VoucherCode</strong>
+                                </td>
+                                <td>@voucher.VoucherName</td>
+                                <td>
+                                    @if (voucher.DiscountType == "Percent")
+                                    {
+                                        <span class="badge badge-info">Phần trăm</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-success">Cố định</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (voucher.DiscountType == "Percent")
+                                    {
+                                        <text>@voucher.DiscountValue%</text>
+                                    }
+                                    else
+                                    {
+                                        <text>@voucher.DiscountValue.ToString("N0")đ</text>
+                                    }
+                                    
+                                    @if (voucher.MaxDiscountAmount.HasValue && voucher.DiscountType == "Percent")
+                                    {
+                                        <br />
+                                        <small class="text-muted">Tối đa: @voucher.MaxDiscountAmount.Value.ToString("N0")đ</small>
+                                    }
+                                </td>
+                                <td>
+                                    <small>
+                                        Từ: @voucher.ValidFrom?.ToString("dd/MM/yyyy")<br />
+                                        Đến: @voucher.ValidTo?.ToString("dd/MM/yyyy")
+                                    </small>
+                                </td>
+                                <td class="text-center">
+                                    @voucher.UsedCount / @(voucher.UsageLimit?.ToString() ?? "∞")
+                                </td>
+                                <td>
+                                    @if (isActive)
+                                    {
+                                        <span class="badge badge-success">Hoạt động</span>
+                                    }
+                                    else if (isExpired)
+                                    {
+                                        <span class="badge badge-danger">Hết hạn</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-secondary">Tắt</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="EditVoucher" asp-route-id="@voucher.VoucherId" 
+                                       class="btn btn-sm btn-warning" title="Sửa">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <button onclick="deleteVoucher(@voucher.VoucherId, '@voucher.VoucherCode')" 
+                                            class="btn btn-sm btn-danger" title="Xóa">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">Không tìm thấy voucher nào</p>
+                                <a asp-action="CreateVoucher" class="btn btn-primary">
+                                    <i class="fa fa-plus"></i> Thêm Voucher Đầu Tiên
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" 
+                               asp-action="Vouchers" 
+                               asp-route-page="@i"
+                               asp-route-search="@ViewBag.SearchTerm"
+                               asp-route-status="@ViewBag.StatusFilter">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+
+        <!-- Statistics -->
+        <div class="row mt-5">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-primary">@Model.Count()</h3>
+                        <p class="mb-0">Tổng voucher</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-success">@Model.Count(v => v.IsActive == true && v.ValidTo >= DateTime.Now)</h3>
+                        <p class="mb-0">Đang hoạt động</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-danger">@Model.Count(v => v.ValidTo < DateTime.Now)</h3>
+                        <p class="mb-0">Đã hết hạn</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-secondary">@Model.Count(v => v.IsActive == false)</h3>
+                        <p class="mb-0">Không hoạt động</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function deleteVoucher(id, code) {
+            if (confirm(`Bạn có chắc muốn vô hiệu hóa voucher "${code}"?`)) {
+                $.ajax({
+                    url: '@Url.Action("DeleteVoucher", "Staff")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(result) {
+                        if (result.success) {
+                            alert(result.message);
+                            location.reload();
+                        } else {
+                            alert('Lỗi: ' + result.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                    }
+                });
+            }
+        }
+
+        // Auto dismiss alert after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}

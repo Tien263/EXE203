@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Widget Demo - Mộc Vị Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,700;0,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/ai-chat.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Spectral', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .demo-header h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .demo-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #82ae46 0%, #5a8a2f 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .demo-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .demo-section h2 {
+            color: #82ae46;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .demo-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .demo-section li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            color: #555;
+        }
+        
+        .demo-section li:last-child {
+            border-bottom: none;
+        }
+        
+        .demo-section li::before {
+            content: "✓ ";
+            color: #82ae46;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .demo-instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .demo-instructions h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .demo-instructions ol {
+            padding-left: 20px;
+            color: #856404;
+        }
+        
+        .demo-instructions li {
+            margin: 10px 0;
+        }
+        
+        .demo-arrow {
+            position: fixed;
+            bottom: 100px;
+            right: 100px;
+            font-size: 60px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.offline {
+            background: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .demo-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-header h1 {
+                font-size: 32px;
+            }
+            
+            .demo-arrow {
+                bottom: 80px;
+                right: 80px;
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🤖 AI Chat Widget</h1>
+            <p class="subtitle">Trợ lý ảo thông minh cho Mộc Vị Store</p>
+            <span class="demo-badge">Demo Version 1.0</span>
+            <div class="status-indicator">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Đang kiểm tra kết nối...</span>
+            </div>
+        </div>
+        
+        <div class="demo-content">
+            <div class="demo-section">
+                <h2>✨ Tính Năng</h2>
+                <ul>
+                    <li>Chat trực tiếp với AI về sản phẩm</li>
+                    <li>Câu hỏi gợi ý nhanh</li>
+                    <li>Hiển thị nguồn tham khảo</li>
+                    <li>Lưu lịch sử chat tự động</li>
+                    <li>Giao diện đẹp, responsive</li>
+                    <li>Animation mượt mà</li>
+                </ul>
+            </div>
+            
+            <div class="demo-section">
+                <h2>💬 Ví Dụ Câu Hỏi</h2>
+                <ul>
+                    <li>Dâu tây sấy có gì đặc biệt?</li>
+                    <li>Hoa quả nào tốt cho sức khỏe?</li>
+                    <li>Giá sản phẩm như thế nào?</li>
+                    <li>Có những loại hoa quả nào?</li>
+                    <li>Mận sấy có lợi ích gì?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="demo-instructions">
+            <h3>📋 Hướng Dẫn Sử Dụng</h3>
+            <ol>
+                <li><strong>Nhấn vào nút chat</strong> ở góc dưới bên phải màn hình (nút tròn màu xanh 💬)</li>
+                <li><strong>Chọn câu hỏi gợi ý</strong> hoặc gõ câu hỏi của bạn</li>
+                <li><strong>Nhấn Enter</strong> hoặc nút gửi để chat với AI</li>
+                <li><strong>Xem câu trả lời</strong> và nguồn tham khảo từ AI</li>
+                <li><strong>Tiếp tục hỏi</strong> bất cứ điều gì về hoa quả Mộc Châu!</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="demo-arrow">👇</div>
+    
+    <script src="/js/ai-chat.js"></script>
+    <script>
+        // Check AI server status
+        async function checkStatus() {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/health');
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    statusDot.classList.remove('offline');
+                    statusText.textContent = `✅ AI Server Online (${data.documents_count} sản phẩm)`;
+                } else {
+                    statusDot.classList.add('offline');
+                    statusText.textContent = '⚠️ AI Server có vấn đề';
+                }
+            } catch (error) {
+                statusDot.classList.add('offline');
+                statusText.textContent = '❌ AI Server Offline - Vui lòng khởi động: python app/main.py';
+            }
+        }
+        
+        // Check status on load and every 10 seconds
+        checkStatus();
+        setInterval(checkStatus, 10000);
+    </script>
+</body>
+</html>

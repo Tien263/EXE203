@@ -1,0 +1,222 @@
+@model Exe_Demo.Models.ViewModels.StaffDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard - Quản lý";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">Dashboard Quản Lý</h2>
+            <p class="text-muted">Xin chào, <strong>@Model.EmployeeName</strong> (@Model.Position)</p>
+        </div>
+    </div>
+
+    <!-- Thống kê tổng quan -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Doanh thu hôm nay</p>
+                            <h3 class="mb-0">@Model.TodayRevenue.ToString("N0") đ</h3>
+                        </div>
+                        <div class="text-primary">
+                            <i class="fa fa-dollar-sign fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Doanh thu tháng</p>
+                            <h3 class="mb-0">@Model.MonthRevenue.ToString("N0") đ</h3>
+                        </div>
+                        <div class="text-success">
+                            <i class="fa fa-chart-line fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Đơn hàng hôm nay</p>
+                            <h3 class="mb-0">@Model.TodayOrders</h3>
+                        </div>
+                        <div class="text-info">
+                            <i class="fa fa-shopping-cart fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Đơn chờ xử lý</p>
+                            <h3 class="mb-0">@Model.PendingOrders</h3>
+                        </div>
+                        <div class="text-warning">
+                            <i class="fa fa-clock fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu nhanh -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Menu Nhanh</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="DirectSale" class="btn btn-primary btn-lg w-100">
+                                <i class="fa fa-cash-register"></i> Bán Hàng Trực Tiếp
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Orders" class="btn btn-info btn-lg w-100">
+                                <i class="fa fa-list"></i> Quản Lý Đơn Hàng
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Products" class="btn btn-success btn-lg w-100">
+                                <i class="fa fa-box"></i> Quản Lý Sản Phẩm
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="SalesReport" class="btn btn-warning btn-lg w-100">
+                                <i class="fa fa-chart-bar"></i> Thống Kê Doanh Số
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Đơn hàng gần đây -->
+        <div class="col-md-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Đơn Hàng Gần Đây</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.RecentOrders)
+                                {
+                                    <tr>
+                                        <td><strong>@order.OrderCode</strong></td>
+                                        <td>@order.CustomerName</td>
+                                        <td><strong>@order.FinalAmount.ToString("N0") đ</strong></td>
+                                        <td>
+                                            @if (order.OrderStatus == "Đã hoàn thành")
+                                            {
+                                                <span class="badge bg-success">@order.OrderStatus</span>
+                                            }
+                                            else if (order.OrderStatus == "Chờ xác nhận")
+                                            {
+                                                <span class="badge bg-warning">@order.OrderStatus</span>
+                                            }
+                                            else if (order.OrderStatus == "Đang xử lý")
+                                            {
+                                                <span class="badge bg-info">@order.OrderStatus</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@order.OrderStatus</span>
+                                            }
+                                        </td>
+                                        <td>@order.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            <a asp-action="OrderDetail" asp-route-id="@order.OrderId" class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <a asp-action="Orders" class="btn btn-sm btn-link">Xem tất cả đơn hàng</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top sản phẩm bán chạy -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Top Sản Phẩm Bán Chạy</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var product in Model.TopSellingProducts)
+                    {
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" alt="@product.ProductName" 
+                                 class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div class="ms-3 flex-grow-1">
+                                <h6 class="mb-1">@product.ProductName</h6>
+                                <small class="text-muted">Đã bán: @product.TotalSold</small>
+                            </div>
+                            <div class="text-end">
+                                <strong>@product.Revenue.ToString("N0") đ</strong>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.LowStockProducts > 0)
+            {
+                <div class="card border-0 shadow-sm mt-3">
+                    <div class="card-body text-center">
+                        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-2"></i>
+                        <h5>Cảnh báo tồn kho</h5>
+                        <p class="mb-2">Có <strong>@Model.LowStockProducts</strong> sản phẩm sắp hết hàng</p>
+                        <a asp-action="Products" asp-route-stock="low" class="btn btn-warning btn-sm">Xem ngay</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto refresh every 5 minutes
+        setTimeout(function() {
+            location.reload();
+        }, 300000);
+    </script>
+}
