@@ -143,66 +143,95 @@ namespace Exe_Demo.Controllers
                     return View(model);
                 }
 
-                // Tạo mã OTP 6 số
-                var otpCode = new Random().Next(100000, 999999).ToString();
-
-                // Lưu OTP vào database
-                var otpVerification = new OtpVerification
-                {
-                    Email = model.Email,
-                    OtpCode = otpCode,
-                    CreatedAt = DateTime.Now,
-                    ExpiresAt = DateTime.Now.AddMinutes(5),
-                    IsUsed = false
-                };
-                _context.OtpVerifications.Add(otpVerification);
-
-                // Tạo customer mới
-                var customer = new Customer
-                {
-                    CustomerCode = GenerateCustomerCode(),
-                    FullName = model.FullName,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    Address = model.Address,
-                    City = model.City,
-                    CustomerType = "Thường",
-                    LoyaltyPoints = 0,
-                    IsActive = true,
-                    CreatedDate = DateTime.Now
-                };
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
-
-                // Tạo user account (chưa active)
-                var user = new User
-                {
-                    Email = model.Email,
-                    PasswordHash = HashPassword(model.Password),
-                    FullName = model.FullName,
-                    PhoneNumber = model.PhoneNumber,
-                    Role = "Customer",
-                    CustomerId = customer.CustomerId,
-                    IsActive = false, // Chưa active, cần verify OTP
-                    CreatedDate = DateTime.Now
-                };
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-
-                // Gửi email OTP
                 try
                 {
-                    await _emailService.SendOtpEmailAsync(model.Email, otpCode, model.FullName);
-                    _logger.LogInformation($"OTP sent to {model.Email}");
-                    
-                    TempData["Email"] = model.Email;
-                    TempData["SuccessMessage"] = "Vui lòng kiểm tra email để lấy mã OTP!";
-                    return RedirectToAction(nameof(VerifyOtp));
+                    // Bắt đầu transaction
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            // Tạo mã OTP 6 số
+                            var otpCode = new Random().Next(100000, 999999).ToString();
+
+                            // Lưu OTP vào database
+                            var otpVerification = new OtpVerification
+                            {
+                                Email = model.Email,
+                                OtpCode = otpCode,
+                                CreatedAt = DateTime.Now,
+                                ExpiresAt = DateTime.Now.AddMinutes(5),
+                                IsUsed = false
+                            };
+                            _context.OtpVerifications.Add(otpVerification);
+                            await _context.SaveChangesAsync();
+
+                            // Tạo customer mới
+                            var customer = new Customer
+                            {
+                                CustomerCode = GenerateCustomerCode(),
+                                FullName = model.FullName,
+                                PhoneNumber = model.PhoneNumber,
+                                Email = model.Email,
+                                Address = model.Address,
+                                City = model.City,
+                                CustomerType = "Thường",
+                                LoyaltyPoints = 0,
+                                IsActive = true,
+                                CreatedDate = DateTime.Now
+                            };
+                            _context.Customers.Add(customer);
+                            await _context.SaveChangesAsync();
+
+                            // Tạo user account (chưa active)
+                            var user = new User
+                            {
+                                Email = model.Email,
+                                PasswordHash = HashPassword(model.Password),
+                                FullName = model.FullName,
+                                PhoneNumber = model.PhoneNumber,
+                                Role = "Customer",
+                                CustomerId = customer.CustomerId,
+                                IsActive = false, // Chưa active, cần verify OTP
+                                CreatedDate = DateTime.Now
+                            };
+                            _context.Users.Add(user);
+                            await _context.SaveChangesAsync();
+
+                            // Gửi email OTP - nếu lỗi thì rollback
+                            try
+                            {
+                                await _emailService.SendOtpEmailAsync(model.Email, otpCode, model.FullName);
+                                _logger.LogInformation($"OTP sent to {model.Email}");
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError($"Error sending OTP email: {ex.Message}");
+                                // Rollback transaction nếu gửi email fail
+                                await transaction.RollbackAsync();
+                                ModelState.AddModelError("", "Lỗi gửi email. Vui lòng thử lại sau.");
+                                return View(model);
+                            }
+
+                            // Commit transaction
+                            await transaction.CommitAsync();
+
+                            TempData["Email"] = model.Email;
+                            TempData["SuccessMessage"] = "Vui lòng kiểm tra email để lấy mã OTP!";
+                            return RedirectToAction(nameof(VerifyOtp));
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            _logger.LogError($"Error during registration: {ex.Message}");
+                            ModelState.AddModelError("", $"Lỗi đăng ký: {ex.Message}");
+                            return View(model);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error sending OTP email: {ex.Message}");
-                    ModelState.AddModelError("", "Lỗi gửi email. Vui lòng thử lại sau.");
+                    _logger.LogError($"Unexpected error during registration: {ex.Message}");
+                    ModelState.AddModelError("", "Có lỗi xảy ra. Vui lòng thử lại!");
                     return View(model);
                 }
             }
@@ -231,51 +260,78 @@ namespace Exe_Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Tìm OTP
-                var otp = await _context.OtpVerifications
-                    .Where(o => o.Email == model.Email && o.OtpCode == model.OtpCode && !o.IsUsed)
-                    .OrderByDescending(o => o.CreatedAt)
-                    .FirstOrDefaultAsync();
-
-                if (otp == null)
+                try
                 {
-                    ModelState.AddModelError("OtpCode", "Mã OTP không đúng!");
-                    return View(model);
-                }
+                    // Tìm OTP
+                    var otp = await _context.OtpVerifications
+                        .Where(o => o.Email == model.Email && o.OtpCode == model.OtpCode && !o.IsUsed)
+                        .OrderByDescending(o => o.CreatedAt)
+                        .FirstOrDefaultAsync();
 
-                if (otp.IsExpired)
-                {
-                    ModelState.AddModelError("OtpCode", "Mã OTP đã hết hạn! Vui lòng đăng ký lại.");
-                    return View(model);
-                }
-
-                // Đánh dấu OTP đã sử dụng
-                otp.IsUsed = true;
-
-                // Active user
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-                if (user != null)
-                {
-                    user.IsActive = true;
-                    await _context.SaveChangesAsync();
-
-                    // Gửi email chào mừng
-                    try
+                    if (otp == null)
                     {
-                        await _emailService.SendWelcomeEmailAsync(model.Email, user.FullName);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error sending welcome email: {ex.Message}");
+                        ModelState.AddModelError("OtpCode", "Mã OTP không đúng!");
+                        return View(model);
                     }
 
-                    _logger.LogInformation($"User {user.Email} verified and activated.");
+                    if (otp.IsExpired)
+                    {
+                        ModelState.AddModelError("OtpCode", "Mã OTP đã hết hạn! Vui lòng đăng ký lại.");
+                        return View(model);
+                    }
 
-                    TempData["SuccessMessage"] = "Xác thực thành công! Bạn có thể đăng nhập ngay.";
-                    return RedirectToAction(nameof(Login));
+                    // Active user first
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+                    if (user != null)
+                    {
+                        // Sử dụng transaction để đảm bảo dữ liệu được lưu
+                        using (var transaction = await _context.Database.BeginTransactionAsync())
+                        {
+                            try
+                            {
+                                user.IsActive = true;
+                                
+                                // Đánh dấu OTP đã sử dụng
+                                otp.IsUsed = true;
+                                
+                                // Save changes for both user and OTP
+                                await _context.SaveChangesAsync();
+
+                                // Gửi email chào mừng
+                                try
+                                {
+                                    await _emailService.SendWelcomeEmailAsync(model.Email, user.FullName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError($"Error sending welcome email: {ex.Message}");
+                                    // Không rollback nếu email fail vì user đã được activate
+                                }
+
+                                await transaction.CommitAsync();
+
+                                _logger.LogInformation($"User {user.Email} verified and activated.");
+
+                                TempData["SuccessMessage"] = "Xác thực thành công! Bạn có thể đăng nhập ngay.";
+                                return RedirectToAction(nameof(Login));
+                            }
+                            catch (Exception ex)
+                            {
+                                await transaction.RollbackAsync();
+                                _logger.LogError($"Error verifying OTP: {ex.Message}");
+                                ModelState.AddModelError("", $"Lỗi xác thực: {ex.Message}");
+                                return View(model);
+                            }
+                        }
+                    }
+
+                    ModelState.AddModelError("", "Không tìm thấy tài khoản.");
                 }
-
-                ModelState.AddModelError("", "Không tìm thấy tài khoản.");
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Unexpected error in VerifyOtp: {ex.Message}");
+                    ModelState.AddModelError("", "Có lỗi xảy ra. Vui lòng thử lại!");
+                }
             }
 
             return View(model);
@@ -455,84 +511,110 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            // Tạo customer mới với đầy đủ thông tin
-            var customer = new Customer
-            {
-                CustomerCode = GenerateCustomerCode(),
-                FullName = model.FullName,
-                Email = email,
-                PhoneNumber = model.PhoneNumber,
-                Address = model.Address,
-                City = model.City,
-                District = model.District,
-                Ward = model.Ward,
-                CustomerType = "Thường",
-                LoyaltyPoints = 0,
-                IsActive = true,
-                CreatedDate = DateTime.Now
-            };
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-
-            // Tạo user mới
-            var user = new User
-            {
-                Email = email,
-                FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,
-                Role = "Customer",
-                CustomerId = customer.CustomerId,
-                IsActive = true,
-                CreatedDate = DateTime.Now,
-                PasswordHash = "" // Không cần password cho Google login
-            };
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation($"New user registered via Google with complete profile: {email}");
-
-            // Gửi email chào mừng
             try
             {
-                await _emailService.SendWelcomeEmailAsync(email, model.FullName);
+                // Sử dụng transaction để đảm bảo dữ liệu được lưu
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        // Tạo customer mới với đầy đủ thông tin
+                        var customer = new Customer
+                        {
+                            CustomerCode = GenerateCustomerCode(),
+                            FullName = model.FullName,
+                            Email = email,
+                            PhoneNumber = model.PhoneNumber,
+                            Address = model.Address,
+                            City = model.City,
+                            District = model.District,
+                            Ward = model.Ward,
+                            CustomerType = "Thường",
+                            LoyaltyPoints = 0,
+                            IsActive = true,
+                            CreatedDate = DateTime.Now
+                        };
+                        _context.Customers.Add(customer);
+                        await _context.SaveChangesAsync();
+
+                        // Tạo user mới
+                        var user = new User
+                        {
+                            Email = email,
+                            FullName = model.FullName,
+                            PhoneNumber = model.PhoneNumber,
+                            Role = "Customer",
+                            CustomerId = customer.CustomerId,
+                            IsActive = true,
+                            CreatedDate = DateTime.Now,
+                            PasswordHash = "" // Không cần password cho Google login
+                        };
+                        _context.Users.Add(user);
+                        await _context.SaveChangesAsync();
+
+                        _logger.LogInformation($"New user registered via Google with complete profile: {email}");
+
+                        // Gửi email chào mừng (không rollback nếu email fail)
+                        try
+                        {
+                            await _emailService.SendWelcomeEmailAsync(email, model.FullName);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError($"Error sending welcome email: {ex.Message}");
+                        }
+
+                        // Commit transaction
+                        await transaction.CommitAsync();
+
+                        // Tạo claims và đăng nhập
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                            new Claim(ClaimTypes.Name, user.FullName),
+                            new Claim(ClaimTypes.Email, user.Email),
+                            new Claim(ClaimTypes.Role, user.Role ?? "Customer")
+                        };
+
+                        if (user.CustomerId.HasValue)
+                        {
+                            claims.Add(new Claim("CustomerId", user.CustomerId.Value.ToString()));
+                        }
+
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
+                        };
+
+                        await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity),
+                            authProperties);
+
+                        // Cập nhật last login
+                        user.LastLoginDate = DateTime.Now;
+                        await _context.SaveChangesAsync();
+
+                        TempData["SuccessMessage"] = "Hoàn tất đăng ký! Chào mừng bạn đến với Mộc Vị Store.";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        _logger.LogError($"Error in CompleteProfile: {ex.Message}\n{ex.StackTrace}");
+                        ModelState.AddModelError("", $"Lỗi đăng ký: {ex.Message}");
+                        return View(model);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error sending welcome email: {ex.Message}");
+                _logger.LogError($"Unexpected error in CompleteProfile: {ex.Message}");
+                ModelState.AddModelError("", "Có lỗi xảy ra. Vui lòng thử lại!");
+                return View(model);
             }
-
-            // Tạo claims và đăng nhập
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role ?? "Customer")
-            };
-
-            if (user.CustomerId.HasValue)
-            {
-                claims.Add(new Claim("CustomerId", user.CustomerId.Value.ToString()));
-            }
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
-
-            // Cập nhật last login
-            user.LastLoginDate = DateTime.Now;
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "Hoàn tất đăng ký! Chào mừng bạn đến với Mộc Vị Store.";
-            return RedirectToAction("Index", "Home");
         }
 
         // GET: Auth/ResendOtp
@@ -561,43 +643,70 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            // Kiểm tra user tồn tại và chưa active
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsActive == false);
-            if (user == null)
-            {
-                TempData["ErrorMessage"] = "Không tìm thấy tài khoản hoặc tài khoản đã được kích hoạt.";
-                return RedirectToAction(nameof(Login));
-            }
-
-            // Tạo mã OTP mới
-            var otpCode = new Random().Next(100000, 999999).ToString();
-
-            // Lưu OTP vào database
-            var otpVerification = new OtpVerification
-            {
-                Email = email,
-                OtpCode = otpCode,
-                CreatedAt = DateTime.Now,
-                ExpiresAt = DateTime.Now.AddMinutes(5),
-                IsUsed = false
-            };
-            _context.OtpVerifications.Add(otpVerification);
-            await _context.SaveChangesAsync();
-
-            // Gửi email OTP
             try
             {
-                await _emailService.SendOtpEmailAsync(email, otpCode, user.FullName);
-                _logger.LogInformation($"OTP resent to {email}");
-                
-                TempData["Email"] = email;
-                TempData["SuccessMessage"] = "Mã OTP mới đã được gửi đến email của bạn!";
-                return RedirectToAction(nameof(VerifyOtp));
+                // Kiểm tra user tồn tại và chưa active
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsActive == false);
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy tài khoản hoặc tài khoản đã được kích hoạt.";
+                    return RedirectToAction(nameof(Login));
+                }
+
+                // Sử dụng transaction
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        // Tạo mã OTP mới
+                        var otpCode = new Random().Next(100000, 999999).ToString();
+
+                        // Lưu OTP vào database
+                        var otpVerification = new OtpVerification
+                        {
+                            Email = email,
+                            OtpCode = otpCode,
+                            CreatedAt = DateTime.Now,
+                            ExpiresAt = DateTime.Now.AddMinutes(5),
+                            IsUsed = false
+                        };
+                        _context.OtpVerifications.Add(otpVerification);
+                        await _context.SaveChangesAsync();
+
+                        // Gửi email OTP - nếu fail thì rollback
+                        try
+                        {
+                            await _emailService.SendOtpEmailAsync(email, otpCode, user.FullName);
+                            _logger.LogInformation($"OTP resent to {email}");
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            _logger.LogError($"Error resending OTP email: {ex.Message}");
+                            TempData["ErrorMessage"] = "Lỗi gửi email. Vui lòng thử lại sau.";
+                            return View();
+                        }
+
+                        // Commit transaction
+                        await transaction.CommitAsync();
+
+                        TempData["Email"] = email;
+                        TempData["SuccessMessage"] = "Mã OTP mới đã được gửi đến email của bạn!";
+                        return RedirectToAction(nameof(VerifyOtp));
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        _logger.LogError($"Error in ResendOtp: {ex.Message}");
+                        TempData["ErrorMessage"] = "Có lỗi xảy ra. Vui lòng thử lại!";
+                        return View();
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error resending OTP email: {ex.Message}");
-                TempData["ErrorMessage"] = "Lỗi gửi email. Vui lòng thử lại sau.";
+                _logger.LogError($"Unexpected error in ResendOtp: {ex.Message}");
+                TempData["ErrorMessage"] = "Có lỗi xảy ra. Vui lòng thử lại!";
                 return View();
             }
         }
