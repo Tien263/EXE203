@@ -98,8 +98,9 @@ namespace Exe_Demo.Controllers
 
                 // Check if product already in cart
                 var existingCart = await _context.Carts
+                    .AsTracking()
                     .FirstOrDefaultAsync(c => 
-                        (customerId.HasValue && c.CustomerId == customerId) ||
+                        (customerId.HasValue && c.CustomerId == customerId && c.ProductId == productId) ||
                         (!customerId.HasValue && c.SessionId == sessionId && c.ProductId == productId));
 
                 if (existingCart != null)
@@ -153,7 +154,10 @@ namespace Exe_Demo.Controllers
                 return Json(new { success = false, message = "Vui lòng đăng nhập!" });
             }
 
+            // Lấy giỏ hàng
+            // Use AsTracking to ensure changes are saved
             var cart = await _context.Carts
+                .AsTracking()
                 .FirstOrDefaultAsync(c => c.CartId == cartId && c.CustomerId == user.CustomerId);
 
             if (cart == null)

@@ -4,210 +4,277 @@
     Layout = "~/Views/Shared/_StaffLayout.cshtml";
 }
 
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-1">Dashboard Quản Lý</h2>
-            <p class="text-muted">Xin chào, <strong>@Model.EmployeeName</strong> (@Model.Position)</p>
-        </div>
-    </div>
-
-    <!-- Thống kê tổng quan -->
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Doanh thu hôm nay</p>
-                            <h3 class="mb-0">@Model.TodayRevenue.ToString("N0") đ</h3>
-                        </div>
-                        <div class="text-primary">
-                            <i class="fa fa-dollar-sign fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Doanh thu tháng</p>
-                            <h3 class="mb-0">@Model.MonthRevenue.ToString("N0") đ</h3>
-                        </div>
-                        <div class="text-success">
-                            <i class="fa fa-chart-line fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Đơn hàng hôm nay</p>
-                            <h3 class="mb-0">@Model.TodayOrders</h3>
-                        </div>
-                        <div class="text-info">
-                            <i class="fa fa-shopping-cart fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Đơn chờ xử lý</p>
-                            <h3 class="mb-0">@Model.PendingOrders</h3>
-                        </div>
-                        <div class="text-warning">
-                            <i class="fa fa-clock fa-2x"></i>
-                        </div>
-                    </div>
+<div class="container-fluid py-5">
+    <!-- Page Header -->
+    <div class="page-title mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <h2 style="margin: 0; color: white;">
+                        <i class="fa fa-tachometer" style="margin-right: 12px;"></i>Dashboard Quản Lý
+                    </h2>
+                    <p style="margin: 6px 0 0 40px; color: rgba(255,255,255,0.9); font-size: 15px;">
+                        Xin chào, <strong>@Model.EmployeeName</strong> | @Model.Position
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Menu nhanh -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Menu Nhanh</h5>
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <a asp-action="DirectSale" class="btn btn-primary btn-lg w-100">
-                                <i class="fa fa-cash-register"></i> Bán Hàng Trực Tiếp
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <a asp-action="Orders" class="btn btn-info btn-lg w-100">
-                                <i class="fa fa-list"></i> Quản Lý Đơn Hàng
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <a asp-action="Products" class="btn btn-success btn-lg w-100">
-                                <i class="fa fa-box"></i> Quản Lý Sản Phẩm
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <a asp-action="SalesReport" class="btn btn-warning btn-lg w-100">
-                                <i class="fa fa-chart-bar"></i> Thống Kê Doanh Số
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Đơn hàng gần đây -->
-        <div class="col-md-8 mb-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Đơn Hàng Gần Đây</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Mã đơn</th>
-                                    <th>Khách hàng</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ngày tạo</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var order in Model.RecentOrders)
-                                {
-                                    <tr>
-                                        <td><strong>@order.OrderCode</strong></td>
-                                        <td>@order.CustomerName</td>
-                                        <td><strong>@order.FinalAmount.ToString("N0") đ</strong></td>
-                                        <td>
-                                            @if (order.OrderStatus == "Đã hoàn thành")
-                                            {
-                                                <span class="badge bg-success">@order.OrderStatus</span>
-                                            }
-                                            else if (order.OrderStatus == "Chờ xác nhận")
-                                            {
-                                                <span class="badge bg-warning">@order.OrderStatus</span>
-                                            }
-                                            else if (order.OrderStatus == "Đang xử lý")
-                                            {
-                                                <span class="badge bg-info">@order.OrderStatus</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-secondary">@order.OrderStatus</span>
-                                            }
-                                        </td>
-                                        <td>@order.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</td>
-                                        <td>
-                                            <a asp-action="OrderDetail" asp-route-id="@order.OrderId" class="btn btn-sm btn-outline-primary">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer bg-white text-center">
-                    <a asp-action="Orders" class="btn btn-sm btn-link">Xem tất cả đơn hàng</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top sản phẩm bán chạy -->
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Top Sản Phẩm Bán Chạy</h5>
-                </div>
-                <div class="card-body">
-                    @foreach (var product in Model.TopSellingProducts)
-                    {
-                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                            <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" alt="@product.ProductName" 
-                                 class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
-                            <div class="ms-3 flex-grow-1">
-                                <h6 class="mb-1">@product.ProductName</h6>
-                                <small class="text-muted">Đã bán: @product.TotalSold</small>
+    <div class="container-fluid">
+        <!-- Thống kê tổng quan -->
+        <div class="row mb-5">
+            <!-- Doanh thu hôm nay -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-0" style="overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); padding: 1.5rem; color: white;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p style="margin: 0; font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">
+                                    <i class="fa fa-calendar-o"></i> Hôm nay
+                                </p>
+                                <h3 style="margin: 8px 0 0 0; color: white;">@Model.TodayRevenue.ToString("N0") đ</h3>
                             </div>
-                            <div class="text-end">
-                                <strong>@product.Revenue.ToString("N0") đ</strong>
-                            </div>
+                            <i class="fa fa-dollar-sign" style="font-size: 2.5rem; opacity: 0.3;"></i>
                         </div>
-                    }
+                    </div>
+                    <div style="padding: 1rem; background: rgba(39, 174, 96, 0.05); border-top: 1px solid rgba(39, 174, 96, 0.2);">
+                        <small style="color: #666;">Doanh thu hôm nay</small>
+                    </div>
                 </div>
             </div>
 
-            @if (Model.LowStockProducts > 0)
-            {
-                <div class="card border-0 shadow-sm mt-3">
-                    <div class="card-body text-center">
-                        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-2"></i>
-                        <h5>Cảnh báo tồn kho</h5>
-                        <p class="mb-2">Có <strong>@Model.LowStockProducts</strong> sản phẩm sắp hết hàng</p>
-                        <a asp-action="Products" asp-route-stock="low" class="btn btn-warning btn-sm">Xem ngay</a>
+            <!-- Doanh thu tháng -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-0" style="overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 1.5rem; color: white;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p style="margin: 0; font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">
+                                    <i class="fa fa-calendar"></i> Tháng này
+                                </p>
+                                <h3 style="margin: 8px 0 0 0; color: white;">@Model.MonthRevenue.ToString("N0") đ</h3>
+                            </div>
+                            <i class="fa fa-line-chart" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(52, 152, 219, 0.05); border-top: 1px solid rgba(52, 152, 219, 0.2);">
+                        <small style="color: #666;">Tổng doanh thu tháng</small>
                     </div>
                 </div>
-            }
+            </div>
+
+            <!-- Đơn hàng hôm nay -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-0" style="overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, #f39c12 0%, #d68910 100%); padding: 1.5rem; color: white;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p style="margin: 0; font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">
+                                    <i class="fa fa-shopping-cart"></i> Hôm nay
+                                </p>
+                                <h3 style="margin: 8px 0 0 0; color: white;">@Model.TodayOrders</h3>
+                            </div>
+                            <i class="fa fa-shopping-bag" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(243, 156, 18, 0.05); border-top: 1px solid rgba(243, 156, 18, 0.2);">
+                        <small style="color: #666;">Đơn hàng hôm nay</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đơn chờ xử lý -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-0" style="overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 1.5rem; color: white;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p style="margin: 0; font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">
+                                    <i class="fa fa-clock-o"></i> Cần xử lý
+                                </p>
+                                <h3 style="margin: 8px 0 0 0; color: white;">@Model.PendingOrders</h3>
+                            </div>
+                            <i class="fa fa-hourglass-half" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(231, 76, 60, 0.05); border-top: 1px solid rgba(231, 76, 60, 0.2);">
+                        <small style="color: #666;">Chờ xác nhận / xử lý</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu nhanh -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h4 style="margin-bottom: 1.5rem; font-weight: 700; color: #2d5016;">
+                    <i class="fa fa-lightning" style="margin-right: 10px; color: #f39c12;"></i>Menu Nhanh
+                </h4>
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a asp-action="DirectSale" class="btn btn-primary btn-lg w-100" style="padding: 18px;">
+                            <i class="fa fa-cash-register" style="margin-right: 10px; font-size: 18px;"></i>
+                            <br><span style="font-size: 16px; font-weight: 700;">Bán Hàng Trực Tiếp</span>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a asp-action="Orders" class="btn btn-info btn-lg w-100" style="padding: 18px;">
+                            <i class="fa fa-list-ul" style="margin-right: 10px; font-size: 18px;"></i>
+                            <br><span style="font-size: 16px; font-weight: 700;">Quản Lý Đơn Hàng</span>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a asp-action="Products" class="btn btn-success btn-lg w-100" style="padding: 18px;">
+                            <i class="fa fa-cube" style="margin-right: 10px; font-size: 18px;"></i>
+                            <br><span style="font-size: 16px; font-weight: 700;">Quản Lý Sản Phẩm</span>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a asp-action="SalesReport" class="btn btn-warning btn-lg w-100" style="padding: 18px;">
+                            <i class="fa fa-bar-chart" style="margin-right: 10px; font-size: 18px;"></i>
+                            <br><span style="font-size: 16px; font-weight: 700;">Thống Kê Doanh Số</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="row">
+            <!-- Đơn hàng gần đây -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0">
+                    <div class="card-header">
+                        <h5 style="margin-bottom: 0;">
+                            <i class="fa fa-clock-o" style="margin-right: 10px;"></i>Đơn Hàng Gần Đây
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (Model.RecentOrders?.Count > 0)
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fa fa-hashtag"></i> Mã Đơn</th>
+                                            <th><i class="fa fa-user"></i> Khách Hàng</th>
+                                            <th><i class="fa fa-money"></i> Tổng Tiền</th>
+                                            <th><i class="fa fa-info-circle"></i> Trạng Thái</th>
+                                            <th><i class="fa fa-calendar"></i> Ngày Tạo</th>
+                                            <th style="width: 60px; text-align: center;"><i class="fa fa-cog"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var order in Model.RecentOrders)
+                                        {
+                                            <tr>
+                                                <td style="font-weight: 700; color: #2d5016;">@order.OrderCode</td>
+                                                <td>@order.CustomerName</td>
+                                                <td style="font-weight: 700; color: #e74c3c;">@order.FinalAmount.ToString("N0") đ</td>
+                                                <td>
+                                                    @if (order.OrderStatus == "Đã hoàn thành")
+                                                    {
+                                                        <span class="badge bg-success" style="font-size: 12px;">✓ @order.OrderStatus</span>
+                                                    }
+                                                    else if (order.OrderStatus == "Chờ xác nhận")
+                                                    {
+                                                        <span class="badge bg-warning" style="font-size: 12px;">⏳ @order.OrderStatus</span>
+                                                    }
+                                                    else if (order.OrderStatus == "Đang xử lý")
+                                                    {
+                                                        <span class="badge bg-info" style="font-size: 12px;">🔄 @order.OrderStatus</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary" style="font-size: 12px;">@order.OrderStatus</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <small>@order.CreatedDate?.ToString("dd/MM/yyyy")</small><br>
+                                                    <small class="text-muted">@order.CreatedDate?.ToString("HH:mm")</small>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <a asp-action="OrderDetail" asp-route-id="@order.OrderId" 
+                                                       class="btn btn-sm btn-primary" title="Xem chi tiết" style="padding: 6px 10px;">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer bg-light">
+                                <a asp-action="Orders" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-arrow-right"></i> Xem tất cả đơn hàng
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="padding: 3rem; text-align: center; color: #999;">
+                                <i class="fa fa-inbox fa-3x mb-3" style="opacity: 0.3;"></i>
+                                <p>Chưa có đơn hàng nào</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top sản phẩm bán chạy -->
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0">
+                    <div class="card-header">
+                        <h5 style="margin-bottom: 0;">
+                            <i class="fa fa-fire" style="margin-right: 10px; color: #f39c12;"></i>Top Sản Phẩm Bán Chạy
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.TopSellingProducts?.Count > 0)
+                        {
+                            @foreach (var product in Model.TopSellingProducts)
+                            {
+                                <div style="display: flex; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e0e0e0;">
+                                    <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" alt="@product.ProductName" 
+                                         class="rounded" style="width: 50px; height: 50px; object-fit: cover; margin-right: 12px;">
+                                    <div style="flex: 1;">
+                                        <h6 style="margin: 0 0 6px 0; font-weight: 600;">@product.ProductName</h6>
+                                        <small style="color: #999;">Đã bán: <strong style="color: #f39c12;">@product.TotalSold</strong></small>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <small style="color: #27ae60; font-weight: 700;">@product.Revenue.ToString("N0")</small><br>
+                                        <small style="color: #999;">đ</small>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div style="padding: 1rem; text-align: center; color: #999;">
+                                <i class="fa fa-cube fa-2x mb-2" style="opacity: 0.3;"></i>
+                                <p>Chưa có dữ liệu bán hàng</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (Model.LowStockProducts > 0)
+                {
+                    <div class="card border-0 mt-4" style="border-left: 4px solid #f39c12;">
+                        <div class="card-body text-center">
+                            <i class="fa fa-exclamation-triangle" style="font-size: 2.5rem; color: #f39c12; margin-bottom: 10px; display: block;"></i>
+                            <h5 style="color: #d68910;">Cảnh báo tồn kho</h5>
+                            <p style="margin: 10px 0; color: #666;">
+                                Có <strong>@Model.LowStockProducts</strong> sản phẩm<br>sắp hết hàng
+                            </p>
+                            <a asp-action="Products" asp-route-stock="low" class="btn btn-warning btn-sm">
+                                <i class="fa fa-check"></i> Kiểm tra ngay
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>

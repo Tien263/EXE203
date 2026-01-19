@@ -8,9 +8,10 @@ using System.Security.Claims;
 
 namespace Exe_Demo.Controllers
 {
-    public class StaffController(ApplicationDbContext context) : Controller
+    public class StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : Controller
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
         private readonly ExcelOrderService _excelService = new ExcelOrderService(context);
 
         // Kiểm tra quyền Staff
@@ -481,7 +482,11 @@ namespace Exe_Demo.Controllers
                 return Json(new { success = false, message = "Không có quyền truy cập" });
             }
 
-            var order = await _context.Orders.FindAsync(model.OrderId);
+            // Use AsTracking to ensure changes are tracked and saved
+            var order = await _context.Orders
+                .AsTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == model.OrderId);
+                
             if (order == null)
             {
                 return Json(new { success = false, message = "Không tìm thấy đơn hàng" });
@@ -508,7 +513,10 @@ namespace Exe_Demo.Controllers
                 // Cộng điểm tích lũy khi đơn hàng hoàn thành (chỉ cộng 1 lần)
                 if (oldStatus != "Đã hoàn thành" && order.CustomerId.HasValue)
                 {
-                    var customer = await _context.Customers.FindAsync(order.CustomerId.Value);
+                    var customer = await _context.Customers
+                        .AsTracking()
+                        .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
+                        
                     if (customer != null)
                     {
                         // Quy tắc: 10.000đ = 1 điểm
@@ -1048,7 +1056,11 @@ namespace Exe_Demo.Controllers
                 return Json(new { success = false, message = "Không có quyền truy cập" });
             }
 
-            var customer = await _context.Customers.FindAsync(model.CustomerId);
+            // Use AsTracking to ensure changes are saved
+            var customer = await _context.Customers
+                .AsTracking()
+                .FirstOrDefaultAsync(c => c.CustomerId == model.CustomerId);
+                
             if (customer == null)
             {
                 return Json(new { success = false, message = "Không tìm thấy khách hàng" });
@@ -1147,6 +1159,13 @@ namespace Exe_Demo.Controllers
 
             if (ModelState.IsValid)
             {
+                // Xử lý upload ảnh
+                if (model.ImageFile != null)
+                {
+                    string uniqueFileName = UploadFile(model.ImageFile);
+                    model.ImageUrl = "/images/blog/" + uniqueFileName;
+                }
+
                 // Tạo slug từ title
                 model.Slug = GenerateSlug(model.Title);
 
@@ -1215,6 +1234,21 @@ namespace Exe_Demo.Controllers
                     return NotFound();
                 }
 
+                // Xử lý upload ảnh mới
+                if (model.ImageFile != null)
+                {
+                    // Xóa ảnh cũ nếu có (tùy chọn)
+                    // if (!string.IsNullOrEmpty(blog.ImageUrl)) { 删除旧图片 logic }
+
+                    string uniqueFileName = UploadFile(model.ImageFile);
+                    blog.ImageUrl = "/images/blog/" + uniqueFileName;
+                }
+                else if (!string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    // Nếu nhập URL trực tiếp
+                    blog.ImageUrl = model.ImageUrl;
+                }
+
                 // Cập nhật slug nếu title thay đổi
                 if (blog.Title != model.Title)
                 {
@@ -1231,16 +1265,15 @@ namespace Exe_Demo.Controllers
                 blog.Title = model.Title;
                 blog.Content = model.Content;
                 blog.ShortDescription = model.ShortDescription;
-                blog.ImageUrl = model.ImageUrl;
+                blog.AuthorName = model.AuthorName;
+                blog.IsPublished = model.IsPublished;
                 blog.UpdatedDate = DateTime.Now;
 
                 // Nếu chuyển từ draft sang published
-                if (blog.IsPublished == false && model.IsPublished == true)
+                if (blog.IsPublished == true && (blog.PublishedDate == null))
                 {
                     blog.PublishedDate = DateTime.Now;
                 }
-
-                blog.IsPublished = model.IsPublished;
 
                 await _context.SaveChangesAsync();
 
@@ -1271,9 +1304,29 @@ namespace Exe_Demo.Controllers
             return Json(new { success = true, message = "Xóa bài viết thành công" });
         }
 
+        private string UploadFile(IFormFile file)
+        {
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blog");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+            return uniqueFileName;
+        }
+
         // Helper method để tạo slug
         private static string GenerateSlug(string title)
         {
+            if (string.IsNullOrEmpty(title)) return string.Empty;
+
             // Chuyển về chữ thường
             string slug = title.ToLower();
 

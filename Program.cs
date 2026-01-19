@@ -214,7 +214,36 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-app.UseStaticFiles();
+// Configure static files with cache control
+if (app.Environment.IsDevelopment())
+{
+    // In development: disable caching to always get fresh files
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = ctx =>
+        {
+            // Disable caching for JS and CSS files in development
+            if (ctx.File.Name.EndsWith(".js") || ctx.File.Name.EndsWith(".css"))
+            {
+                ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
+                ctx.Context.Response.Headers.Append("Pragma", "no-cache");
+                ctx.Context.Response.Headers.Append("Expires", "0");
+            }
+        }
+    });
+}
+else
+{
+    // In production: enable caching for performance
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = ctx =>
+        {
+            // Cache static files for 7 days in production
+            ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
+        }
+    });
+}
 
 // Add Response Caching middleware (must be before UseRouting)
 app.UseResponseCaching();

@@ -1,0 +1,163 @@
+@model Exe_Demo.Models.Blog
+@{
+    ViewData["Title"] = "T\u1ea1o Blog M\u1edbi";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<div class="container-fluid py-5">
+    <!-- Page Header -->
+    <div class="page-title mb-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h2 style="margin: 0; color: white;">
+                        <i class="fa fa-plus-circle" style="margin-right: 12px;"></i>T\u1ea1o Blog M\u1edbi
+                    </h2>
+                </div>
+                <div class="col-auto">
+                    <a asp-action="Blogs" class="btn btn-light btn-sm">
+                        <i class="fa fa-arrow-left"></i> Quay l\u1ea1i
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card border-0">
+            <div class="card-body">
+                <form asp-action="CreateBlog" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-3">
+                                <label class="form-label" style="font-weight: 600;">
+                                    <i class="fa fa-heading"></i> Tiêu đề <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="Title" id="blogTitle" 
+                                       placeholder="Nhập tiêu đề bài viết..." required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" style="font-weight: 600;">
+                                    <i class="fa fa-link"></i> Slug (URL thân thiện)
+                                </label>
+                                <input type="text" class="form-control" name="Slug" id="blogSlug" 
+                                       placeholder="url-than-thien" readonly>
+                                <small class="text-muted">Tự động tạo từ tiêu đề</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" style="font-weight: 600;">
+                                    <i class="fa fa-align-left"></i> Mô tả ngắn
+                                </label>
+                                <textarea class="form-control" name="ShortDescription" rows="2" 
+                                          placeholder="Mô tả ngắn gọn về bài viết..."></textarea>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" style="font-weight: 600;">
+                                    <i class="fa fa-file-text"></i> Nội dung <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" name="Content" rows="15" 
+                                          placeholder="Nội dung bài viết..." required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card" style="position: sticky; top: 20px;">
+                                <div class="card-header">
+                                    <h6 style="margin-bottom: 0;">
+                                        <i class="fa fa-cog"></i> Tùy chọn
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label" style="font-weight: 600;">
+                                            <i class="fa fa-image"></i> Ảnh đại diện
+                                        </label>
+                                        <input type="file" class="form-control" name="ImageFile" 
+                                               accept="image/*" onchange="previewImage(event)">
+                                        <div id="imagePreview" class="mt-2" style="display: none;">
+                                            <img id="preview" src="" alt="Preview" 
+                                                 style="max-width: 100%; border-radius: 4px;">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label" style="font-weight: 600;">
+                                            <i class="fa fa-link"></i> URL ảnh (nếu có)
+                                        </label>
+                                        <input type="text" class="form-control" name="ImageUrl" 
+                                               placeholder="https://example.com/image.jpg">
+                                        <small class="text-muted">Nếu không upload file</small>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label" style="font-weight: 600;">
+                                            <i class="fa fa-user"></i> Tên tác giả
+                                        </label>
+                                        <input type="text" class="form-control" name="AuthorName" 
+                                               placeholder="Tên tác giả">
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="IsPublished" 
+                                               id="isPublished" value="true">
+                                        <label class="form-check-label" for="isPublished">
+                                            <i class="fa fa-check-circle"></i> Xuất bản ngay
+                                        </label>
+                                    </div>
+
+                                    <hr>
+
+                                    <button type="submit" class="btn btn-primary w-100 mb-2">
+                                        <i class="fa fa-save"></i> Lưu bài viết
+                                    </button>
+                                    <a asp-action="Blogs" class="btn btn-secondary w-100">
+                                        <i class="fa fa-times"></i> Hủy
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto generate slug from title
+        $('#blogTitle').on('input', function() {
+            var title = $(this).val();
+            var slug = generateSlug(title);
+            $('#blogSlug').val(slug);
+        });
+
+        function generateSlug(text) {
+            // Vietnamese characters map
+            var from = "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ";
+            var to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd";
+            
+            for (var i = 0; i < from.length; i++) {
+                text = text.replace(new RegExp(from[i], 'g'), to[i]);
+            }
+            
+            return text.toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                $('#preview').attr('src', reader.result);
+                $('#imagePreview').show();
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}

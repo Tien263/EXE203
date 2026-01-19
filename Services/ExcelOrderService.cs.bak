@@ -152,92 +152,91 @@ namespace Exe_Demo.Services
 
             using (var package = new ExcelPackage(fileStream))
             {
-                var worksheet = package.Workbook.Worksheets[0];
-                int rowCount = worksheet.Dimension.Rows;
+            var worksheet = package.Workbook.Worksheets[0];
+            int rowCount = worksheet.Dimension.Rows;
 
-                for (int row = 2; row <= rowCount; row++)
+            for (int row = 2; row <= rowCount; row++)
+            {
+                try
                 {
-                    try
-                    {
-                        var orderCode = worksheet.Cells[row, 1].Value?.ToString();
-                        if (string.IsNullOrEmpty(orderCode)) continue;
+                    var orderCode = worksheet.Cells[row, 1].Value?.ToString();
+                    if (string.IsNullOrEmpty(orderCode)) continue;
 
-                        // Use AsTracking to ensure changes are saved
-                        var order = await _context.Orders
-                            .AsTracking()
-                            .FirstOrDefaultAsync(o => o.OrderCode == orderCode);
-                            
-                        if (order == null)
-                        {
-                            errors.Add($"Dòng {row}: Không tìm thấy đơn hàng {orderCode}");
-                            failedCount++;
-                            continue;
-                        }
-
-                        // Lưu trạng thái cũ
-                        var oldStatus = order.OrderStatus;
-
-                        // Kiểm tra trạng thái thanh toán
-                        var paidChecked = worksheet.Cells[row, 7].Value?.ToString();
-                        var unpaidChecked = worksheet.Cells[row, 8].Value?.ToString();
+                    // Use AsTracking to ensure changes are saved
+                    var order = await _context.Orders
+                        .AsTracking()
+                        .FirstOrDefaultAsync(o => o.OrderCode == orderCode);
                         
-                        if (paidChecked == "☑" || paidChecked == "✓" || paidChecked?.ToLower() == "x")
-                        {
-                            order.PaymentStatus = "Đã thanh toán";
-                        }
-                        else if (unpaidChecked == "☑" || unpaidChecked == "✓" || unpaidChecked?.ToLower() == "x")
-                        {
-                            order.PaymentStatus = "Chưa thanh toán";
-                        }
-
-                        // Kiểm tra trạng thái đơn hàng được tick
-                        string? newStatus = null;
-                        if (worksheet.Cells[row, 9].Value?.ToString() == "☑") newStatus = "Chờ xử lý";
-                        else if (worksheet.Cells[row, 10].Value?.ToString() == "☑") newStatus = "Đang xử lý";
-                        else if (worksheet.Cells[row, 11].Value?.ToString() == "☑") newStatus = "Đang giao";
-                        else if (worksheet.Cells[row, 12].Value?.ToString() == "☑") newStatus = "Đã hoàn thành";
-                        else if (worksheet.Cells[row, 13].Value?.ToString() == "☑") newStatus = "Đã hủy";
-
-                        if (string.IsNullOrEmpty(newStatus))
-                        {
-                            errors.Add($"Dòng {row}: Đơn {orderCode} không có trạng thái nào được tick");
-                            failedCount++;
-                            continue;
-                        }
-
-                        // Cập nhật trạng thái
-                        order.OrderStatus = newStatus;
-                        order.UpdatedDate = DateTime.Now;
-
-                        // Nếu hoàn thành, cộng điểm
-                        if (newStatus == "Đã hoàn thành" && oldStatus != "Đã hoàn thành" && order.CustomerId.HasValue)
-                        {
-                            // Use AsTracking for customer as well
-                            var customer = await _context.Customers
-                                .AsTracking()
-                                .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
-                                
-                            if (customer != null)
-                            {
-                                int pointsToAdd = (int)(order.FinalAmount / 10000);
-                                customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
-                            }
-                            order.CompletedDate = DateTime.Now;
-                        }
-
-                        successCount++;
-                    }
-                    catch (Exception ex)
+                    if (order == null)
                     {
-                        errors.Add($"Dòng {row}: Lỗi - {ex.Message}");
+                        errors.Add($"Dòng {row}: Không tìm thấy đơn hàng {orderCode}");
                         failedCount++;
+                        continue;
                     }
-                }
 
-                await _context.SaveChangesAsync();
+                    // Lưu trạng thái cũ
+                    var oldStatus = order.OrderStatus;
+
+                    // Kiểm tra trạng thái thanh toán
+                    var paidChecked = worksheet.Cells[row, 7].Value?.ToString();
+                    var unpaidChecked = worksheet.Cells[row, 8].Value?.ToString();
+                    
+                    if (paidChecked == "☑" || paidChecked == "✓" || paidChecked?.ToLower() == "x")
+                    {
+                        order.PaymentStatus = "Đã thanh toán";
+                    }
+                    else if (unpaidChecked == "☑" || unpaidChecked == "✓" || unpaidChecked?.ToLower() == "x")
+                    {
+                        order.PaymentStatus = "Chưa thanh toán";
+                    }
+
+                    // Kiểm tra trạng thái đơn hàng được tick
+                    string? newStatus = null;
+                    if (worksheet.Cells[row, 9].Value?.ToString() == "☑") newStatus = "Chờ xử lý";
+                    else if (worksheet.Cells[row, 10].Value?.ToString() == "☑") newStatus = "Đang xử lý";
+                    else if (worksheet.Cells[row, 11].Value?.ToString() == "☑") newStatus = "Đang giao";
+                    else if (worksheet.Cells[row, 12].Value?.ToString() == "☑") newStatus = "Đã hoàn thành";
+                    else if (worksheet.Cells[row, 13].Value?.ToString() == "☑") newStatus = "Đã hủy";
+
+                    if (string.IsNullOrEmpty(newStatus))
+                    {
+                        errors.Add($"Dòng {row}: Đơn {orderCode} không có trạng thái nào được tick");
+                        failedCount++;
+                        continue;
+                    }
+
+                    // Cập nhật trạng thái
+                    order.OrderStatus = newStatus;
+                    order.UpdatedDate = DateTime.Now;
+
+                    // Nếu hoàn thành, cộng điểm
+                    if (newStatus == "Đã hoàn thành" && oldStatus != "Đã hoàn thành" && order.CustomerId.HasValue)
+                    {
+                        // Use AsTracking for customer as well
+                        var customer = await _context.Customers
+                            .AsTracking()
+                            .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
+                            
+                        if (customer != null)
+                        {
+                            int pointsToAdd = (int)(order.FinalAmount / 10000);
+                            customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
+                        }
+                        order.CompletedDate = DateTime.Now;
+                    }
+
+                    successCount++;
+                }
+                catch (Exception ex)
+                {
+                    errors.Add($"Dòng {row}: Lỗi - {ex.Message}");
+                    failedCount++;
+                }
             }
 
-            return (successCount, failedCount, errors);
+            await _context.SaveChangesAsync();
         }
+
+        return (successCount, failedCount, errors);
     }
 }

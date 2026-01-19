@@ -9,17 +9,17 @@ class AIChatWidget {
         this.baseUrl = null;
         this.apiUrl = null;
         this.healthUrl = null;
-        
+
         this.isOpen = false;
         this.isTyping = false;
         this.messages = [];
-        
+
         // Generate or load session ID
         this.sessionId = this.getOrCreateSessionId();
-        
+
         this.init();
     }
-    
+
     getOrCreateSessionId() {
         let sessionId = localStorage.getItem('aiChatSessionId');
         if (!sessionId) {
@@ -28,19 +28,19 @@ class AIChatWidget {
         }
         return sessionId;
     }
-    
+
     async init() {
         // Load AI API URL from server configuration
         await this.loadAIConfig();
-        
+
         this.createWidget();
         this.attachEventListeners();
         this.checkAIHealth();
-        
+
         // Load chat history from localStorage
         this.loadChatHistory();
     }
-    
+
     async loadAIConfig() {
         try {
             const response = await fetch('/Home/GetAIConfig');
@@ -55,7 +55,7 @@ class AIChatWidget {
             this.healthUrl = 'http://localhost:8000/api/health';
         }
     }
-    
+
     createWidget() {
         const widgetHTML = `
             <div class="ai-chat-widget">
@@ -148,31 +148,31 @@ class AIChatWidget {
                 </div>
             </div>
         `;
-        
+
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
     }
-    
+
     attachEventListeners() {
         // Toggle chat window
         document.getElementById('aiChatButton').addEventListener('click', () => {
             this.toggleChat();
         });
-        
+
         document.getElementById('aiChatClose').addEventListener('click', () => {
             this.toggleChat();
         });
-        
+
         // Send message
         document.getElementById('aiChatSend').addEventListener('click', () => {
             this.sendMessage();
         });
-        
+
         document.getElementById('aiChatInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.sendMessage();
             }
         });
-        
+
         // Quick questions
         document.querySelectorAll('.ai-quick-question').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -180,24 +180,24 @@ class AIChatWidget {
                 this.sendMessage(question);
             });
         });
-        
+
         // View chat history
         document.getElementById('aiChatHistory').addEventListener('click', () => {
             this.showChatHistory();
         });
-        
+
         // Archive and start new chat
         document.getElementById('aiChatArchive').addEventListener('click', () => {
             this.archiveAndStartNew();
         });
     }
-    
+
     toggleChat() {
         this.isOpen = !this.isOpen;
         const chatWindow = document.getElementById('aiChatWindow');
         const chatButton = document.getElementById('aiChatButton');
         const chatBadge = document.getElementById('aiChatBadge');
-        
+
         if (this.isOpen) {
             chatWindow.classList.add('active');
             chatButton.classList.add('active');
@@ -208,14 +208,14 @@ class AIChatWidget {
             chatButton.classList.remove('active');
         }
     }
-    
+
     async checkAIHealth() {
         const statusElement = document.getElementById('aiChatStatus');
-        
+
         try {
             const response = await fetch(this.healthUrl);
             const data = await response.json();
-            
+
             if (data.status === 'healthy') {
                 statusElement.textContent = 'Trực tuyến';
                 statusElement.style.color = '#4ade80';
@@ -227,27 +227,27 @@ class AIChatWidget {
             console.error('AI Health check failed:', error);
             statusElement.textContent = 'Ngoại tuyến';
             statusElement.style.color = '#ef4444';
-            
+
             // Show notification badge
             document.getElementById('aiChatBadge').style.display = 'flex';
         }
     }
-    
+
     async sendMessage(customMessage = null) {
         const input = document.getElementById('aiChatInput');
         const message = customMessage || input.value.trim();
-        
+
         if (!message) return;
-        
+
         // Clear input
         input.value = '';
-        
+
         // Add user message
         this.addMessage('user', message);
-        
+
         // Show typing indicator
         this.showTypingIndicator();
-        
+
         try {
             // Prepare conversation history (last 8 messages for context, excluding current message)
             // We need to exclude the current user message that was just added
@@ -255,7 +255,7 @@ class AIChatWidget {
                 role: msg.type === 'user' ? 'user' : 'assistant',
                 content: msg.content
             }));
-            
+
             // Call AI API with conversation history
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
@@ -268,52 +268,52 @@ class AIChatWidget {
                     conversation_history: conversationHistory
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error('API request failed');
             }
-            
+
             const data = await response.json();
-            
+
             // Hide typing indicator
             this.hideTypingIndicator();
-            
+
             // Add AI response
             this.addMessage('bot', data.answer, data.sources);
-            
+
             // Handle order action if present
             if (data.action && data.action.type === 'add_to_cart') {
                 await this.handleOrderAction(data.action);
             }
-            
+
         } catch (error) {
             console.error('Error sending message:', error);
             this.hideTypingIndicator();
-            
+
             // Show error message
-            this.addMessage('bot', 
+            this.addMessage('bot',
                 '❌ Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng đảm bảo AI server đang chạy (python app/main.py) hoặc thử lại sau.',
                 []
             );
         }
-        
+
         // Save chat history
         this.saveChatHistory();
     }
-    
+
     addMessage(type, content, sources = [], isHTML = false) {
         const messagesContainer = document.getElementById('aiChatMessages');
-        const time = new Date().toLocaleTimeString('vi-VN', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+        const time = new Date().toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit'
         });
-        
+
         // Remove welcome message if exists
         const welcomeMsg = messagesContainer.querySelector('.ai-welcome-message');
         if (welcomeMsg) {
             welcomeMsg.remove();
         }
-        
+
         const messageHTML = `
             <div class="ai-message ${type}">
                 <div class="ai-message-avatar">
@@ -327,9 +327,9 @@ class AIChatWidget {
                 </div>
             </div>
         `;
-        
+
         messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
-        
+
         // Add sources if available
         if (sources && sources.length > 0) {
             const sourcesHTML = `
@@ -338,23 +338,23 @@ class AIChatWidget {
                     <div class="ai-message-content">
                         <div class="ai-message-bubble" style="font-size: 12px; background: #f8f9fa; color: #6c757d;">
                             <strong>Nguồn tham khảo:</strong><br/>
-                            ${sources.map((s, i) => 
-                                `${i + 1}. ${s.fruit_name} (${(s.relevance_score * 100).toFixed(0)}%)`
-                            ).join('<br/>')}
+                            ${sources.map((s, i) =>
+                `${i + 1}. ${s.fruit_name} (${(s.relevance_score * 100).toFixed(0)}%)`
+            ).join('<br/>')}
                         </div>
                     </div>
                 </div>
             `;
             messagesContainer.insertAdjacentHTML('beforeend', sourcesHTML);
         }
-        
+
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
+
         // Store message
         this.messages.push({ type, content, time, sources });
     }
-    
+
     formatMessage(text) {
         // Convert markdown-style formatting
         return text
@@ -362,7 +362,7 @@ class AIChatWidget {
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/\n/g, '<br/>');
     }
-    
+
     showTypingIndicator() {
         const messagesContainer = document.getElementById('aiChatMessages');
         const typingHTML = `
@@ -377,27 +377,27 @@ class AIChatWidget {
                 </div>
             </div>
         `;
-        
+
         messagesContainer.insertAdjacentHTML('beforeend', typingHTML);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
+
         // Disable input
         document.getElementById('aiChatInput').disabled = true;
         document.getElementById('aiChatSend').disabled = true;
     }
-    
+
     hideTypingIndicator() {
         const indicator = document.getElementById('aiTypingIndicator');
         if (indicator) {
             indicator.remove();
         }
-        
+
         // Enable input
         document.getElementById('aiChatInput').disabled = false;
         document.getElementById('aiChatSend').disabled = false;
         document.getElementById('aiChatInput').focus();
     }
-    
+
     async saveChatToDatabase(role, message, isOrderRelated = false, orderData = null) {
         try {
             await fetch('/api/ChatHistory/save', {
@@ -417,7 +417,7 @@ class AIChatWidget {
             console.error('Error saving chat to database:', error);
         }
     }
-    
+
     saveChatHistory() {
         try {
             localStorage.setItem('aiChatHistory', JSON.stringify(this.messages));
@@ -425,13 +425,13 @@ class AIChatWidget {
             console.error('Error saving chat history:', error);
         }
     }
-    
+
     loadChatHistory() {
         try {
             const history = localStorage.getItem('aiChatHistory');
             if (history) {
                 this.messages = JSON.parse(history);
-                
+
                 // Restore messages (limit to last 10)
                 const recentMessages = this.messages.slice(-10);
                 if (recentMessages.length > 0) {
@@ -440,7 +440,7 @@ class AIChatWidget {
                     if (welcomeMsg) {
                         welcomeMsg.remove();
                     }
-                    
+
                     recentMessages.forEach(msg => {
                         this.addMessage(msg.type, msg.content, msg.sources || []);
                     });
@@ -450,12 +450,12 @@ class AIChatWidget {
             console.error('Error loading chat history:', error);
         }
     }
-    
+
     async handleOrderAction(action) {
         try {
             // Show processing message
             this.addMessage('bot', '⏳ Đang xử lý đơn hàng của bạn...');
-            
+
             // Call order API
             const response = await fetch('/api/AIOrder/add-to-cart', {
                 method: 'POST',
@@ -466,9 +466,9 @@ class AIChatWidget {
                     products: action.products
                 })
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 // Show success message with action buttons
                 const messageHTML = `
@@ -502,23 +502,23 @@ class AIChatWidget {
             } else {
                 this.addMessage('bot', `❌ ${result.message}`);
             }
-            
+
         } catch (error) {
             console.error('Error handling order action:', error);
             this.addMessage('bot', '❌ Có lỗi xảy ra khi xử lý đơn hàng. Vui lòng thử lại!');
         }
     }
-    
+
     showChatHistory() {
         if (this.messages.length === 0) {
             alert('📭 Chưa có tin nhắn nào trong cuộc trò chuyện hiện tại!\n\nMẹo: Hãy chat với AI trước, sau đó bấm nút này để xem thống kê.');
             return;
         }
-        
+
         const totalMessages = this.messages.length;
         const userMessages = this.messages.filter(m => m.type === 'user').length;
         const botMessages = this.messages.filter(m => m.type === 'bot').length;
-        
+
         const historyHTML = `
             <div style="line-height: 1.8;">
                 <h4 style="margin-bottom: 15px; color: #007bff;">📊 Thống Kê Lịch Sử Chat</h4>
@@ -541,10 +541,10 @@ class AIChatWidget {
                 </div>
             </div>
         `;
-        
+
         this.addMessage('bot', historyHTML, [], true);
     }
-    
+
     showArchiveHistoryPopup() {
         // Create popup overlay
         const popup = document.createElement('div');
@@ -561,11 +561,11 @@ class AIChatWidget {
             justify-content: center;
             z-index: 10000;
         `;
-        
+
         const totalMessages = this.messages.length;
         const userMessages = this.messages.filter(m => m.type === 'user').length;
         const botMessages = this.messages.filter(m => m.type === 'bot').length;
-        
+
         popup.innerHTML = `
             <div style="background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
                 <h3 style="margin: 0 0 16px 0; color: #202123; font-size: 20px;">📦 Lưu trữ cuộc trò chuyện</h3>
@@ -593,19 +593,19 @@ class AIChatWidget {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(popup);
-        
+
         // Event listeners
         document.getElementById('cancelArchive').addEventListener('click', () => {
             popup.remove();
         });
-        
+
         document.getElementById('confirmArchive').addEventListener('click', async () => {
             popup.remove();
             await this.performArchive();
         });
-        
+
         // Close on overlay click
         popup.addEventListener('click', (e) => {
             if (e.target === popup) {
@@ -613,7 +613,7 @@ class AIChatWidget {
             }
         });
     }
-    
+
     async performArchive() {
         try {
             // Show archiving message
@@ -627,27 +627,27 @@ class AIChatWidget {
             const messagesContainer = document.getElementById('aiChatMessages');
             messagesContainer.insertAdjacentHTML('beforeend', archiveMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
+
             // Save all messages to database at once
             for (const msg of this.messages) {
                 const role = msg.type === 'user' ? 'user' : 'assistant';
                 await this.saveChatToDatabase(role, msg.content, false, null);
             }
-            
+
             // Wait a bit for visual feedback
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             // Clear messages array
             this.messages = [];
-            
+
             // Clear localStorage
             localStorage.removeItem('aiChatHistory');
-            
+
             // Generate new session ID
             const oldSessionId = this.sessionId;
             localStorage.removeItem('aiChatSessionId');
             this.sessionId = this.getOrCreateSessionId();
-            
+
             // Clear UI and show welcome message
             messagesContainer.innerHTML = `
                 <div class="ai-welcome-message">
@@ -669,7 +669,7 @@ class AIChatWidget {
                     </div>
                 </div>
             `;
-            
+
             // Re-attach quick question listeners
             document.querySelectorAll('.ai-quick-question').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -677,20 +677,20 @@ class AIChatWidget {
                     this.sendMessage(question);
                 });
             });
-            
+
             console.log(`Chat archived! Old session: ${oldSessionId}, New session: ${this.sessionId}`);
         } catch (error) {
             console.error('Error archiving chat:', error);
             alert('❌ Có lỗi khi lưu trữ chat. Vui lòng thử lại!');
         }
     }
-    
+
     async archiveAndStartNew() {
         if (this.messages.length === 0) {
             alert('📭 Chưa có tin nhắn nào để lưu trữ!');
             return;
         }
-        
+
         // Show archive history popup
         this.showArchiveHistoryPopup();
     }

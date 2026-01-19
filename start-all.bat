@@ -73,8 +73,9 @@ echo Website chinh: http://localhost:5241
 echo ChatGPT API: http://localhost:8000/docs
 echo.
 
-echo Dang mo trinh duyet...
-start http://localhost:5241
+echo Dang mo trinh duyet voi cache disabled...
+echo [INFO] Browser se tu dong load file JavaScript moi nhat!
+start chrome --disable-cache --disk-cache-size=1 http://localhost:5241
 
 echo.
 echo Chuc mung! Website da san sang!

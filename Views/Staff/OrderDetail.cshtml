@@ -4,6 +4,7 @@
 }
 
 <div class="container-fluid py-4">
+    @Html.AntiForgeryToken()
     <div class="row mb-4">
         <div class="col-md-6">
             <h2>Chi Tiết Đơn Hàng</h2>
@@ -165,18 +166,18 @@
                     <div class="mb-3">
                         <label class="form-label">Trạng thái đơn hàng:</label>
                         <select id="orderStatus" class="form-select">
-                            <option value="Chờ xác nhận" selected="@(Model.Order.OrderStatus == "Chờ xác nhận")">Chờ xác nhận</option>
-                            <option value="Đang xử lý" selected="@(Model.Order.OrderStatus == "Đang xử lý")">Đang xử lý</option>
-                            <option value="Đang giao" selected="@(Model.Order.OrderStatus == "Đang giao")">Đang giao</option>
-                            <option value="Đã hoàn thành" selected="@(Model.Order.OrderStatus == "Đã hoàn thành")">Đã hoàn thành</option>
-                            <option value="Đã hủy" selected="@(Model.Order.OrderStatus == "Đã hủy")">Đã hủy</option>
+                            <option value="Chờ xác nhận">Chờ xác nhận</option>
+                            <option value="Đang xử lý">Đang xử lý</option>
+                            <option value="Đang giao">Đang giao</option>
+                            <option value="Đã hoàn thành">Đã hoàn thành</option>
+                            <option value="Đã hủy">Đã hủy</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Trạng thái thanh toán:</label>
                         <select id="paymentStatus" class="form-select">
-                            <option value="Chưa thanh toán" selected="@(Model.Order.PaymentStatus == "Chưa thanh toán")">Chưa thanh toán</option>
-                            <option value="Đã thanh toán" selected="@(Model.Order.PaymentStatus == "Đã thanh toán")">Đã thanh toán</option>
+                            <option value="Chưa thanh toán">Chưa thanh toán</option>
+                            <option value="Đã thanh toán">Đã thanh toán</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -194,7 +195,20 @@
 
 @section Scripts {
     <script>
+        // Set the selected values on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderStatus = '@Model.Order.OrderStatus';
+            const paymentStatus = '@Model.Order.PaymentStatus';
+            
+            document.getElementById('orderStatus').value = orderStatus;
+            document.getElementById('paymentStatus').value = paymentStatus;
+        });
+        
         function updateOrderStatus() {
+            // Get CSRF token from hidden input
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenInput ? tokenInput.value : '';
+
             const data = {
                 orderId: @Model.Order.OrderId,
                 orderStatus: document.getElementById('orderStatus').value,
@@ -205,7 +219,8 @@
             fetch('/Staff/UpdateOrderStatus', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
                 },
                 body: JSON.stringify(data)
             })
@@ -215,11 +230,12 @@
                     alert(result.message);
                     location.reload();
                 } else {
-                    alert(result.message);
+                    alert(result.message || 'Có lỗi xảy ra');
                 }
             })
             .catch(error => {
-                alert('Có lỗi xảy ra: ' + error);
+                console.error('Error:', error);
+                alert('Lỗi khi gửi yêu cầu: ' + error.message);
             });
         }
     </script>
