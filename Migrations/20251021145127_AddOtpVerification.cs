@@ -22,7 +22,7 @@ namespace Exe_Demo.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     DisplayOrder = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -43,7 +43,7 @@ namespace Exe_Demo.Migrations
                     Message = table.Column<string>(type: "TEXT", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
                     IsReplied = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -72,7 +72,7 @@ namespace Exe_Demo.Migrations
                     LoyaltyPoints = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     LastPurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
@@ -102,7 +102,7 @@ namespace Exe_Demo.Migrations
                     BankAccount = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     BankName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -118,7 +118,7 @@ namespace Exe_Demo.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     OtpCode = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "datetime('now')"),
                     ExpiresAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
@@ -136,7 +136,7 @@ namespace Exe_Demo.Migrations
                     SettingKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SettingValue = table.Column<string>(type: "TEXT", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -162,7 +162,7 @@ namespace Exe_Demo.Migrations
                     BankName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -187,7 +187,7 @@ namespace Exe_Demo.Migrations
                     ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
                     ValidTo = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -221,7 +221,7 @@ namespace Exe_Demo.Migrations
                     ViewCount = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     SoldCount = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     Rating = table.Column<decimal>(type: "decimal(3,2)", nullable: true, defaultValue: 0m),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -247,7 +247,7 @@ namespace Exe_Demo.Migrations
                     EmployeeId = table.Column<int>(type: "int", nullable: true),
                     ExpenseDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, defaultValue: "ÄÃ£ chi"),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -287,7 +287,7 @@ namespace Exe_Demo.Migrations
                     PaymentStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, defaultValue: "ChÆ°a thanh toÃ¡n"),
                     OrderStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, defaultValue: "Chá» xÃ¡c nháº­n"),
                     Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     CompletedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
@@ -322,7 +322,7 @@ namespace Exe_Demo.Migrations
                     TotalOrders = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, defaultValue: "Äang má»Ÿ"),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -348,7 +348,7 @@ namespace Exe_Demo.Migrations
                     EmployeeId = table.Column<int>(type: "int", nullable: true),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     LastLoginDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -380,9 +380,9 @@ namespace Exe_Demo.Migrations
                     RemainingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValue: 0m),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, defaultValue: "Chá» duyá»‡t"),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    OrderDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    OrderDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     ReceivedDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -405,7 +405,7 @@ namespace Exe_Demo.Migrations
                     SessionId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -435,7 +435,7 @@ namespace Exe_Demo.Migrations
                     ReferenceId = table.Column<int>(type: "int", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     EmployeeId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -459,7 +459,7 @@ namespace Exe_Demo.Migrations
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IsApproved = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -487,7 +487,7 @@ namespace Exe_Demo.Migrations
                     Points = table.Column<int>(type: "int", nullable: false),
                     TransactionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -546,7 +546,7 @@ namespace Exe_Demo.Migrations
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, defaultValue: "ThÃ nh cÃ´ng"),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     EmployeeId = table.Column<int>(type: "int", nullable: true),
-                    PaymentDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    PaymentDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {
@@ -579,7 +579,7 @@ namespace Exe_Demo.Migrations
                     ViewCount = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     IsPublished = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
                     PublishedDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')"),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
@@ -631,7 +631,7 @@ namespace Exe_Demo.Migrations
                     CustomerEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "datetime('now')")
                 },
                 constraints: table =>
                 {

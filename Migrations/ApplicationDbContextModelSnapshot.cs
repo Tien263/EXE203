@@ -44,7 +44,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(255)
@@ -117,7 +117,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("CustomerEmail")
                         .HasMaxLength(100)
@@ -157,7 +157,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -205,7 +205,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -251,7 +251,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -310,7 +310,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("CustomerCode")
                         .HasMaxLength(50)
@@ -423,7 +423,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<DateOnly?>("DateOfBirth")
                         .HasColumnType("date");
@@ -505,7 +505,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -554,7 +554,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
@@ -600,7 +600,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -647,7 +647,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("CustomerEmail")
                         .HasMaxLength(100)
@@ -824,7 +824,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -882,7 +882,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("PaymentDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
@@ -926,7 +926,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -1057,7 +1057,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
@@ -1069,7 +1069,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<decimal?>("PaidAmount")
                         .ValueGeneratedOnAdd()
@@ -1163,7 +1163,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -1221,7 +1221,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.HasKey("SettingId")
                         .HasName("PK__Settings__54372B1DFC4958A2");
@@ -1246,7 +1246,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -1329,7 +1329,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("District")
                         .HasMaxLength(100)
@@ -1389,7 +1389,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -1463,7 +1463,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<string>("DiscountType")
                         .HasMaxLength(20)

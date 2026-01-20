@@ -70,7 +70,8 @@ Chúng ta sẽ dùng cách đơn giản nhất: Copy code lên và chạy.
 git clone https://github.com/Tien263/EXE203.git
 
 # Vào thư mục chứa Dockerfile
-cd MocViStore/Exe_Demo_1/Exe_Demo
+# Vào thư mục chứa code
+cd EXE203
 ```
 
 ### 2. Tạo file cấu hình
