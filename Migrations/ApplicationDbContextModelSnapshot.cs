@@ -83,12 +83,19 @@ namespace Exe_Demo.Migrations
                     b.HasKey("BlogId")
                         .HasName("PK__Blogs__54379E30D7FB4623");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId")
+                        .HasDatabaseName("IX_Blogs_AuthorId");
+
+                    b.HasIndex("IsPublished")
+                        .HasDatabaseName("IX_Blogs_IsPublished");
+
+                    b.HasIndex("PublishedDate")
+                        .HasDatabaseName("IX_Blogs_PublishedDate");
 
                     b.HasIndex(new[] { "Slug" }, "UQ__Blogs__BC7B5FB6F961F801")
                         .IsUnique();
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blogs", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.BlogComment", b =>
@@ -136,7 +143,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("BlogComments");
+                    b.ToTable("BlogComments", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Cart", b =>
@@ -170,9 +177,14 @@ namespace Exe_Demo.Migrations
                     b.HasKey("CartId")
                         .HasName("PK__Cart__51BCD7B77262D876");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("IX_Cart_CustomerId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("IX_Cart_ProductId");
+
+                    b.HasIndex("SessionId")
+                        .HasDatabaseName("IX_Cart_SessionId");
 
                     b.ToTable("Cart", (string)null);
                 });
@@ -219,7 +231,13 @@ namespace Exe_Demo.Migrations
                     b.HasKey("CategoryId")
                         .HasName("PK__Categori__19093A0BEB7A4BFE");
 
-                    b.ToTable("Categories");
+                    b.HasIndex("DisplayOrder")
+                        .HasDatabaseName("IX_Categories_DisplayOrder");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Categories_IsActive");
+
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.ContactMessage", b =>
@@ -270,7 +288,7 @@ namespace Exe_Demo.Migrations
                     b.HasKey("MessageId")
                         .HasName("PK__ContactM__C87C0C9C21A4A6C8");
 
-                    b.ToTable("ContactMessages");
+                    b.ToTable("ContactMessages", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Customer", b =>
@@ -366,11 +384,20 @@ namespace Exe_Demo.Migrations
                     b.HasKey("CustomerId")
                         .HasName("PK__Customer__A4AE64D8363B03CF");
 
+                    b.HasIndex("Email")
+                        .HasDatabaseName("IX_Customers_Email");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Customers_IsActive");
+
+                    b.HasIndex("PhoneNumber")
+                        .HasDatabaseName("IX_Customers_PhoneNumber");
+
                     b.HasIndex(new[] { "CustomerCode" }, "UQ__Customer__06678521EFABD034")
                         .IsUnique()
                         .HasFilter("[CustomerCode] IS NOT NULL");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Employee", b =>
@@ -452,10 +479,16 @@ namespace Exe_Demo.Migrations
                     b.HasKey("EmployeeId")
                         .HasName("PK__Employee__7AD04F11FE470046");
 
+                    b.HasIndex("Department")
+                        .HasDatabaseName("IX_Employees_Department");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Employees_IsActive");
+
                     b.HasIndex(new[] { "EmployeeCode" }, "UQ__Employee__1F64254817C2AECF")
                         .IsUnique();
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Expense", b =>
@@ -507,7 +540,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "ExpenseCode" }, "UQ__Expenses__5064CAE114428009")
                         .IsUnique();
 
-                    b.ToTable("Expenses");
+                    b.ToTable("Expenses", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.InventoryTransaction", b =>
@@ -553,7 +586,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("InventoryTransactions");
+                    b.ToTable("InventoryTransactions", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.LoyaltyPointsHistory", b =>
@@ -715,14 +748,24 @@ namespace Exe_Demo.Migrations
                     b.HasKey("OrderId")
                         .HasName("PK__Orders__C3905BCFF01C29D3");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CreatedDate")
+                        .HasDatabaseName("IX_Orders_CreatedDate");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("IX_Orders_CustomerId");
 
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("OrderStatus")
+                        .HasDatabaseName("IX_Orders_OrderStatus");
+
+                    b.HasIndex("CustomerId", "OrderStatus")
+                        .HasDatabaseName("IX_Orders_CustomerId_OrderStatus");
 
                     b.HasIndex(new[] { "OrderCode" }, "UQ__Orders__999B52299F25A08F")
                         .IsUnique();
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.OrderDetail", b =>
@@ -761,11 +804,13 @@ namespace Exe_Demo.Migrations
                     b.HasKey("OrderDetailId")
                         .HasName("PK__OrderDet__D3B9D36C71A16D84");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("IX_OrderDetails_OrderId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("IX_OrderDetails_ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.OtpVerification", b =>
@@ -801,7 +846,16 @@ namespace Exe_Demo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OtpVerifications");
+                    b.HasIndex("Email")
+                        .HasDatabaseName("IX_OtpVerifications_Email");
+
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("IX_OtpVerifications_ExpiresAt");
+
+                    b.HasIndex("Email", "IsUsed")
+                        .HasDatabaseName("IX_OtpVerifications_Email_IsUsed");
+
+                    b.ToTable("OtpVerifications", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Payment", b =>
@@ -852,7 +906,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Product", b =>
@@ -965,12 +1019,31 @@ namespace Exe_Demo.Migrations
                     b.HasKey("ProductId")
                         .HasName("PK__Products__B40CC6CDEA842406");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("IX_Products_CategoryId");
+
+                    b.HasIndex("CreatedDate")
+                        .HasDatabaseName("IX_Products_CreatedDate");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Products_IsActive");
+
+                    b.HasIndex("IsFeatured")
+                        .HasDatabaseName("IX_Products_IsFeatured");
+
+                    b.HasIndex("IsNew")
+                        .HasDatabaseName("IX_Products_IsNew");
+
+                    b.HasIndex("Price")
+                        .HasDatabaseName("IX_Products_Price");
+
+                    b.HasIndex("CategoryId", "IsActive")
+                        .HasDatabaseName("IX_Products_CategoryId_IsActive");
 
                     b.HasIndex(new[] { "ProductCode" }, "UQ__Products__2F4E024F2D65F9C7")
                         .IsUnique();
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.PurchaseOrder", b =>
@@ -1039,7 +1112,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "PurchaseOrderCode" }, "UQ__Purchase__E282C5B440FB451B")
                         .IsUnique();
 
-                    b.ToTable("PurchaseOrders");
+                    b.ToTable("PurchaseOrders", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.PurchaseOrderDetail", b =>
@@ -1072,7 +1145,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("PurchaseOrderDetails");
+                    b.ToTable("PurchaseOrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Review", b =>
@@ -1116,9 +1189,13 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("IsApproved")
+                        .HasDatabaseName("IX_Reviews_IsApproved");
 
-                    b.ToTable("Reviews");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("IX_Reviews_ProductId");
+
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Setting", b =>
@@ -1152,7 +1229,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "SettingKey" }, "UQ__Settings__01E719AD5D4C6367")
                         .IsUnique();
 
-                    b.ToTable("Settings");
+                    b.ToTable("Settings", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Shift", b =>
@@ -1218,7 +1295,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "ShiftCode" }, "UQ__Shifts__9377D562DFAD97A7")
                         .IsUnique();
 
-                    b.ToTable("Shifts");
+                    b.ToTable("Shifts", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Supplier", b =>
@@ -1298,7 +1375,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "SupplierCode" }, "UQ__Supplier__44BE981B6C09723B")
                         .IsUnique();
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.User", b =>
@@ -1363,10 +1440,16 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("EmployeeId");
 
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Users_IsActive");
+
+                    b.HasIndex("Role")
+                        .HasDatabaseName("IX_Users_Role");
+
                     b.HasIndex(new[] { "Email" }, "UQ__Users__A9D10534D9539C96")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Voucher", b =>
@@ -1431,7 +1514,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "VoucherCode" }, "UQ__Vouchers__7F0ABCA91B0360D6")
                         .IsUnique();
 
-                    b.ToTable("Vouchers");
+                    b.ToTable("Vouchers", (string)null);
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Blog", b =>

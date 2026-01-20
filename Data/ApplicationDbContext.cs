@@ -24,6 +24,8 @@ public partial class ApplicationDbContext : DbContext
 
     public required virtual DbSet<Category> Categories { get; set; }
 
+    public required virtual DbSet<ChatHistory> ChatHistories { get; set; }
+
     public required virtual DbSet<ContactMessage> ContactMessages { get; set; }
 
     public required virtual DbSet<Customer> Customers { get; set; }
@@ -635,6 +637,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.IsUsed)
                 .HasDefaultValue(false);
         });
+
+        // Configure performance indexes
+        DatabaseIndexConfiguration.ConfigureIndexes(modelBuilder);
 
         OnModelCreatingPartial(modelBuilder);
     }

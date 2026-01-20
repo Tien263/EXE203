@@ -1,5 +1,6 @@
 using Exe_Demo.Data;
 using Exe_Demo.Services;
+using Exe_Demo.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Kestrel to listen on PORT environment variable (for Render)
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+// Use 5241 for development, PORT env var for production
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5241";
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(int.Parse(port));
@@ -16,7 +18,31 @@ builder.WebHost.ConfigureKestrel(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add Memory Cache for performance optimization
+builder.Services.AddMemoryCache();
+
+// Add Response Caching
+builder.Services.AddResponseCaching();
+
+// Configure Response Caching options
+builder.Services.AddControllersWithViews(options =>
+{
+    options.CacheProfiles.Add("Default30",
+        new Microsoft.AspNetCore.Mvc.CacheProfile
+        {
+            Duration = 1800, // 30 minutes
+            Location = Microsoft.AspNetCore.Mvc.ResponseCacheLocation.Any
+        });
+    options.CacheProfiles.Add("Never",
+        new Microsoft.AspNetCore.Mvc.CacheProfile
+        {
+            Location = Microsoft.AspNetCore.Mvc.ResponseCacheLocation.None,
+            NoStore = true
+        });
+});
+
 // Add DbContext - Use SQLite in Production, SQL Server in Development
+// With Query Tracking optimization
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     if (builder.Environment.IsProduction())
@@ -43,13 +69,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             Console.WriteLine($"Using SQLite database at: {dbPath}");
         }
     }
+    
+    // Performance optimization: Use NoTracking by default for read-only queries
+    // Individual queries can override this when needed
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
-// Add Email Service
+// Register Repository Pattern & Unit of Work (SOLID: Dependency Inversion)
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Register Services (SOLID: Single Responsibility)
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 // Add Authentication
-builder.Services.AddAuthentication(options =>
+var authBuilder = builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -61,22 +98,23 @@ builder.Services.AddAuthentication(options =>
         options.AccessDeniedPath = "/Auth/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromHours(2);
         options.SlidingExpiration = true;
-    })
-    .AddGoogle(options =>
+    });
+
+// Only add Google OAuth if configured
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
+{
+    Console.WriteLine("✅ Google OAuth is configured");
+    authBuilder.AddGoogle(options =>
     {
-        var clientId = builder.Configuration["Authentication:Google:ClientId"] ?? "";
-        var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
-        
-        // Log configuration for debugging
-        Console.WriteLine($"Google OAuth ClientId configured: {!string.IsNullOrEmpty(clientId)}");
-        Console.WriteLine($"Google OAuth ClientSecret configured: {!string.IsNullOrEmpty(clientSecret)}");
-        
-        options.ClientId = clientId;
-        options.ClientSecret = clientSecret;
+        options.ClientId = googleClientId;
+        options.ClientSecret = googleClientSecret;
         options.CallbackPath = new PathString("/signin-google");
         options.SaveTokens = true;
         
-        // Handle all OAuth failures gracefully
+        // Handle OAuth failures gracefully - only redirect on actual failures
         options.Events.OnRemoteFailure = context =>
         {
             var errorMessage = context.Failure?.Message ?? "Unknown error";
@@ -84,31 +122,39 @@ builder.Services.AddAuthentication(options =>
             // Log the error for debugging
             Console.WriteLine($"Google OAuth Error: {errorMessage}");
             
-            // Redirect to login with error message
-            if (errorMessage.Contains("Correlation failed") || 
-                errorMessage.Contains("state") ||
-                errorMessage.Contains("redirect_uri"))
+            // Only redirect if it's a real failure (not just user cancellation)
+            if (context.Failure != null && !errorMessage.Contains("Correlation failed"))
             {
-                context.Response.Redirect("/Auth/Login?error=oauth_failed");
+                context.Response.Redirect("/Auth/Login?error=oauth_failed&message=" + Uri.EscapeDataString(errorMessage));
+                context.HandleResponse();
             }
             else
             {
-                context.Response.Redirect("/Auth/Login?error=external_login");
+                // For correlation failures, just redirect to login without error
+                context.Response.Redirect("/Auth/Login");
+                context.HandleResponse();
             }
             
-            context.HandleResponse();
             return Task.CompletedTask;
         };
         
-        // Production-ready cookie settings
+        // Production-ready cookie settings with more lenient settings for development
         options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-        options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.CorrelationCookie.SecurePolicy = builder.Environment.IsDevelopment() 
+            ? CookieSecurePolicy.SameAsRequest 
+            : CookieSecurePolicy.Always;
         options.CorrelationCookie.IsEssential = true;
         
         // Add required scopes
         options.Scope.Add("profile");
         options.Scope.Add("email");
     });
+}
+else
+{
+    Console.WriteLine("⚠️  Google OAuth is NOT configured - Google login will be disabled");
+    Console.WriteLine("   To enable: Add ClientId and ClientSecret in appsettings.json");
+}
 
 // Add Session
 builder.Services.AddSession(options =>
@@ -135,7 +181,19 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.EnsureCreated();
+        // Apply any pending EF Core migrations to keep database schema in sync
+        context.Database.Migrate();
+
+        // Seed initial data if needed
+        try
+        {
+            DatabaseSeeder.SeedData(context);
+        }
+        catch (Exception seedEx)
+        {
+            Console.WriteLine($"Database seeding skipped/failed: {seedEx.Message}");
+        }
+
         Console.WriteLine("Database initialized successfully");
     }
     catch (Exception ex)
@@ -156,7 +214,39 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-app.UseStaticFiles();
+// Configure static files with cache control
+if (app.Environment.IsDevelopment())
+{
+    // In development: disable caching to always get fresh files
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = ctx =>
+        {
+            // Disable caching for JS and CSS files in development
+            if (ctx.File.Name.EndsWith(".js") || ctx.File.Name.EndsWith(".css"))
+            {
+                ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
+                ctx.Context.Response.Headers.Append("Pragma", "no-cache");
+                ctx.Context.Response.Headers.Append("Expires", "0");
+            }
+        }
+    });
+}
+else
+{
+    // In production: enable caching for performance
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = ctx =>
+        {
+            // Cache static files for 7 days in production
+            ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
+        }
+    });
+}
+
+// Add Response Caching middleware (must be before UseRouting)
+app.UseResponseCaching();
 
 app.UseRouting();
 

@@ -1,0 +1,185 @@
+@model IEnumerable<Exe_Demo.Models.LoyaltyPointsHistory>
+@{
+    ViewData["Title"] = "Lịch Sử \u0110i\u1ec3m Tích Lũy";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+    var customer = ViewBag.Customer as Exe_Demo.Models.Customer;
+}
+
+<div class="container-fluid py-5">
+    <!-- Page Header -->
+    <div class="page-title mb-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h2 style="margin: 0; color: white;">
+                        <i class="fa fa-history" style="margin-right: 12px;"></i>Lịch Sử Điểm Tích Lũy
+                    </h2>
+                </div>
+                <div class="col-auto">
+                    <a asp-action="LoyaltyPoints" class="btn btn-light btn-sm">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Customer Info Card -->
+        @if (customer != null)
+        {
+            <div class="card border-0 mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <div style="text-align: center;">
+                                <i class="fa fa-user-circle fa-5x mb-2" style="opacity: 0.9;"></i>
+                                <h5 style="color: white; margin-bottom: 0;">@customer.FullName</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Email:</strong><br>
+                                    <span>@customer.Email</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>SĐT:</strong><br>
+                                    <span>@customer.PhoneNumber</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Điểm hiện tại:</strong><br>
+                                    <h3 style="color: white; margin: 0;">
+                                        <i class="fa fa-star"></i> @(customer.LoyaltyPoints ?? 0) điểm
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- History Table -->
+        <div class="card border-0">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-list" style="margin-right: 10px;"></i>Lịch Sử Giao Dịch Điểm
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="font-weight: 700;"><i class="fa fa-hashtag"></i> STT</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-calendar"></i> Ngày giờ</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-exchange"></i> Loại giao dịch</th>
+                                    <th style="font-weight: 700; text-align: center;"><i class="fa fa-star"></i> Điểm</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-info-circle"></i> Mô tả</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int stt = 1;
+                                }
+                                @foreach (var history in Model)
+                                {
+                                    <tr>
+                                        <td style="font-weight: 600;">@stt</td>
+                                        <td>
+                                            <div>@history.CreatedDate?.ToString("dd/MM/yyyy")</div>
+                                            <small class="text-muted">@history.CreatedDate?.ToString("HH:mm:ss")</small>
+                                        </td>
+                                        <td>
+                                            @if (history.TransactionType == "Cộng điểm")
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fa fa-plus-circle"></i> Cộng điểm
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">
+                                                    <i class="fa fa-minus-circle"></i> Trừ điểm
+                                                </span>
+                                            }
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @if (history.Points > 0)
+                                            {
+                                                <span style="color: #27ae60; font-weight: 700; font-size: 16px;">
+                                                    +@history.Points
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color: #e74c3c; font-weight: 700; font-size: 16px;">
+                                                    @history.Points
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div>@history.Description</div>
+                                            @if (history.OrderId.HasValue)
+                                            {
+                                                <small class="text-muted">
+                                                    <i class="fa fa-shopping-cart"></i> Đơn hàng #@history.OrderId
+                                                </small>
+                                            }
+                                        </td>
+                                    </tr>
+                                    stt++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div style="padding: 3rem; text-align: center; color: #999;">
+                        <i class="fa fa-inbox fa-3x mb-3" style="opacity: 0.3;"></i>
+                        <p style="font-size: 16px;">Chưa có lịch sử giao dịch điểm</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        @if (Model.Any())
+        {
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card text-center border-0" style="background: #27ae60; color: white;">
+                        <div class="card-body">
+                            <h4 style="color: white; margin-bottom: 0;">
+                                +@Model.Where(h => h.Points > 0).Sum(h => h.Points)
+                            </h4>
+                            <p class="mb-0">Tổng điểm cộng</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-0" style="background: #e74c3c; color: white;">
+                        <div class="card-body">
+                            <h4 style="color: white; margin-bottom: 0;">
+                                @Model.Where(h => h.Points < 0).Sum(h => h.Points)
+                            </h4>
+                            <p class="mb-0">Tổng điểm trừ</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-0" style="background: #3498db; color: white;">
+                        <div class="card-body">
+                            <h4 style="color: white; margin-bottom: 0;">@Model.Count()</h4>
+                            <p class="mb-0">Tổng giao dịch</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

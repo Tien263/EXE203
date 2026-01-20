@@ -1,27 +1,26 @@
 @echo off
+chcp 65001 > nul
 echo ========================================
-echo STOPPING ALL SERVICES
+echo   DỪNG TẤT CẢ DỊCH VỤ
 echo ========================================
 echo.
 
-echo [1/2] Stopping Python (AI Server)...
-taskkill /F /IM python.exe >nul 2>&1
-if %errorlevel% == 0 (
-    echo Python processes stopped!
-) else (
-    echo No Python processes running.
+echo [1/2] Dừng Web Application (Port 5241)...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5241') do (
+    taskkill /PID %%a /F > nul 2>&1
 )
+echo ✅ Web Application đã dừng
 
-echo [2/2] Stopping dotnet (Web App)...
-taskkill /F /IM dotnet.exe >nul 2>&1
-if %errorlevel% == 0 (
-    echo Dotnet processes stopped!
-) else (
-    echo No dotnet processes running.
+echo.
+echo [2/2] Dừng AI Service (Port 8000)...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8000') do (
+    taskkill /PID %%a /F > nul 2>&1
 )
+echo ✅ AI Service đã dừng
 
 echo.
 echo ========================================
-echo All services stopped!
+echo   TẤT CẢ DỊCH VỤ ĐÃ DỪNG
 echo ========================================
+echo.
 pause

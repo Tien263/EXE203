@@ -59,7 +59,7 @@
                     <div class="col-md-12">
                         <p style="color: #000;"><strong>@(Model.StockQuantity ?? 0)</strong> sản phẩm có sẵn</p>
                         <p style="color: #666;"><i class="fa fa-cube"></i> Khối lượng: <strong>@Model.Weight</strong></p>
-                        <p style="color: #666;"><i class="fa fa-tag"></i> Danh mục: <strong>@Model.Category.CategoryName</strong></p>
+                        <p style="color: #666;"><i class="fa fa-tag"></i> Danh mục: <strong>@(Model.Category?.CategoryName ?? "N/A")</strong></p>
                     </div>
                 </div>
                 
@@ -111,7 +111,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Danh mục:</strong></td>
-                                    <td>@Model.Category.CategoryName</td>
+                                    <td>@(Model.Category?.CategoryName ?? "N/A")</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Khối lượng:</strong></td>

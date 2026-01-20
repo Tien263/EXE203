@@ -1,41 +1,83 @@
 @echo off
-REM Script khoi dong toan bo he thong (Web + AI Chatbot)
-REM Chay script nay de khoi dong ca Web va AI cung luc
-
+chcp 65001 > nul
 echo ========================================
-echo   START ALL - Moc Vi Store
-echo   Web App + AI Chatbot
+echo   MOC VI STORE voi CHATGPT AI - FULL STACK
 echo ========================================
 echo.
 
-REM Dung tat ca process dang chay
-echo [1/3] Dung tat ca process dang chay...
-taskkill /F /IM dotnet.exe >nul 2>&1
-taskkill /F /IM Exe_Demo.exe >nul 2>&1
-taskkill /F /IM python.exe >nul 2>&1
-echo [OK] Da dung tat ca process
+echo Dung ChatGPT cho trai nghiem chat tot nhat!
 echo.
 
-REM Khoi dong AI Chatbot (chay background)
-echo [2/3] Khoi dong AI Chatbot...
+echo [0/4] Chuan bi moi truong...
+echo Dung cac tien trinh cu...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5241') do taskkill /PID %%a /F > nul 2>&1
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8000') do taskkill /PID %%a /F > nul 2>&1
+echo OK - Da don dep cac tien trinh cu
+
+echo.
+echo [1/4] Cau hinh ChatGPT API...
 cd Trainning_AI
-start "AI Chatbot Server" cmd /k "set PORT=5000 && python -m app.main"
+if not exist .env (
+    (
+        echo OPENAI_API_KEY=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
+    ) > .env
+    echo OK - Da tao file .env voi OpenAI API Key
+) else (
+    echo OK - File .env da ton tai
+)
+
+echo.
+echo [2/4] Kich hoat virtual environment va cai dat dependencies...
+if exist venv\Scripts\activate.bat (
+    call venv\Scripts\activate.bat
+    echo OK - Virtual environment da kich hoat
+) else (
+    echo Dang tao virtual environment moi...
+    python -m venv venv
+    call venv\Scripts\activate.bat
+)
+
+echo Dang cai dat/cap nhat dependencies...
+pip install -r requirements.txt > nul 2>&1
+echo OK - Dependencies da san sang
+
+echo.
+echo [3/4] Khoi dong ChatGPT AI Service...
+echo - Port: 8000
+echo - Model: GPT-4o-mini
+echo - API Docs: http://localhost:8000/docs
+echo.
+start "ChatGPT AI Service" cmd /k "call venv\Scripts\activate.bat && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+echo Doi 8 giay de ChatGPT AI khoi dong...
+timeout /t 8 /nobreak > nul
+
 cd ..
-echo [OK] AI Chatbot Server dang khoi dong...
-timeout /t 5 /nobreak >nul
 echo.
+echo [4/4] Khoi dong Web Application...
+echo - Port: 5241
+echo - URL: http://localhost:5241
+echo - Framework: ASP.NET Core 8.0
+echo.
+start "Web App - MOC VI STORE" cmd /k "dotnet run"
 
-REM Khoi dong Web App
-echo [3/3] Khoi dong Web Application...
+echo Doi 10 giay de Web App khoi dong...
+timeout /t 10 /nobreak > nul
+
 echo.
 echo ========================================
-echo   He thong dang chay:
-echo   - Web App: http://localhost:5241
-echo   - AI Chatbot: http://localhost:5000
+echo   HE THONG DA KHOI DONG!
 echo ========================================
 echo.
-echo Nhan Ctrl+C de dung Web App
-echo De dung AI Chatbot, dong cua so "AI Chatbot"
+echo Website chinh: http://localhost:5241
+echo ChatGPT API: http://localhost:8000/docs
 echo.
 
-dotnet run
+echo Dang mo trinh duyet voi cache disabled...
+echo [INFO] Browser se tu dong load file JavaScript moi nhat!
+start chrome --disable-cache --disk-cache-size=1 http://localhost:5241
+
+echo.
+echo Chuc mung! Website da san sang!
+echo.
+pause > nul

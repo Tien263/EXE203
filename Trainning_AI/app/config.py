@@ -1,15 +1,19 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from parent directory
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_file = os.path.join(base_dir, ".env")
+load_dotenv(env_file)
 
 class Settings:
     # API Keys
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
     
     # Server Config
     HOST = os.getenv("HOST", "0.0.0.0")
-    PORT = int(os.getenv("PORT", 5000))
+    PORT = int(os.getenv("PORT", 8000))
     
     # Database Config
     CHROMA_DB_PATH = "./chroma_db"

@@ -4,148 +4,205 @@
     Layout = "~/Views/Shared/_StaffLayout.cshtml";
 }
 
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h2 style="font-weight: 700; color: #2d3e2a;"><i class="fa fa-cube"></i> Quản Lý Sản Phẩm</h2>
-        </div>
-        <div class="col-md-6 text-end">
-            <a asp-action="CreateProduct" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Thêm Sản Phẩm Mới
-            </a>
-            <a asp-action="Dashboard" class="btn btn-outline-secondary">
-                <i class="fa fa-arrow-left"></i> Quay lại
-            </a>
-        </div>
-    </div>
-
-    <!-- Bộ lọc -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <form method="get" asp-action="Products">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm..." 
-                               value="@Model.SearchTerm">
-                    </div>
-                    <div class="col-md-3">
-                        <select name="category" class="form-select">
-                            <option value="">Tất cả danh mục</option>
-                            @foreach (var cat in Model.Categories)
-                            {
-                                <option value="@cat.CategoryId" selected="@(Model.CategoryFilter == cat.CategoryId)">
-                                    @cat.CategoryName
-                                </option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select name="stock" class="form-select">
-                            <option value="">Tất cả tồn kho</option>
-                            <option value="low" selected="@(Model.StockFilter == "low")">Sắp hết hàng</option>
-                            <option value="out" selected="@(Model.StockFilter == "out")">Hết hàng</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fa fa-search"></i> Tìm kiếm
-                        </button>
-                    </div>
+<div class="container-fluid py-5">
+    <!-- Page Header -->
+    <div class="page-title mb-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h2 style="margin: 0; color: white;">
+                        <i class="fa fa-cube" style="margin-right: 12px;"></i>Quản Lý Sản Phẩm
+                    </h2>
                 </div>
-            </form>
+                <div class="col-auto">
+                    <a asp-action="CreateProduct" class="btn btn-light btn-sm" style="margin-right: 8px;">
+                        <i class="fa fa-plus"></i> Thêm Sản Phẩm
+                    </a>
+                    <a asp-action="Dashboard" class="btn btn-light btn-sm">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Danh sách sản phẩm -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <tr>
-                            <th style="width: 80px; color: white; font-weight: 700; border: none;"><i class="fa fa-image"></i> Hình ảnh</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-barcode"></i> Mã SP</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-tag"></i> Tên sản phẩm</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-folder"></i> Danh mục</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-money"></i> Giá bán</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-cubes"></i> Tồn kho</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-shopping-cart"></i> Đã bán</th>
-                            <th style="color: white; font-weight: 700; border: none;"><i class="fa fa-toggle-on"></i> Trạng thái</th>
-                            <th style="width: 150px; color: white; font-weight: 700; border: none;"><i class="fa fa-cog"></i> Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var product in Model.Products)
-                        {
-                            <tr>
-                                <td>
-                                    <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" alt="@product.ProductName" 
-                                         class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                                </td>
-                                <td><strong>@product.ProductCode</strong></td>
-                                <td>
-                                    <div>@product.ProductName</div>
-                                    @if (product.DiscountPercent > 0)
-                                    {
-                                        <small class="text-danger">Giảm @product.DiscountPercent%</small>
-                                    }
-                                </td>
-                                <td>@product.Category?.CategoryName</td>
-                                <td>
-                                    <strong>@product.Price.ToString("N0") đ</strong>
-                                    @if (product.OriginalPrice.HasValue && product.OriginalPrice > product.Price)
-                                    {
-                                        <br><small class="text-muted"><del>@product.OriginalPrice.Value.ToString("N0") đ</del></small>
-                                    }
-                                </td>
-                                <td>
-                                    @if (product.StockQuantity == 0)
-                                    {
-                                        <span class="badge bg-danger" style="color: white; font-weight: 600;">Hết hàng</span>
-                                    }
-                                    else if (product.StockQuantity <= product.MinStockLevel)
-                                    {
-                                        <span class="badge bg-warning" style="color: #000; font-weight: 600;">@product.StockQuantity</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-success" style="color: white; font-weight: 600;">@product.StockQuantity</span>
-                                    }
-                                </td>
-                                <td>@(product.SoldCount ?? 0)</td>
-                                <td>
-                                    @if (product.IsActive == true)
-                                    {
-                                        <span class="badge bg-success" style="color: white; font-weight: 600;">Hoạt động</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary" style="color: #000; font-weight: 600; background-color: #d3d3d3 !important;">Ẩn</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-action="EditProduct" asp-route-id="@product.ProductId" 
-                                       class="btn btn-sm btn-outline-primary" title="Sửa">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" 
-                                            onclick="deleteProduct(@product.ProductId)" title="Xóa">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
+    <div class="container-fluid">
+        <!-- Bộ lọc -->
+        <div class="card border-0 mb-5">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-sliders" style="margin-right: 10px;"></i>Bộ Lọc & Tìm Kiếm
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="get" asp-action="Products">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Tìm kiếm</label>
+                            <input type="text" name="search" class="form-control" placeholder="Tìm sản phẩm..." 
+                                   value="@Model.SearchTerm">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Danh mục</label>
+                            <select name="category" class="form-select">
+                                <option value="">Tất cả danh mục</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.CategoryId" selected="@(Model.CategoryFilter == cat.CategoryId)">
+                                        @cat.CategoryName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Tồn kho</label>
+                            <select name="stock" class="form-select">
+                                <option value="">Tất cả tồn kho</option>
+                                <option value="low" selected="@(Model.StockFilter == "low")">Sắp hết hàng</option>
+                                <option value="out" selected="@(Model.StockFilter == "out")">Hết hàng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fa fa-search"></i> <span class="d-none d-sm-inline">Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="card border-0">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-list" style="margin-right: 10px;"></i>Danh Sách Sản Phẩm
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Products?.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px; font-weight: 700;"><i class="fa fa-image"></i> Ảnh</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-barcode"></i> Mã</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-tag"></i> Tên Sản Phẩm</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-folder"></i> Danh Mục</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-money"></i> Giá</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-cubes"></i> Tồn Kho</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-bar-chart"></i> Đã Bán</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-toggle-on"></i> Trạng Thái</th>
+                                    <th style="width: 120px; font-weight: 700; text-align: center;"><i class="fa fa-cog"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.Products)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@(product.ImageUrl ?? "/images/product_1.jpg")" alt="@product.ProductName" 
+                                                 class="rounded" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid #e0e0e0;">
+                                        </td>
+                                        <td style="font-weight: 700; color: #2d5016;">@product.ProductCode</td>
+                                        <td>
+                                            <div style="font-weight: 600;">@product.ProductName</div>
+                                            @if (product.DiscountPercent > 0)
+                                            {
+                                                <small style="color: #e74c3c; font-weight: 600;">
+                                                    <i class="fa fa-tag"></i> Giảm @product.DiscountPercent%
+                                                </small>
+                                            }
+                                        </td>
+                                        <td>@product.Category?.CategoryName</td>
+                                        <td style="font-weight: 700; color: #27ae60;">
+                                            @product.Price.ToString("N0") đ
+                                            @if (product.OriginalPrice.HasValue && product.OriginalPrice > product.Price)
+                                            {
+                                                <br><small class="text-muted"><del>@product.OriginalPrice.Value.ToString("N0") đ</del></small>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (product.StockQuantity <= 0)
+                                            {
+                                                <span class="badge bg-danger" style="font-size: 12px; padding: 6px 10px;">
+                                                    <i class="fa fa-times"></i> Hết
+                                                </span>
+                                            }
+                                            else if (product.StockQuantity <= product.MinStockLevel)
+                                            {
+                                                <span class="badge bg-warning" style="font-size: 12px; padding: 6px 10px;">
+                                                    <i class="fa fa-exclamation"></i> @product.StockQuantity
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <strong style="color: #27ae60;">@product.StockQuantity</strong>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong style="color: #3498db;">@(product.SoldCount ?? 0)</strong>
+                                        </td>
+                                        <td>
+                                            @if (product.IsActive == true)
+                                            {
+                                                <span class="badge bg-success"><i class="fa fa-check"></i> Bán</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary"><i class="fa fa-times"></i> Ẩn</span>
+                                            }
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a asp-action="EditProduct" asp-route-id="@product.ProductId" 
+                                               class="btn btn-primary btn-sm" title="Chỉnh sửa" style="padding: 6px 10px;">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a asp-action="DeleteProduct" asp-route-id="@product.ProductId" 
+                                               class="btn btn-danger btn-sm" title="Xóa" style="padding: 6px 10px;" 
+                                               onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?')">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div style="padding: 3rem; text-align: center; color: #999;">
+                        <i class="fa fa-inbox fa-3x mb-3" style="opacity: 0.3;"></i>
+                        <p style="font-size: 16px;">Không tìm thấy sản phẩm nào</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+        }
+        else
+        {
+            <div style="padding: 3rem; text-align: center; color: #999;">
+                <i class="fa fa-inbox fa-3x mb-3" style="opacity: 0.3;"></i>
+                <p style="font-size: 16px;">Không tìm thấy sản phẩm nào</p>
+            </div>
+        }
         </div>
 
         <!-- Pagination -->
         @if (Model.TotalPages > 1)
         {
-            <div class="card-footer bg-white">
+            <div class="card-footer bg-light">
                 <nav>
-                    <ul class="pagination justify-content-center mb-0">
+                    <ul class="pagination justify-content-center mb-0" style="gap: 4px;">
                         @if (Model.CurrentPage > 1)
                         {
                             <li class="page-item">
@@ -153,7 +210,9 @@
                                    asp-route-page="@(Model.CurrentPage - 1)"
                                    asp-route-search="@Model.SearchTerm"
                                    asp-route-category="@Model.CategoryFilter"
-                                   asp-route-stock="@Model.StockFilter">Trước</a>
+                                   asp-route-stock="@Model.StockFilter">
+                                    <i class="fa fa-chevron-left"></i> Trước
+                                </a>
                             </li>
                         }
 
@@ -175,7 +234,9 @@
                                    asp-route-page="@(Model.CurrentPage + 1)"
                                    asp-route-search="@Model.SearchTerm"
                                    asp-route-category="@Model.CategoryFilter"
-                                   asp-route-stock="@Model.StockFilter">Sau</a>
+                                   asp-route-stock="@Model.StockFilter">
+                                    Sau <i class="fa fa-chevron-right"></i>
+                                </a>
                             </li>
                         }
                     </ul>
@@ -184,31 +245,3 @@
         }
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        function deleteProduct(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                fetch('/Staff/DeleteProduct/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    alert('Có lỗi xảy ra: ' + error);
-                });
-            }
-        }
-    </script>
-}

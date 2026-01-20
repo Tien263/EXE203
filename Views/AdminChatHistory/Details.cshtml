@@ -1,0 +1,198 @@
+@model Exe_Demo.Models.ViewModels.ChatSessionGroup
+@{
+    ViewData["Title"] = "Chi Tiết Chat";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-comment-dots"></i> Chi Tiết Cuộc Trò Chuyện
+                    </h4>
+                    <a asp-action="Index" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+                <div class="card-body">
+                    <!-- Session Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Khách Hàng</h6>
+                                    @if (Model.CustomerId.HasValue)
+                                    {
+                                        <p class="mb-0">
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-user"></i> @Model.CustomerName
+                                            </span>
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="mb-0">
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-user-secret"></i> Khách vãng lai
+                                            </span>
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Thời Gian Bắt Đầu</h6>
+                                    <p class="mb-0"><strong>@Model.StartTime.ToString("dd/MM/yyyy HH:mm:ss")</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Thời Gian Kết Thúc</h6>
+                                    <p class="mb-0"><strong>@Model.EndTime.ToString("dd/MM/yyyy HH:mm:ss")</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Số Tin Nhắn</h6>
+                                    <p class="mb-0">
+                                        <span class="badge bg-info">@Model.MessageCount tin nhắn</span>
+                                        @if (Model.HasOrderRelated)
+                                        {
+                                            <span class="badge bg-success ms-2">
+                                                <i class="fas fa-shopping-cart"></i> Có đơn
+                                            </span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session ID -->
+                    <div class="alert alert-info">
+                        <strong>Session ID:</strong> <code>@Model.SessionId</code>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div class="chat-container" style="max-height: 600px; overflow-y: auto; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                        @foreach (var message in Model.Messages)
+                        {
+                            <div class="chat-message mb-3 @(message.Role == "user" ? "text-end" : "")">
+                                <div class="d-inline-block" style="max-width: 70%;">
+                                    <div class="card @(message.Role == "user" ? "bg-primary text-white" : "bg-white")">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-start mb-2">
+                                                @if (message.Role == "user")
+                                                {
+                                                    <span class="badge bg-light text-primary me-2">
+                                                        <i class="fas fa-user"></i> Khách hàng
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success me-2">
+                                                        <i class="fas fa-robot"></i> AI
+                                                    </span>
+                                                }
+                                                <small class="@(message.Role == "user" ? "text-white-50" : "text-muted")">
+                                                    @message.CreatedDate.ToString("HH:mm:ss")
+                                                </small>
+                                            </div>
+                                            <p class="mb-0" style="white-space: pre-wrap;">@message.Message</p>
+                                            
+                                            @if (message.IsOrderRelated && !string.IsNullOrEmpty(message.OrderData))
+                                            {
+                                                <div class="mt-2 pt-2 border-top @(message.Role == "user" ? "border-white" : "")">
+                                                    <small class="@(message.Role == "user" ? "text-white-50" : "text-muted")">
+                                                        <i class="fas fa-shopping-cart"></i> Liên quan đơn hàng
+                                                    </small>
+                                                    <pre class="mt-1 mb-0" style="font-size: 11px; @(message.Role == "user" ? "color: rgba(255,255,255,0.8);" : "color: #666;")">@message.OrderData</pre>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 text-center">
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                            <i class="fas fa-trash"></i> Xóa Lịch Sử Chat Này
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-list"></i> Quay Lại Danh Sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="post" asp-action="Delete" asp-route-id="@Model.SessionId" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        function confirmDelete() {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử chat này?\n\nHành động này không thể hoàn tác!')) {
+                document.getElementById('deleteForm').submit();
+            }
+        }
+
+        // Auto scroll to bottom
+        document.addEventListener('DOMContentLoaded', function() {
+            var chatContainer = document.querySelector('.chat-container');
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+}
+
+<style>
+    .chat-message {
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .chat-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>

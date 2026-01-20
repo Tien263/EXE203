@@ -1,97 +1,81 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Exe_Demo.Data;
+using Exe_Demo.Services;
 using Exe_Demo.Models;
 
 namespace Exe_Demo.Controllers
 {
-    public class ProductController(ApplicationDbContext context, ILogger<ProductController> logger) : Controller
+    /// <summary>
+    /// Product Controller - SOLID: Dependency Injection, uses ProductService
+    /// </summary>
+    public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _context = context;
-        private readonly ILogger<ProductController> _logger = logger;
+        private readonly IProductService _productService;
+        private readonly ILogger<ProductController> _logger;
 
-        // GET: Product
-        public async Task<IActionResult> Index(int? categoryId, string? search, string? sortBy)
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
-            var productsQuery = _context.Products
-                .Include(p => p.Category)
-                .Where(p => p.IsActive == true);
-
-            // Filter by category
-            if (categoryId.HasValue && categoryId.Value > 0)
-            {
-                productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
-            }
-
-            // Search
-            if (!string.IsNullOrEmpty(search))
-            {
-                productsQuery = productsQuery.Where(p => 
-                    p.ProductName.Contains(search) || 
-                    (p.Description != null && p.Description.Contains(search)));
-            }
-
-            // Sort
-            productsQuery = sortBy switch
-            {
-                "price_asc" => productsQuery.OrderBy(p => p.Price),
-                "price_desc" => productsQuery.OrderByDescending(p => p.Price),
-                "name" => productsQuery.OrderBy(p => p.ProductName),
-                "newest" => productsQuery.OrderByDescending(p => p.CreatedDate),
-                _ => productsQuery.OrderBy(p => p.ProductId)
-            };
-
-            var products = await productsQuery.ToListAsync();
-            var categories = await _context.Categories
-                .Where(c => c.IsActive == true)
-                .OrderBy(c => c.DisplayOrder)
-                .ToListAsync();
-
-            ViewBag.Categories = categories;
-            ViewBag.CurrentCategory = categoryId;
-            ViewBag.CurrentSearch = search;
-            ViewBag.CurrentSort = sortBy;
-
-            return View(products);
+            _productService = productService;
+            _logger = logger;
         }
 
-        // GET: Product/Details/5
+        // GET: Product - With Response Caching
+        [ResponseCache(CacheProfileName = "Default30")]
+        public async Task<IActionResult> Index(int? categoryId, string? search, string? sortBy, int pageNumber = 1)
+        {
+            try
+            {
+                var viewModel = await _productService.GetProductsAsync(
+                    categoryId, 
+                    search, 
+                    sortBy, 
+                    pageNumber, 
+                    pageSize: 12);
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading products");
+                return View("Error");
+            }
+        }
+
+        // GET: Product/Details/5 - With caching
+        [ResponseCache(Duration = 600, VaryByQueryKeys = new[] { "id" })] // 10 minutes
         public async Task<IActionResult> Details(int id)
         {
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Reviews)
-                .FirstOrDefaultAsync(p => p.ProductId == id);
-
-            if (product == null)
+            try
             {
-                return NotFound();
+                var product = await _productService.GetProductDetailsAsync(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                // Increment view count (async, non-blocking)
+                _ = Task.Run(() => _productService.IncrementViewCountAsync(id));
+
+                // Get related products
+                var relatedProducts = await _productService.GetRelatedProductsAsync(
+                    id, 
+                    product.CategoryId, 
+                    count: 4);
+
+                ViewBag.RelatedProducts = relatedProducts;
+
+                return View(product);
             }
-
-            // Increment view count
-            product.ViewCount = (product.ViewCount ?? 0) + 1;
-            await _context.SaveChangesAsync();
-
-            // Get related products (same category)
-            var relatedProducts = await _context.Products
-                .Where(p => p.CategoryId == product.CategoryId && p.ProductId != id && p.IsActive == true)
-                .Take(4)
-                .ToListAsync();
-
-            ViewBag.RelatedProducts = relatedProducts;
-
-            return View(product);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading product details: {ProductId}", id);
+                return View("Error");
+            }
         }
 
         // GET: Product/Category/1
-        public async Task<IActionResult> Category(int id)
+        public IActionResult Category(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
             return RedirectToAction(nameof(Index), new { categoryId = id });
         }
     }

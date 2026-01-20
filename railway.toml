@@ -1,7 +1,0 @@
-[build]
-builder = "NIXPACKS"
-
-[deploy]
-startCommand = "dotnet Exe_Demo.dll"
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10

@@ -1,0 +1,220 @@
+<!-- Add to Cart Modal -->
+<div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToCartModalLabel">Thêm vào giỏ hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-info mb-3">
+                    <img id="modal-product-image" src="" alt="" class="img-fluid mb-2" style="max-height: 150px;">
+                    <h6 id="modal-product-name"></h6>
+                    <p class="text-muted mb-1">Giá: <span id="modal-product-price" class="text-danger fw-bold"></span></p>
+                    <p class="text-muted mb-0">Còn lại: <span id="modal-product-stock"></span> sản phẩm</p>
+                </div>
+                
+                <div class="quantity-selector">
+                    <label class="form-label">Số lượng:</label>
+                    <div class="input-group" style="max-width: 200px;">
+                        <button class="btn btn-outline-secondary" type="button" id="decrease-qty">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <input type="number" class="form-control text-center" id="modal-quantity" value="1" min="1" max="999">
+                        <button class="btn btn-outline-secondary" type="button" id="increase-qty">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted">Tổng: <span id="modal-total-price" class="fw-bold"></span></small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-add-to-cart">Hủy</button>
+                <button type="button" class="btn btn-primary" id="confirm-add-to-cart">
+                    <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #addToCartModal .product-info {
+        text-align: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    #addToCartModal .quantity-selector {
+        margin-top: 20px;
+    }
+    
+    #addToCartModal .input-group {
+        margin: 10px auto;
+    }
+    
+    #addToCartModal #modal-quantity {
+        font-weight: bold;
+        font-size: 16px;
+    }
+</style>
+
+<script>
+    // Add to Cart Modal Logic
+    let currentProduct = null;
+    
+    function showAddToCartModal(productId, productName, productPrice, productStock, productImage) {
+        currentProduct = {
+            id: productId,
+            name: productName,
+            price: productPrice,
+            stock: productStock,
+            image: productImage
+        };
+        
+        console.log('Opening modal for product:', currentProduct); // Debug
+        
+        // Update modal content
+        document.getElementById('modal-product-image').src = productImage || '/images/prod-6.jpg';
+        document.getElementById('modal-product-name').textContent = productName;
+        document.getElementById('modal-product-price').textContent = formatCurrency(productPrice);
+        document.getElementById('modal-product-stock').textContent = productStock;
+        document.getElementById('modal-quantity').value = 1;
+        document.getElementById('modal-quantity').max = productStock;
+        
+        updateModalTotal();
+        
+        // Show modal - Support both Bootstrap 4 and 5
+        try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                // Bootstrap 5
+                const modal = new bootstrap.Modal(document.getElementById('addToCartModal'));
+                modal.show();
+            } else if (typeof $ !== 'undefined') {
+                // Bootstrap 4 with jQuery
+                $('#addToCartModal').modal('show');
+            }
+        } catch (error) {
+            console.error('Error showing modal:', error);
+            // Fallback
+            $('#addToCartModal').modal('show');
+        }
+    }
+    
+    function updateModalTotal() {
+        const quantity = parseInt(document.getElementById('modal-quantity').value) || 1;
+        const total = currentProduct.price * quantity;
+        document.getElementById('modal-total-price').textContent = formatCurrency(total);
+    }
+    
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+    
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Decrease quantity
+        document.getElementById('decrease-qty').addEventListener('click', function() {
+            const input = document.getElementById('modal-quantity');
+            const value = parseInt(input.value) || 1;
+            if (value > 1) {
+                input.value = value - 1;
+                updateModalTotal();
+            }
+        });
+        
+        // Increase quantity
+        document.getElementById('increase-qty').addEventListener('click', function() {
+            const input = document.getElementById('modal-quantity');
+            const value = parseInt(input.value) || 1;
+            const max = parseInt(input.max);
+            if (value < max) {
+                input.value = value + 1;
+                updateModalTotal();
+            }
+        });
+        
+        // Manual input
+        document.getElementById('modal-quantity').addEventListener('input', function() {
+            const value = parseInt(this.value) || 1;
+            const max = parseInt(this.max);
+            if (value > max) this.value = max;
+            if (value < 1) this.value = 1;
+            updateModalTotal();
+        });
+        
+        // Confirm add to cart
+        document.getElementById('confirm-add-to-cart').addEventListener('click', function() {
+            const quantity = parseInt(document.getElementById('modal-quantity').value) || 1;
+            addToCartWithQuantity(currentProduct.id, quantity);
+        });
+    });
+    
+    function addToCartWithQuantity(productId, quantity) {
+        // Show loading
+        const btn = document.getElementById('confirm-add-to-cart');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang thêm...';
+        
+        console.log('Adding to cart:', { productId, quantity }); // Debug
+        
+        // AJAX call to add to cart - Use FormData for ASP.NET Core
+        const formData = new FormData();
+        formData.append('productId', productId);
+        formData.append('quantity', quantity);
+        
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            console.log('Response status:', response.status); // Debug
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data); // Debug
+            
+            if (data.success) {
+                // Close modal - Support both Bootstrap 4 and 5
+                try {
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                        bootstrap.Modal.getInstance(document.getElementById('addToCartModal')).hide();
+                    } else {
+                        $('#addToCartModal').modal('hide');
+                    }
+                } catch (e) {
+                    $('#addToCartModal').modal('hide');
+                }
+                
+                // Show success message
+                alert('✅ Đã thêm ' + quantity + ' sản phẩm vào giỏ hàng!');
+                
+                // Update cart count
+                updateCartCount();
+            } else {
+                alert('❌ Lỗi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            alert('❌ Có lỗi xảy ra. Vui lòng thử lại!\n' + error.message);
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-shopping-cart"></i> Thêm vào giỏ';
+        });
+    }
+    
+    function updateCartCount() {
+        // Update cart badge count
+        fetch('/Cart/GetCartCount')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.querySelector('.cart-count');
+                if (badge) {
+                    badge.textContent = data.count;
+                }
+            });
+    }
+</script>

@@ -65,6 +65,11 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     answer: str
     sources: List[dict]
+    action: Optional[dict] = None  # For order actions
+
+class OrderAction(BaseModel):
+    type: str  # 'add_to_cart', 'checkout'
+    products: List[dict]  # [{'name': 'Dâu tây sấy dẻo', 'quantity': 2}]
 
 class FruitData(BaseModel):
     id: str
@@ -153,11 +158,15 @@ async def chat(request: QueryRequest):
                 sources=[]
             )
         
+        # Detect purchase intent
+        purchase_intent = llm_service.detect_purchase_intent(request.question)
+        
         # Tạo câu trả lời bằng LLM với conversation history
         answer = llm_service.generate_response(
             request.question, 
             search_results,
-            conversation_history=request.conversation_history
+            conversation_history=request.conversation_history,
+            purchase_intent=purchase_intent
         )
         
         # Format sources
@@ -169,9 +178,18 @@ async def chat(request: QueryRequest):
             for result in search_results
         ]
         
+        # Prepare action if purchase intent detected
+        action = None
+        if purchase_intent and purchase_intent.get('is_purchase'):
+            action = {
+                'type': 'add_to_cart',
+                'products': purchase_intent.get('products', [])
+            }
+        
         return QueryResponse(
             answer=answer,
-            sources=sources
+            sources=sources,
+            action=action
         )
     
     except Exception as e:

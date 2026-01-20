@@ -34,4 +34,7 @@ public partial class Blog
     public virtual User? Author { get; set; }
 
     public virtual ICollection<BlogComment> BlogComments { get; set; } = new List<BlogComment>();
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public Microsoft.AspNetCore.Http.IFormFile? ImageFile { get; set; }
 }

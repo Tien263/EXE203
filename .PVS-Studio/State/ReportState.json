@@ -1,0 +1,2002 @@
+{
+  "json": [
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\ChatHistoryController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": -1403486103,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2737836420
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\HomeController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 794429177,
+            "nextLine": 98688165,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 721485029
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\ProductController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": 394751745,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1846278289
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\ProfileController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 24672225,
+            "nextLine": 249843210,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1765882391
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\StaffController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": -1403486103,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1463364032
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Data\\ApplicationDbContext.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1039067780
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Data\\DatabaseIndexConfiguration.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1403486103,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2764002886
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Data\\DatabaseSeeder.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": -1403486103,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1653119084
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Helpers\\StaffAccountHelper.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 24672225,
+            "nextLine": 98688165,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2399812531
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Migrations\\20251021145127_AddOtpVerification.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": -1006481617,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2637436219
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Migrations\\20251021170153_AddProfileImageUrlToUser.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1006481617,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1093977631
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Migrations\\20251030032532_AddPerformanceIndexes.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1006481617,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3480735788
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 16500664,
+            "nextLine": 193925,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2409830224
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Blog.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1566114211
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\BlogComment.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1756110426
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Cart.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2141855077
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Category.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 656481095
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ChatHistory.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 289462508,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 4078319675
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ContactMessage.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 859479710
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Customer.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1641606247
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Employee.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 32789399
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ErrorViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 643886671,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2649318377
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Expense.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 889041151
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\InventoryTransaction.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1350462307
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\AboutController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3439069747
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\LoyaltyPointsHistory.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3125909274
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\AIOrderController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": -1403486103,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3080726202
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Order.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3201859721
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\OrderDetail.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 397925944
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Payment.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2692792465
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\OtpVerification.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 549014705
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Product.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2832912648
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\PurchaseOrder.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 907726762
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Review.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1359108205
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\PurchaseOrderDetail.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1936756889
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Setting.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1075972103
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Shift.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1442193109
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Supplier.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2924217273
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\CartController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": -1403486103,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1056794692
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\User.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1440311514
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\CompleteProfileViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3722545174
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\ChatHistoryViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 124921404,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2464637954
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\DirectSaleViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2834955486
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\ProductListViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 124921404,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2323037843
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\LoginViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3603284687
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\OrderManagementViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 4291711639
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\ProfileViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 827671055
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\ProductManagementViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2939436664
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\RegisterViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 951400497
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\BlogController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": -1403486103,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 432183042
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\SalesReportViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3402774854
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\VerifyOtpViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1377993116,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3649325016
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\Voucher.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3390259945
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Models\\ViewModels\\StaffDashboardViewModel.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 193925,
+            "nextLine": 1513122742,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 476593314
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Repositories\\IUnitOfWork.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1336721988
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\ContactController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -983480058,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3900414208
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Repositories\\IRepository.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -347291992,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2601828966
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\AdminChatHistoryController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -2061184922,
+            "nextLine": -983480058,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1157914167
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Program.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 24672225,
+            "nextLine": 394751745,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2499959699
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Repositories\\UnitOfWork.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 24672225,
+            "nextLine": 98688165,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 601694039
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\CacheService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 31776098,
+            "nextLine": -779920743,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2368179078
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\EmailService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 3103287,
+            "nextLine": 99304159,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 338710304
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\CartService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": 2021049408,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2219637262
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Repositories\\Repository.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -347291992,
+            "nextLine": 24672225,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1866801017
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\IEmailService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 3911715489
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\IProductService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": 249843210,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1720437044
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\ICacheService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1719421027,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1646216967
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\obj\\Debug\\net8.0\\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 8177592,
+            "nextLine": 193925,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 838580205
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\ICartService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1503611501
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\ProductService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 98688165,
+            "nextLine": 249843210,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 4036291059
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Services\\ExcelOrderService.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 24659287,
+            "nextLine": 1578196777,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 534555973
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\Controllers\\AuthController.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 24672225,
+            "nextLine": 98688165,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 1516266172
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\obj\\Debug\\net8.0\\Exe_Demo.AssemblyInfo.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1736731,
+            "nextLine": 8250322,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 2799280516
+    },
+    {
+      "code": "V009",
+      "message": "To use free version of PVS-Studio, source code files are required to start with a special comment.",
+      "falseAlarm": false,
+      "level": 0,
+      "positions": [
+        {
+          "column": 1,
+          "endColumn": 1,
+          "line": 1,
+          "endLine": 1,
+          "file": "f:\\FPTU\\Ki8\\EXE201\\Exe_Demo_1\\Exe_Demo_1\\Exe_Demo\\obj\\Debug\\net8.0\\Exe_Demo.RazorAssemblyInfo.cs",
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1736731,
+            "nextLine": 8250322,
+            "columns": 0
+          }
+        }
+      ],
+      "cwe": 0,
+      "sastId": "",
+      "projects": [
+        "Exe_Demo"
+      ],
+      "id": 4071271266
+    }
+  ]
+}

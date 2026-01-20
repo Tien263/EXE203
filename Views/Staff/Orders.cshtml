@@ -4,198 +4,237 @@
     Layout = "~/Views/Shared/_StaffLayout.cshtml";
 }
 
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h2>Quản Lý Đơn Hàng</h2>
-        </div>
-        <div class="col-md-6 text-end">
-            <a asp-action="ExportOrders" class="btn btn-success me-2">
-                <i class="fa fa-file-excel-o"></i> Xuất/Nhập Excel
-            </a>
-            <a asp-action="Dashboard" class="btn btn-outline-secondary">
-                <i class="fa fa-arrow-left"></i> Quay lại
-            </a>
-        </div>
-    </div>
-
-    <!-- Bộ lọc -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <form method="get" asp-action="Orders">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <input type="text" name="search" class="form-control" 
-                               placeholder="Tìm mã đơn, tên, SĐT..." value="@Model.SearchTerm">
-                    </div>
-                    <div class="col-md-2">
-                        <select name="status" class="form-select">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="Chờ xác nhận" selected="@(Model.StatusFilter == "Chờ xác nhận")">Chờ xác nhận</option>
-                            <option value="Đang xử lý" selected="@(Model.StatusFilter == "Đang xử lý")">Đang xử lý</option>
-                            <option value="Đang giao" selected="@(Model.StatusFilter == "Đang giao")">Đang giao</option>
-                            <option value="Đã hoàn thành" selected="@(Model.StatusFilter == "Đã hoàn thành")">Đã hoàn thành</option>
-                            <option value="Đã hủy" selected="@(Model.StatusFilter == "Đã hủy")">Đã hủy</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select name="paymentStatus" class="form-select">
-                            <option value="">Thanh toán</option>
-                            <option value="Chưa thanh toán" selected="@(Model.PaymentStatusFilter == "Chưa thanh toán")">Chưa thanh toán</option>
-                            <option value="Đã thanh toán" selected="@(Model.PaymentStatusFilter == "Đã thanh toán")">Đã thanh toán</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="date" name="fromDate" class="form-control" 
-                               value="@Model.FromDate?.ToString("yyyy-MM-dd")">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="date" name="toDate" class="form-control" 
-                               value="@Model.ToDate?.ToString("yyyy-MM-dd")">
-                    </div>
-                    <div class="col-md-1">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
+<div class="container-fluid py-5">
+    <!-- Page Header -->
+    <div class="page-title mb-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h2 style="margin: 0; color: white;">
+                        <i class="fa fa-list-ul" style="margin-right: 12px;"></i>Quản Lý Đơn Hàng
+                    </h2>
                 </div>
-            </form>
+                <div class="col-auto">
+                    <a asp-action="ExportOrders" class="btn btn-light btn-sm" style="margin-right: 8px;">
+                        <i class="fa fa-file-excel-o"></i> Xuất/Nhập Excel
+                    </a>
+                    <a asp-action="Dashboard" class="btn btn-light btn-sm">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Danh sách đơn hàng -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead style="background: #4f6a4c; color: white;">
-                        <tr>
-                            <th style="font-size: 15px; padding: 15px;">Mã Đơn</th>
-                            <th style="font-size: 15px; padding: 15px;">Khách Hàng</th>
-                            <th style="font-size: 15px; padding: 15px;">SĐT</th>
-                            <th style="font-size: 15px; padding: 15px;">Tổng Tiền</th>
-                            <th style="font-size: 15px; padding: 15px; text-align: center;">Thanh Toán</th>
-                            <th style="font-size: 15px; padding: 15px; text-align: center;">Trạng Thái</th>
-                            <th style="font-size: 15px; padding: 15px;">Ngày Đặt</th>
-                            <th style="font-size: 15px; padding: 15px; text-align: center;">Chi Tiết</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Model.Orders)
-                        {
-                            <tr style="border-bottom: 1px solid #e0e0e0;">
-                                <td style="padding: 15px; font-size: 14px;">
-                                    <strong style="color: #4f6a4c;">@order.OrderCode</strong>
-                                </td>
-                                <td style="padding: 15px; font-size: 14px;">
-                                    <strong>@order.CustomerName</strong>
-                                </td>
-                                <td style="padding: 15px; font-size: 14px;">
-                                    @order.CustomerPhone
-                                </td>
-                                <td style="padding: 15px; font-size: 16px;">
-                                    <strong style="color: #d9534f;">@order.FinalAmount.ToString("N0") đ</strong>
-                                </td>
-                                <td style="padding: 15px; text-align: center;">
-                                    @if (order.PaymentStatus == "Đã thanh toán")
-                                    {
-                                        <span class="badge bg-success" style="font-size: 13px; padding: 8px 15px;">✓ Đã thanh toán</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger" style="font-size: 13px; padding: 8px 15px;">✗ Chưa thanh toán</span>
-                                    }
-                                </td>
-                                <td style="padding: 15px; text-align: center;">
-                                    @if (order.OrderStatus == "Đã hoàn thành")
-                                    {
-                                        <span class="badge bg-success" style="font-size: 13px; padding: 8px 15px;">✓ Hoàn thành</span>
-                                    }
-                                    else if (order.OrderStatus == "Chờ xử lý")
-                                    {
-                                        <span class="badge bg-warning text-dark" style="font-size: 13px; padding: 8px 15px;">⏳ Chờ xử lý</span>
-                                    }
-                                    else if (order.OrderStatus == "Đang xử lý")
-                                    {
-                                        <span class="badge bg-info" style="font-size: 13px; padding: 8px 15px;">🔄 Đang xử lý</span>
-                                    }
-                                    else if (order.OrderStatus == "Đang giao")
-                                    {
-                                        <span class="badge bg-primary" style="font-size: 13px; padding: 8px 15px;">🚚 Đang giao</span>
-                                    }
-                                    else if (order.OrderStatus == "Đã hủy")
-                                    {
-                                        <span class="badge bg-danger" style="font-size: 13px; padding: 8px 15px;">✗ Đã hủy</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary" style="font-size: 13px; padding: 8px 15px;">@order.OrderStatus</span>
-                                    }
-                                </td>
-                                <td style="padding: 15px; font-size: 14px;">
-                                    @order.CreatedDate?.ToString("dd/MM/yyyy")<br>
-                                    <small class="text-muted">@order.CreatedDate?.ToString("HH:mm")</small>
-                                </td>
-                                <td style="padding: 15px; text-align: center;">
-                                    <a asp-action="OrderDetail" asp-route-id="@order.OrderId" 
-                                       class="btn btn-primary" style="padding: 8px 20px; font-size: 14px;" title="Xem chi tiết">
-                                        <i class="fa fa-eye"></i> Xem
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <div class="container-fluid">
+        <!-- Bộ lọc -->
+        <div class="card border-0 mb-5">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-sliders" style="margin-right: 10px;"></i>Bộ Lọc & Tìm Kiếm
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="get" asp-action="Orders">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Tìm kiếm</label>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Mã đơn, tên, SĐT..." value="@Model.SearchTerm">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Trạng thái</label>
+                            <select name="status" class="form-select">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="Chờ xác nhận" selected="@(Model.StatusFilter == "Chờ xác nhận")">Chờ xác nhận</option>
+                                <option value="Đang xử lý" selected="@(Model.StatusFilter == "Đang xử lý")">Đang xử lý</option>
+                                <option value="Đang giao" selected="@(Model.StatusFilter == "Đang giao")">Đang giao</option>
+                                <option value="Đã hoàn thành" selected="@(Model.StatusFilter == "Đã hoàn thành")">Đã hoàn thành</option>
+                                <option value="Đã hủy" selected="@(Model.StatusFilter == "Đã hủy")">Đã hủy</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Thanh toán</label>
+                            <select name="paymentStatus" class="form-select">
+                                <option value="">Tất cả</option>
+                                <option value="Chưa thanh toán" selected="@(Model.PaymentStatusFilter == "Chưa thanh toán")">Chưa thanh toán</option>
+                                <option value="Đã thanh toán" selected="@(Model.PaymentStatusFilter == "Đã thanh toán")">Đã thanh toán</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Từ ngày</label>
+                            <input type="date" name="fromDate" class="form-control" 
+                                   value="@Model.FromDate?.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" style="font-weight: 600; color: #333;">Đến ngày</label>
+                            <input type="date" name="toDate" class="form-control" 
+                                   value="@Model.ToDate?.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fa fa-search"></i> <span class="d-none d-sm-inline">Tìm</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <!-- Pagination -->
-        @if (Model.TotalPages > 1)
-        {
-            <div class="card-footer bg-white">
-                <nav>
-                    <ul class="pagination justify-content-center mb-0">
-                        @if (Model.CurrentPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-action="Orders" 
-                                   asp-route-page="@(Model.CurrentPage - 1)"
-                                   asp-route-search="@Model.SearchTerm"
-                                   asp-route-status="@Model.StatusFilter"
-                                   asp-route-paymentStatus="@Model.PaymentStatusFilter"
-                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
-                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">Trước</a>
-                            </li>
-                        }
-
-                        @for (int i = 1; i <= Model.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-action="Orders" 
-                                   asp-route-page="@i"
-                                   asp-route-search="@Model.SearchTerm"
-                                   asp-route-status="@Model.StatusFilter"
-                                   asp-route-paymentStatus="@Model.PaymentStatusFilter"
-                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
-                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">@i</a>
-                            </li>
-                        }
-
-                        @if (Model.CurrentPage < Model.TotalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-action="Orders" 
-                                   asp-route-page="@(Model.CurrentPage + 1)"
-                                   asp-route-search="@Model.SearchTerm"
-                                   asp-route-status="@Model.StatusFilter"
-                                   asp-route-paymentStatus="@Model.PaymentStatusFilter"
-                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
-                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">Sau</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
+        <!-- Danh sách đơn hàng -->
+        <div class="card border-0">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-shopping-bag" style="margin-right: 10px;"></i>Danh Sách Đơn Hàng
+                </h5>
             </div>
-        }
+            <div class="card-body p-0">
+                @if (Model.Orders?.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="font-weight: 700;"><i class="fa fa-hashtag"></i> Mã Đơn</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-user"></i> Khách Hàng</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-phone"></i> SĐT</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-money"></i> Tổng Tiền</th>
+                                    <th style="font-weight: 700; text-align: center;"><i class="fa fa-credit-card"></i> Thanh Toán</th>
+                                    <th style="font-weight: 700; text-align: center;"><i class="fa fa-info-circle"></i> Trạng Thái</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-calendar"></i> Ngày Đặt</th>
+                                    <th style="font-weight: 700; text-align: center; width: 80px;"><i class="fa fa-cog"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.Orders)
+                                {
+                                    <tr>
+                                        <td style="font-weight: 700; color: #2d5016;">
+                                            @order.OrderCode
+                                        </td>
+                                        <td>
+                                            <div style="font-weight: 600;">@order.CustomerName</div>
+                                        </td>
+                                        <td>
+                                            @order.CustomerPhone
+                                        </td>
+                                        <td style="font-weight: 700; color: #e74c3c; font-size: 15px;">
+                                            @order.FinalAmount.ToString("N0") đ
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @if (order.PaymentStatus == "Đã thanh toán")
+                                            {
+                                                <span class="badge bg-success">✓ Thanh toán</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">✗ Chưa thanh toán</span>
+                                            }
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @if (order.OrderStatus == "Đã hoàn thành")
+                                            {
+                                                <span class="badge bg-success">✓ Hoàn thành</span>
+                                            }
+                                            else if (order.OrderStatus == "Chờ xác nhận")
+                                            {
+                                                <span class="badge bg-warning">⏳ Chờ xác nhận</span>
+                                            }
+                                            else if (order.OrderStatus == "Đang xử lý")
+                                            {
+                                                <span class="badge bg-info">🔄 Xử lý</span>
+                                            }
+                                            else if (order.OrderStatus == "Đang giao")
+                                            {
+                                                <span class="badge bg-primary">🚚 Giao hàng</span>
+                                            }
+                                            else if (order.OrderStatus == "Đã hủy")
+                                            {
+                                                <span class="badge bg-danger">✗ Hủy</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@order.OrderStatus</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <small style="display: block;">@order.CreatedDate?.ToString("dd/MM/yyyy")</small>
+                                            <small class="text-muted">@order.CreatedDate?.ToString("HH:mm")</small>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a asp-action="OrderDetail" asp-route-id="@order.OrderId" 
+                                               class="btn btn-primary btn-sm" title="Xem chi tiết">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div style="padding: 3rem; text-align: center; color: #999;">
+                        <i class="fa fa-inbox fa-3x mb-3" style="opacity: 0.3;"></i>
+                        <p style="font-size: 16px;">Không tìm thấy đơn hàng nào</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer bg-light">
+                    <nav>
+                        <ul class="pagination justify-content-center mb-0" style="gap: 4px;">
+                            @if (Model.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Orders" 
+                                       asp-route-page="@(Model.CurrentPage - 1)"
+                                       asp-route-search="@Model.SearchTerm"
+                                       asp-route-status="@Model.StatusFilter"
+                                       asp-route-paymentStatus="@Model.PaymentStatusFilter"
+                                       asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                       asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">
+                                        <i class="fa fa-chevron-left"></i> Trước
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Orders" 
+                                       asp-route-page="@i"
+                                       asp-route-search="@Model.SearchTerm"
+                                       asp-route-status="@Model.StatusFilter"
+                                       asp-route-paymentStatus="@Model.PaymentStatusFilter"
+                                       asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                       asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.CurrentPage < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Orders" 
+                                       asp-route-page="@(Model.CurrentPage + 1)"
+                                       asp-route-search="@Model.SearchTerm"
+                                       asp-route-status="@Model.StatusFilter"
+                                       asp-route-paymentStatus="@Model.PaymentStatusFilter"
+                                       asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                       asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">
+                                        Sau <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
     </div>
 </div>
+

@@ -162,7 +162,11 @@ namespace Exe_Demo.Services
                         var orderCode = worksheet.Cells[row, 1].Value?.ToString();
                         if (string.IsNullOrEmpty(orderCode)) continue;
 
-                        var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderCode == orderCode);
+                        // Use AsTracking to ensure changes are saved
+                        var order = await _context.Orders
+                            .AsTracking()
+                            .FirstOrDefaultAsync(o => o.OrderCode == orderCode);
+                            
                         if (order == null)
                         {
                             errors.Add($"Dòng {row}: Không tìm thấy đơn hàng {orderCode}");
@@ -208,7 +212,11 @@ namespace Exe_Demo.Services
                         // Nếu hoàn thành, cộng điểm
                         if (newStatus == "Đã hoàn thành" && oldStatus != "Đã hoàn thành" && order.CustomerId.HasValue)
                         {
-                            var customer = await _context.Customers.FindAsync(order.CustomerId.Value);
+                            // Use AsTracking for customer as well
+                            var customer = await _context.Customers
+                                .AsTracking()
+                                .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
+                                
                             if (customer != null)
                             {
                                 int pointsToAdd = (int)(order.FinalAmount / 10000);

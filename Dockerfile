@@ -1,21 +1,30 @@
-# Build stage
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore
-COPY *.csproj ./
-RUN dotnet restore
+# Copy csproj and restore dependencies
+COPY ["Exe_Demo.csproj", "./"]
+RUN dotnet restore "Exe_Demo.csproj"
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+# Copy the rest of the source code
+COPY . .
 
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Build the application
+RUN dotnet build "Exe_Demo.csproj" -c Release -o /app/build
+
+# Publish the application
+FROM build AS publish
+RUN dotnet publish "Exe_Demo.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=publish /app/publish .
 
-# Set environment
-ENV ASPNETCORE_ENVIRONMENT=Production
+# Environment variables
+ENV ASPNETCORE_URLS=http://+:8080
+ENV PORT=8080
+EXPOSE 8080
 
+# Run the application
 ENTRYPOINT ["dotnet", "Exe_Demo.dll"]

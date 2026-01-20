@@ -43,7 +43,7 @@
 
   
 .navbar-logo {
-  height: 60px; /* Chiều cao logo, điều chỉnh theo thiết kế */
+  height: 100px; /* Chiều cao logo, điều chỉnh theo thiết kế */
   width: auto; /* Giữ tỷ lệ ảnh */
   max-width: 150px; /* Giới hạn chiều rộng tối đa */
   vertical-align: middle; /* Căn giữa theo chiều dọc */
@@ -10069,8 +10069,7 @@ textarea.form-control {
 
 /* Navigation Bar */
 .ftco_navbar {
-  background: #4f6a4c !important;
-  padding: 15px 0 !important;
+  background: #ffffff !important;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
 }
 

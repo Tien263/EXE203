@@ -225,6 +225,7 @@ BEGIN
         PasswordHash NVARCHAR(255) NOT NULL,
         FullName NVARCHAR(100) NOT NULL,
         PhoneNumber NVARCHAR(20),
+        ProfileImageUrl NVARCHAR(MAX) NULL,
         Role NVARCHAR(20) DEFAULT 'Customer', -- Admin, Manager, Cashier, Staff, Customer
         EmployeeId INT, -- LiÃªn káº¿t vá»›i nhÃ¢n viÃªn náº¿u lÃ  tÃ i khoáº£n ná»™i bá»™
         CustomerId INT, -- LiÃªn káº¿t vá»›i khÃ¡ch hÃ ng náº¿u lÃ  tÃ i khoáº£n online

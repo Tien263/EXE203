@@ -1,0 +1,265 @@
+@model IEnumerable<Exe_Demo.Models.Blog>
+@{
+    ViewData["Title"] = "Quản Lý Blog";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<div class="container-fluid py-5">
+    <!-- Page Header -->
+    <div class="page-title mb-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h2 style="margin: 0; color: white;">
+                        <i class="fa fa-newspaper-o" style="margin-right: 12px;"></i>Quản Lý Blog
+                    </h2>
+                </div>
+                <div class="col-auto">
+                    <a asp-action="CreateBlog" class="btn btn-success btn-sm" style="margin-right: 8px;">
+                        <i class="fa fa-plus"></i> Tạo Blog Mới
+                    </a>
+                    <a asp-action="Dashboard" class="btn btn-light btn-sm">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Search & Filter -->
+        <div class="card border-0 mb-4">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-filter" style="margin-right: 10px;"></i>Bộ Lọc & Tìm Kiếm
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="Tìm kiếm theo tiêu đề hoặc nội dung..." 
+                               value="@ViewBag.SearchTerm">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="status" class="form-select">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="published" selected="@(ViewBag.StatusFilter == "published")">Đã xuất bản</option>
+                            <option value="draft" selected="@(ViewBag.StatusFilter == "draft")">Bản nháp</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fa fa-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="card-body">
+                        <h3 style="color: white; margin-bottom: 0;">@Model.Count()</h3>
+                        <p class="mb-0">Tổng bài viết</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                    <div class="card-body">
+                        <h3 style="color: white; margin-bottom: 0;">@Model.Count(b => b.IsPublished == true)</h3>
+                        <p class="mb-0">Đã xuất bản</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-0" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                    <div class="card-body">
+                        <h3 style="color: white; margin-bottom: 0;">@Model.Count(b => b.IsPublished != true)</h3>
+                        <p class="mb-0">Bản nháp</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                    <div class="card-body">
+                        <h3 style="color: white; margin-bottom: 0;">@Model.Sum(b => b.ViewCount)</h3>
+                        <p class="mb-0">Tổng lượt xem</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog List -->
+        <div class="card border-0">
+            <div class="card-header">
+                <h5 style="margin-bottom: 0;">
+                    <i class="fa fa-list" style="margin-right: 10px;"></i>Danh Sách Bài Viết
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="font-weight: 700;"><i class="fa fa-hashtag"></i> ID</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-file-text"></i> Tiêu đề</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-image"></i> Ảnh</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-user"></i> Tác giả</th>
+                                    <th style="font-weight: 700; text-align: center;"><i class="fa fa-eye"></i> Lượt xem</th>
+                                    <th style="font-weight: 700;"><i class="fa fa-calendar"></i> Ngày tạo</th>
+                                    <th style="font-weight: 700; text-align: center;"><i class="fa fa-toggle-on"></i> Trạng thái</th>
+                                    <th style="font-weight: 700; text-align: center;"><i class="fa fa-cog"></i> Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var blog in Model)
+                                {
+                                    <tr>
+                                        <td style="font-weight: 600;">#@blog.BlogId</td>
+                                        <td>
+                                            <div style="font-weight: 600;">@blog.Title</div>
+                                            <small class="text-muted">@blog.Slug</small>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(blog.ImageUrl))
+                                            {
+                                                <img src="@blog.ImageUrl" alt="@blog.Title" 
+                                                     style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Không có</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (blog.Author != null)
+                                            {
+                                                <span>@blog.Author.FullName</span>
+                                            }
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="badge bg-info">@blog.ViewCount</span>
+                                        </td>
+                                        <td>
+                                            <div>@blog.CreatedDate?.ToString("dd/MM/yyyy")</div>
+                                            <small class="text-muted">@blog.CreatedDate?.ToString("HH:mm")</small>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            @if (blog.IsPublished == true)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fa fa-check-circle"></i> Đã xuất bản
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">
+                                                    <i class="fa fa-pencil"></i> Bản nháp
+                                                </span>
+                                            }
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a asp-action="EditBlog" asp-route-id="@blog.BlogId" 
+                                               class="btn btn-sm btn-warning" title="Sửa">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <button onclick="deleteBlog(@blog.BlogId, '@blog.Title')" 
+                                                    class="btn btn-sm btn-danger" title="Xóa">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div style="padding: 3rem; text-align: center; color: #999;">
+                        <i class="fa fa-inbox fa-3x mb-3" style="opacity: 0.3;"></i>
+                        <p style="font-size: 16px;">Chưa có bài viết nào</p>
+                        <a asp-action="CreateBlog" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Tạo Blog Đầu Tiên
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <div class="card-footer bg-light">
+                    <nav>
+                        <ul class="pagination justify-content-center mb-0" style="gap: 4px;">
+                            @if (ViewBag.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Blogs" 
+                                       asp-route-page="@(ViewBag.CurrentPage - 1)"
+                                       asp-route-search="@ViewBag.SearchTerm"
+                                       asp-route-status="@ViewBag.StatusFilter">
+                                        <i class="fa fa-chevron-left"></i> Trước
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Blogs" 
+                                       asp-route-page="@i"
+                                       asp-route-search="@ViewBag.SearchTerm"
+                                       asp-route-status="@ViewBag.StatusFilter">@i</a>
+                                </li>
+                            }
+
+                            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Blogs" 
+                                       asp-route-page="@(ViewBag.CurrentPage + 1)"
+                                       asp-route-search="@ViewBag.SearchTerm"
+                                       asp-route-status="@ViewBag.StatusFilter">
+                                        Sau <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteBlog(id, title) {
+            if (confirm(`Bạn có chắc muốn xóa bài viết "${title}"?`)) {
+                $.ajax({
+                    url: '@Url.Action("DeleteBlog", "Staff")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                    }
+                });
+            }
+        }
+    </script>
+}

@@ -1,10 +1,6 @@
-@model IEnumerable<Exe_Demo.Models.Product>
+@model Exe_Demo.Models.ViewModels.ProductListViewModel
 @{
     ViewData["Title"] = "Sản Phẩm";
-    var categories = ViewBag.Categories as List<Exe_Demo.Models.Category>;
-    var currentCategory = ViewBag.CurrentCategory as int?;
-    var currentSearch = ViewBag.CurrentSearch as string;
-    var currentSort = ViewBag.CurrentSort as string;
 }
 
 <style>
@@ -170,12 +166,12 @@
                 <div class="sidebar-box ftco-animate">
                     <h3>Danh Mục</h3>
                     <ul class="categories">
-                        <li><a href="@Url.Action("Index")" class="@(currentCategory == null ? "active" : "")">Tất cả <span>(@Model.Count())</span></a></li>
-                        @if (categories != null)
+                        <li><a href="@Url.Action("Index")" class="@(Model.CurrentCategory == null ? "active" : "")">Tất cả <span>(@Model.TotalCount)</span></a></li>
+                        @if (Model.Categories != null)
                         {
-                            foreach (var cat in categories)
+                            foreach (var cat in Model.Categories)
                             {
-                                <li><a href="@Url.Action("Index", new { categoryId = cat.CategoryId })" class="@(currentCategory == cat.CategoryId ? "active" : "")">@cat.CategoryName</a></li>
+                                <li><a href="@Url.Action("Index", new { categoryId = cat.CategoryId })" class="@(Model.CurrentCategory == cat.CategoryId ? "active" : "")">@cat.CategoryName</a></li>
                             }
                         }
                     </ul>
@@ -186,7 +182,7 @@
                     <h3>Tìm Kiếm</h3>
                     <form asp-action="Index" method="get" class="search-form">
                         <div class="form-group">
-                            <input type="text" name="search" class="form-control" placeholder="Tìm sản phẩm..." value="@currentSearch">
+                            <input type="text" name="search" class="form-control" placeholder="Tìm sản phẩm..." value="@Model.CurrentSearch">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
                         </div>
                     </form>
@@ -198,24 +194,24 @@
                 <!-- Filter & Sort -->
                 <div class="row mb-4">
                     <div class="col-md-12 d-flex justify-content-between align-items-center">
-                        <p class="text-muted">Hiển thị @Model.Count() sản phẩm</p>
+                        <p class="text-muted">Hiển thị @Model.Products.Count() sản phẩm</p>
                         <div class="form-group mb-0">
                             <select class="form-control" id="sortSelect" onchange="location = this.value;">
-                                <option value="@Url.Action("Index", new { categoryId = currentCategory, search = currentSearch })">Sắp xếp mặc định</option>
-                                <option value="@Url.Action("Index", new { categoryId = currentCategory, search = currentSearch, sortBy = "price_asc" })" selected="@(currentSort == "price_asc" ? "selected" : null)">Giá: Thấp đến Cao</option>
-                                <option value="@Url.Action("Index", new { categoryId = currentCategory, search = currentSearch, sortBy = "price_desc" })" selected="@(currentSort == "price_desc" ? "selected" : null)">Giá: Cao đến Thấp</option>
-                                <option value="@Url.Action("Index", new { categoryId = currentCategory, search = currentSearch, sortBy = "name" })" selected="@(currentSort == "name" ? "selected" : null)">Tên A-Z</option>
-                                <option value="@Url.Action("Index", new { categoryId = currentCategory, search = currentSearch, sortBy = "newest" })" selected="@(currentSort == "newest" ? "selected" : null)">Mới nhất</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch })">Sắp xếp mặc định</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "price_asc" })" selected="@(Model.CurrentSort == "price_asc" ? "selected" : null)">Giá: Thấp đến Cao</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "price_desc" })" selected="@(Model.CurrentSort == "price_desc" ? "selected" : null)">Giá: Cao đến Thấp</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "name" })" selected="@(Model.CurrentSort == "name" ? "selected" : null)">Tên A-Z</option>
+                                <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "newest" })" selected="@(Model.CurrentSort == "newest" ? "selected" : null)">Mới nhất</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <!-- Product Grid -->
-                @if (Model.Any())
+                @if (Model.Products.Any())
                 {
                     <div class="row">
-                        @foreach (var product in Model)
+                        @foreach (var product in Model.Products)
                         {
                             <div class="col-sm-6 col-md-4 col-lg-4 mb-4 ftco-animate">
                                 <div class="product">
@@ -269,7 +265,12 @@
                                         </div>
                                         <p class="bottom-area d-flex px-3">
                                             <a href="@Url.Action("Details", new { id = product.ProductId })" class="add-to-cart text-center py-2 mr-1"><span>Xem chi tiết <i class="fa fa-eye"></i></span></a>
-                                            <a href="#" class="buy-now text-center py-2 btn-add-to-cart" data-product-id="@product.ProductId">Mua ngay<span><i class="fa fa-shopping-cart"></i></span></a>
+                                            <a href="#" class="buy-now text-center py-2 btn-add-to-cart" 
+                                               data-product-id="@product.ProductId"
+                                               data-product-name="@product.ProductName"
+                                               data-product-price="@product.Price"
+                                               data-product-stock="@product.StockQuantity"
+                                               data-product-image="/images/prod-6.jpg">Mua ngay<span><i class="fa fa-shopping-cart"></i></span></a>
                                         </p>
                                     </div>
                                 </div>
@@ -288,52 +289,23 @@
     </div>
 </section>
 
+<!-- Include Add to Cart Modal -->
+@await Html.PartialAsync("_AddToCartModal")
+
 @section Scripts {
     <script>
         $(document).ready(function(){
-            // Xử lý nút "Mua ngay"
+            // Xử lý nút "Mua ngay" - Show modal
             $('.btn-add-to-cart').click(function(e){
                 e.preventDefault();
                 var productId = $(this).data('product-id');
+                var productName = $(this).data('product-name');
+                var productPrice = $(this).data('product-price');
+                var productStock = $(this).data('product-stock');
+                var productImage = $(this).data('product-image');
                 
-                $.ajax({
-                    url: '@Url.Action("AddToCart", "Cart")',
-                    type: 'POST',
-                    data: { 
-                        productId: productId,
-                        quantity: 1
-                    },
-                    success: function(response) {
-                        if(response.success) {
-                            alert('Đã thêm sản phẩm vào giỏ hàng!');
-                            // Cập nhật số lượng giỏ hàng
-                            updateCartCount();
-                        } else {
-                            alert(response.message || 'Có lỗi xảy ra!');
-                            if(response.message && response.message.includes('đăng nhập')) {
-                                window.location.href = '@Url.Action("Login", "Auth")';
-                            }
-                        }
-                    },
-                    error: function() {
-                        alert('Có lỗi xảy ra. Vui lòng thử lại!');
-                    }
-                });
+                showAddToCartModal(productId, productName, productPrice, productStock, productImage);
             });
-            
-            // Hàm cập nhật số lượng giỏ hàng
-            function updateCartCount() {
-                $.ajax({
-                    url: '@Url.Action("GetCartCount", "Cart")',
-                    type: 'GET',
-                    success: function(count) {
-                        $('.cart-count').text(count);
-                        if(count > 0) {
-                            $('.cart-count').show();
-                        }
-                    }
-                });
-            }
             
             // Load số lượng giỏ hàng khi trang load
             updateCartCount();

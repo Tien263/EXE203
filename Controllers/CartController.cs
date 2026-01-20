@@ -50,50 +50,93 @@ namespace Exe_Demo.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            try
             {
-                return Json(new { success = false, message = "Vui lòng đăng nhập!" });
-            }
-
-            // Get customer ID from user
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null || user.CustomerId == null)
-            {
-                return Json(new { success = false, message = "Vui lòng đăng nhập!" });
-            }
-
-            var product = await _context.Products.FindAsync(productId);
-            if (product == null)
-            {
-                return Json(new { success = false, message = "Sản phẩm không tồn tại!" });
-            }
-
-            // Check if product already in cart
-            var existingCart = await _context.Carts
-                .FirstOrDefaultAsync(c => c.CustomerId == user.CustomerId && c.ProductId == productId);
-
-            if (existingCart != null)
-            {
-                // Update quantity
-                existingCart.Quantity += quantity;
-            }
-            else
-            {
-                // Add new cart item
-                var cart = new Cart
+                _logger.LogInformation($"AddToCart called with productId: {productId}, quantity: {quantity}");
+                
+                // Check product exists
+                var product = await _context.Products.FindAsync(productId);
+                
+                _logger.LogInformation($"Product found: {product != null}, ProductId in DB: {product?.ProductId}");
+                
+                if (product == null)
                 {
-                    CustomerId = user.CustomerId,
-                    ProductId = productId,
-                    Quantity = quantity,
-                    CreatedDate = DateTime.Now
-                };
-                _context.Carts.Add(cart);
+                    // Try to find all products to debug
+                    var allProducts = await _context.Products.Select(p => p.ProductId).ToListAsync();
+                    _logger.LogWarning($"Product {productId} not found. Available products: {string.Join(", ", allProducts)}");
+                    
+                    return Json(new { success = false, message = $"Sản phẩm không tồn tại! (ID: {productId})" });
+                }
+
+                // Check stock
+                if (product.StockQuantity < quantity)
+                {
+                    return Json(new { success = false, message = $"Chỉ còn {product.StockQuantity} sản phẩm!" });
+                }
+
+                // Get customer ID or session ID
+                int? customerId = null;
+                string? sessionId = null;
+
+                var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int userId))
+                {
+                    var user = await _context.Users.FindAsync(userId);
+                    customerId = user?.CustomerId;
+                }
+
+                if (customerId == null)
+                {
+                    // Guest user - use session
+                    sessionId = HttpContext.Session.GetString("CartSessionId");
+                    if (string.IsNullOrEmpty(sessionId))
+                    {
+                        sessionId = Guid.NewGuid().ToString();
+                        HttpContext.Session.SetString("CartSessionId", sessionId);
+                    }
+                }
+
+                // Check if product already in cart
+                var existingCart = await _context.Carts
+                    .AsTracking()
+                    .FirstOrDefaultAsync(c => 
+                        (customerId.HasValue && c.CustomerId == customerId && c.ProductId == productId) ||
+                        (!customerId.HasValue && c.SessionId == sessionId && c.ProductId == productId));
+
+                if (existingCart != null)
+                {
+                    // Update quantity
+                    existingCart.Quantity += quantity;
+                    
+                    // Check stock again
+                    if (existingCart.Quantity > product.StockQuantity)
+                    {
+                        return Json(new { success = false, message = $"Chỉ còn {product.StockQuantity} sản phẩm!" });
+                    }
+                }
+                else
+                {
+                    // Add new cart item
+                    var cart = new Cart
+                    {
+                        CustomerId = customerId,
+                        SessionId = sessionId,
+                        ProductId = productId,
+                        Quantity = quantity,
+                        CreatedDate = DateTime.Now
+                    };
+                    _context.Carts.Add(cart);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Đã thêm vào giỏ hàng!" });
             }
-
-            await _context.SaveChangesAsync();
-
-            return Json(new { success = true, message = "Đã thêm vào giỏ hàng!" });
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding to cart");
+                return Json(new { success = false, message = "Có lỗi xảy ra. Vui lòng thử lại!" });
+            }
         }
 
         [HttpPost]
@@ -111,7 +154,10 @@ namespace Exe_Demo.Controllers
                 return Json(new { success = false, message = "Vui lòng đăng nhập!" });
             }
 
+            // Lấy giỏ hàng
+            // Use AsTracking to ensure changes are saved
             var cart = await _context.Carts
+                .AsTracking()
                 .FirstOrDefaultAsync(c => c.CartId == cartId && c.CustomerId == user.CustomerId);
 
             if (cart == null)
@@ -370,104 +416,135 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction("Index", "Cart");
             }
 
-            // Tính tổng tiền
-            decimal totalAmount = cartItems.Sum(c => c.Quantity * c.Product.Price);
-            
-            // Áp dụng giảm giá từ voucher nếu có
-            decimal finalOrderAmount = FinalAmount ?? totalAmount;
-            decimal discountApplied = DiscountAmount ?? 0;
-
-            // Tạo đơn hàng
-            var order = new Models.Order
+            try
             {
-                OrderCode = "ORD" + DateTime.Now.Ticks.ToString().Substring(0, 10),
-                CustomerId = user.CustomerId,
-                CustomerName = FullName,
-                CustomerEmail = Email,
-                CustomerPhone = Phone,
-                ShippingAddress = Address,
-                TotalAmount = totalAmount,
-                FinalAmount = finalOrderAmount,
-                PaymentMethod = PaymentMethod,
-                PaymentStatus = PaymentMethod == "COD" ? "Pending" : "Pending",
-                OrderStatus = "Pending",
-                Note = Note,
-                CreatedDate = DateTime.Now
-            };
-            
-            // Cập nhật voucher usage nếu có
-            if (!string.IsNullOrEmpty(VoucherCode))
-            {
-                var voucher = await _context.Vouchers
-                    .FirstOrDefaultAsync(v => v.VoucherCode == VoucherCode);
-                if (voucher != null)
+                // Bắt đầu transaction để đảm bảo dữ liệu được lưu toàn vẹn
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    voucher.UsedCount = (voucher.UsedCount ?? 0) + 1;
+                    try
+                    {
+                        // Tính tổng tiền
+                        decimal totalAmount = cartItems.Sum(c => c.Quantity * c.Product.Price);
+                        
+                        // Áp dụng giảm giá từ voucher nếu có
+                        decimal finalOrderAmount = FinalAmount ?? totalAmount;
+                        decimal discountApplied = DiscountAmount ?? 0;
+
+                        // Tạo đơn hàng
+                        var order = new Models.Order
+                        {
+                            OrderCode = "ORD" + DateTime.Now.Ticks.ToString().Substring(0, 10),
+                            CustomerId = user.CustomerId,
+                            CustomerName = FullName,
+                            CustomerEmail = Email,
+                            CustomerPhone = Phone,
+                            ShippingAddress = Address,
+                            TotalAmount = totalAmount,
+                            FinalAmount = finalOrderAmount,
+                            PaymentMethod = PaymentMethod,
+                            PaymentStatus = PaymentMethod == "COD" ? "Pending" : "Pending",
+                            OrderStatus = "Pending",
+                            Note = Note,
+                            CreatedDate = DateTime.Now
+                        };
+                        
+                        // Cập nhật voucher usage nếu có
+                        if (!string.IsNullOrEmpty(VoucherCode))
+                        {
+                            var voucher = await _context.Vouchers
+                                .FirstOrDefaultAsync(v => v.VoucherCode == VoucherCode);
+                            if (voucher != null)
+                            {
+                                voucher.UsedCount = (voucher.UsedCount ?? 0) + 1;
+                                _context.Vouchers.Update(voucher);
+                            }
+                        }
+
+                        // Thêm đơn hàng
+                        _context.Orders.Add(order);
+                        await _context.SaveChangesAsync();
+
+                        // Tạo chi tiết đơn hàng
+                        foreach (var item in cartItems)
+                        {
+                            var orderDetail = new Models.OrderDetail
+                            {
+                                OrderId = order.OrderId,
+                                ProductId = item.ProductId,
+                                ProductName = item.Product.ProductName,
+                                Quantity = item.Quantity,
+                                Price = item.Product.Price,
+                                DiscountPercent = item.Product.DiscountPercent ?? 0,
+                                TotalPrice = item.Quantity * item.Product.Price
+                            };
+                            _context.OrderDetails.Add(orderDetail);
+                        }
+                        await _context.SaveChangesAsync();
+
+                        // Xóa giỏ hàng
+                        _context.Carts.RemoveRange(cartItems);
+                        await _context.SaveChangesAsync();
+
+                        // Commit transaction
+                        await transaction.CommitAsync();
+
+                        _logger.LogInformation($"Đơn hàng #{order.OrderCode} được tạo thành công cho khách hàng ID: {user.CustomerId}");
+
+                        // Load lại order với OrderDetails để gửi email
+                        var orderWithDetails = await _context.Orders
+                            .Include(o => o.OrderDetails)
+                            .FirstOrDefaultAsync(o => o.OrderId == order.OrderId);
+
+                        // Gửi email xác nhận đơn hàng
+                        if (orderWithDetails != null)
+                        {
+                            try
+                            {
+                                await _emailService.SendOrderConfirmationEmailAsync(orderWithDetails);
+                                _logger.LogInformation($"Email xác nhận đơn hàng #{orderWithDetails.OrderCode} đã được gửi đến {orderWithDetails.CustomerEmail}");
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError($"Lỗi gửi email xác nhận đơn hàng: {ex.Message}");
+                                // Không throw exception để không ảnh hưởng đến quá trình đặt hàng
+                            }
+                        }
+
+                        // Xử lý theo phương thức thanh toán
+                        if (PaymentMethod == "Bank")
+                        {
+                            // Chuyển hướng đến trang hiển thị thông tin chuyển khoản
+                            return RedirectToAction("BankTransferInfo", new { orderId = order.OrderId });
+                        }
+                        else if (PaymentMethod == "COD")
+                        {
+                            // Tính điểm sẽ nhận được
+                            int pointsToEarn = (int)(order.FinalAmount / 10000);
+                            string pointsMessage = pointsToEarn > 0 
+                                ? $" Sau khi giao hàng thành công, bạn sẽ nhận được {pointsToEarn} điểm tích lũy (10.000đ = 1 điểm)." 
+                                : "";
+                            
+                            TempData["SuccessMessage"] = $"Đặt hàng thành công! Mã đơn hàng: #{order.OrderCode}. Chúng tôi sẽ liên hệ với bạn sớm nhất. Thông tin chi tiết đã được gửi qua email.{pointsMessage}";
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        _logger.LogError($"Lỗi khi tạo đơn hàng: {ex.Message}\n{ex.StackTrace}");
+                        TempData["ErrorMessage"] = $"Có lỗi xảy ra khi đặt hàng: {ex.Message}";
+                        return RedirectToAction("Index", "Cart");
+                    }
                 }
             }
-
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            // Tạo chi tiết đơn hàng
-            foreach (var item in cartItems)
+            catch (Exception ex)
             {
-                var orderDetail = new Models.OrderDetail
-                {
-                    OrderId = order.OrderId,
-                    ProductId = item.ProductId,
-                    ProductName = item.Product.ProductName,
-                    Quantity = item.Quantity,
-                    Price = item.Product.Price,
-                    DiscountPercent = item.Product.DiscountPercent ?? 0,
-                    TotalPrice = item.Quantity * item.Product.Price
-                };
-                _context.OrderDetails.Add(orderDetail);
+                _logger.LogError($"Lỗi không mong muốn khi đặt hàng: {ex.Message}");
+                TempData["ErrorMessage"] = "Có lỗi xảy ra. Vui lòng thử lại!";
+                return RedirectToAction("Index", "Cart");
             }
-
-            // Xóa giỏ hàng
-            _context.Carts.RemoveRange(cartItems);
-            await _context.SaveChangesAsync();
-
-            // Load lại order với OrderDetails để gửi email
-            var orderWithDetails = await _context.Orders
-                .Include(o => o.OrderDetails)
-                .FirstOrDefaultAsync(o => o.OrderId == order.OrderId);
-
-            // Gửi email xác nhận đơn hàng
-            if (orderWithDetails != null)
-            {
-                try
-                {
-                    await _emailService.SendOrderConfirmationEmailAsync(orderWithDetails);
-                    _logger.LogInformation($"Email xác nhận đơn hàng #{orderWithDetails.OrderCode} đã được gửi đến {orderWithDetails.CustomerEmail}");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Lỗi gửi email xác nhận đơn hàng: {ex.Message}");
-                    // Không throw exception để không ảnh hưởng đến quá trình đặt hàng
-                }
-            }
-
-            // Xử lý theo phương thức thanh toán
-            if (PaymentMethod == "Bank")
-            {
-                // Chuyển hướng đến trang hiển thị thông tin chuyển khoản
-                return RedirectToAction("BankTransferInfo", new { orderId = order.OrderId });
-            }
-            else if (PaymentMethod == "COD")
-            {
-                // Tính điểm sẽ nhận được
-                int pointsToEarn = (int)(order.FinalAmount / 10000);
-                string pointsMessage = pointsToEarn > 0 
-                    ? $" Sau khi giao hàng thành công, bạn sẽ nhận được {pointsToEarn} điểm tích lũy (10.000đ = 1 điểm)." 
-                    : "";
-                
-                TempData["SuccessMessage"] = $"Đặt hàng thành công! Mã đơn hàng: #{order.OrderCode}. Chúng tôi sẽ liên hệ với bạn sớm nhất. Thông tin chi tiết đã được gửi qua email.{pointsMessage}";
-                return RedirectToAction("Index", "Home");
-            }
-
-            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> BankTransferInfo(int orderId)
@@ -490,6 +567,40 @@ namespace Exe_Demo.Controllers
             ViewBag.BankBranch = _configuration["BankTransfer:BankBranch"];
 
             return View(order);
+        }
+        
+        // Debug endpoint to check products
+        [HttpGet]
+        public async Task<IActionResult> DebugProducts()
+        {
+            var products = await _context.Products
+                .Select(p => new { 
+                    p.ProductId, 
+                    p.ProductName, 
+                    p.Price, 
+                    p.StockQuantity 
+                })
+                .ToListAsync();
+                
+            return Json(new { 
+                count = products.Count, 
+                products = products 
+            });
+        }
+        
+        // Test add to cart with specific product
+        [HttpGet]
+        public async Task<IActionResult> TestAddToCart(int productId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            
+            return Json(new {
+                productId = productId,
+                found = product != null,
+                productName = product?.ProductName,
+                price = product?.Price,
+                stock = product?.StockQuantity
+            });
         }
     }
 }

@@ -1,17 +1,35 @@
 @echo off
-REM Script khoi dong chi AI Chatbot Server
-
+chcp 65001 > nul
 echo ========================================
-echo   START AI CHATBOT SERVER
+echo   KHỞI ĐỘNG AI SERVICE (Python FastAPI)
 echo ========================================
 echo.
 
-echo Dung Python processes...
-taskkill /F /IM python.exe >nul 2>&1
-echo [OK] Da dung Python
-echo.
-
-echo Khoi dong AI Chatbot Server...
+echo Đang chuyển đến thư mục AI...
 cd Trainning_AI
-set PORT=5000
+
+echo.
+echo Kích hoạt virtual environment...
+if exist venv\Scripts\activate.bat (
+    call venv\Scripts\activate.bat
+    echo ✅ Virtual environment đã kích hoạt
+) else (
+    echo ⚠️  Virtual environment không tồn tại
+    echo Đang tạo virtual environment mới...
+    python -m venv venv
+    call venv\Scripts\activate.bat
+    echo.
+    echo Đang cài đặt dependencies...
+    pip install -r requirements.txt
+)
+
+echo.
+echo Đang khởi động AI Service...
+echo - Framework: FastAPI
+echo - Port: 8000
+echo - API Docs: http://localhost:8000/docs
+echo.
+
 python -m app.main
+
+pause
