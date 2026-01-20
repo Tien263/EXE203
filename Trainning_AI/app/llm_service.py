@@ -297,8 +297,13 @@ CHỈ trả về JSON, không giải thích."""
 ✅ Tôi đã thêm sản phẩm vào giỏ hàng cho bạn!
 
 📞 Để hoàn tất đặt hàng, vui lòng:
+<<<<<<< HEAD
 1. Gọi hotline: 0929.161.999
 2. Hoặc nhắn tin Zalo: 0929.161.999
+=======
+1. Gọi hotline: 0912.345.678
+2. Hoặc nhắn tin Zalo: 0912.345.678
+>>>>>>> 5c0a37643dba4ed53558e01db64b81ab4615dae9
 3. Thanh toán khi nhận hàng (COD)
 
 🚚 Miễn phí ship nội thành, giao hàng trong 24h!"""
