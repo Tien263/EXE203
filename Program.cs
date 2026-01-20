@@ -2,6 +2,7 @@ using Exe_Demo.Data;
 using Exe_Demo.Services;
 using Exe_Demo.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
