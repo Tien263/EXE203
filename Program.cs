@@ -2,7 +2,6 @@ using Exe_Demo.Data;
 using Exe_Demo.Services;
 using Exe_Demo.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,16 +40,6 @@ builder.Services.AddControllersWithViews(options =>
             NoStore = true
         });
 });
-
-// Configure Data Protection to persist keys
-var keysPath = Path.Combine(Directory.GetCurrentDirectory(), "dataprotection-keys");
-if (!Directory.Exists(keysPath))
-{
-    Directory.CreateDirectory(keysPath);
-}
-builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
-    .SetApplicationName("MocViStore");
 
 // Add DbContext - Use SQLite in Production, SQL Server in Development
 // With Query Tracking optimization
