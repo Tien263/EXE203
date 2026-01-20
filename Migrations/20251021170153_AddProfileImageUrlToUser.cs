@@ -13,7 +13,7 @@ namespace Exe_Demo.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "ProfileImageUrl",
                 table: "Users",
-                type: "nvarchar(max)",
+                type: "TEXT",
                 nullable: true);
         }
 
