@@ -10,6 +10,7 @@ services:
     volumes:
       - ./mocvistore.db:/app/mocvistore.db
       - ./images:/app/wwwroot/images
+      - ./dataprotection-keys:/app/dataprotection-keys
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - AI__ApiUrl=http://ai-service:8000
