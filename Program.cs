@@ -98,6 +98,12 @@ var authBuilder = builder.Services.AddAuthentication(options =>
         options.AccessDeniedPath = "/Auth/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromHours(2);
         options.SlidingExpiration = true;
+        
+        // Configure cookies to work with HTTP (not just HTTPS)
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
     });
 
 // Only add Google OAuth if configured
@@ -140,9 +146,7 @@ if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientS
         
         // Production-ready cookie settings with more lenient settings for development
         options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-        options.CorrelationCookie.SecurePolicy = builder.Environment.IsDevelopment() 
-            ? CookieSecurePolicy.SameAsRequest 
-            : CookieSecurePolicy.Always;
+        options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
         options.CorrelationCookie.IsEssential = true;
         
         // Add required scopes
