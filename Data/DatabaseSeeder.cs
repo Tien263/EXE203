@@ -32,10 +32,10 @@ public static class DatabaseSeeder
             // Seed Categories
             var categories = new List<Category>
             {
-                new Category { CategoryName = "Hoa Quả Sấy", Description = "Các loại hoa quả sấy khô tự nhiên" },
-                new Category { CategoryName = "Hoa Quả Sấy Dẻo", Description = "Hoa quả sấy giữ độ mềm tự nhiên" },
-                new Category { CategoryName = "Hoa Quả Sấy Thăng Hoa", Description = "Hoa quả sấy công nghệ thăng hoa" },
-                new Category { CategoryName = "Combo Quà Tặng", Description = "Combo hoa quả sấy làm quà" }
+                new Category { CategoryGuid = Guid.NewGuid(), CategoryName = "Hoa Quả Sấy", Description = "Các loại hoa quả sấy khô tự nhiên" },
+                new Category { CategoryGuid = Guid.NewGuid(), CategoryName = "Hoa Quả Sấy Dẻo", Description = "Hoa quả sấy giữ độ mềm tự nhiên" },
+                new Category { CategoryGuid = Guid.NewGuid(), CategoryName = "Hoa Quả Sấy Thăng Hoa", Description = "Hoa quả sấy công nghệ thăng hoa" },
+                new Category { CategoryGuid = Guid.NewGuid(), CategoryName = "Combo Quà Tặng", Description = "Combo hoa quả sấy làm quà" }
             };
             context.Categories.AddRange(categories);
             context.SaveChanges();
