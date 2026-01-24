@@ -13,6 +13,7 @@ class LLMService:
         self.init_error = None
         
         print(f"[DEBUG] Initializing LLM Service...")
+        print(f"[DEBUG] VERSION: 2026-01-25 Auto-Detect Functionality")
         
         # Check environment variables
         openai_key = os.getenv("OPENAI_API_KEY", "")
