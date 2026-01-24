@@ -407,6 +407,9 @@ namespace Exe_Demo.Controllers
                 product.IsNew = model.IsNew;
                 product.UpdatedDate = DateTime.Now;
 
+                // FIX: Explicitly update entity because Global NoTracking is enabled
+                _context.Products.Update(product);
+
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
