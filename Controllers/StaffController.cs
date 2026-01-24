@@ -12,7 +12,7 @@ namespace Exe_Demo.Controllers
     {
         private readonly ApplicationDbContext _context = context;
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
-        private readonly ExcelOrderService _excelService = new ExcelOrderService(context);
+
 
         // Kiểm tra quyền Staff
         private bool IsStaff()
@@ -35,78 +35,85 @@ namespace Exe_Demo.Controllers
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
-            if (!IsStaff())
+            try
             {
-                return RedirectToAction("Login", "Auth");
+                if (!IsStaff())
+                {
+                    return RedirectToAction("Login", "Auth");
+                }
+
+                var employeeId = GetEmployeeId();
+                var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+
+                var today = DateTime.Today;
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                var model = new StaffDashboardViewModel
+                {
+                    EmployeeName = employee?.FullName ?? "Staff",
+                    EmployeeCode = employee?.EmployeeCode ?? "",
+                    Position = employee?.Position ?? "",
+
+                    // Doanh thu hôm nay
+                    TodayRevenue = await _context.Orders
+                        .Where(o => o.CreatedDate.HasValue && 
+                                    o.CreatedDate.Value.Date == today &&
+                                    o.PaymentStatus == "Đã thanh toán")
+                        .SumAsync(o => o.FinalAmount),
+
+                    // Doanh thu tháng này
+                    MonthRevenue = await _context.Orders
+                        .Where(o => o.CreatedDate.HasValue && 
+                                    o.CreatedDate.Value >= startOfMonth &&
+                                    o.PaymentStatus == "Đã thanh toán")
+                        .SumAsync(o => o.FinalAmount),
+
+                    // Đơn hàng hôm nay
+                    TodayOrders = await _context.Orders
+                        .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value.Date == today),
+
+                    // Đơn hàng tháng này
+                    MonthOrders = await _context.Orders
+                        .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value >= startOfMonth),
+
+                    // Đơn hàng chờ xử lý
+                    PendingOrders = await _context.Orders
+                        .CountAsync(o => o.OrderStatus == "Chờ xác nhận" || o.OrderStatus == "Đang xử lý"),
+
+                    // Sản phẩm sắp hết hàng
+                    LowStockProducts = await _context.Products
+                        .CountAsync(p => p.StockQuantity <= p.MinStockLevel),
+
+                    // Đơn hàng gần đây
+                    RecentOrders = await _context.Orders
+                        .Include(o => o.Customer)
+                        .OrderByDescending(o => o.CreatedDate)
+                        .Take(10)
+                        .ToListAsync(),
+
+                    // Top sản phẩm bán chạy
+                    TopSellingProducts = await _context.OrderDetails
+                        .Where(od => od.Order.CreatedDate.HasValue && od.Order.CreatedDate.Value >= startOfMonth)
+                        .GroupBy(od => new { od.ProductId, od.Product.ProductName, od.Product.ImageUrl })
+                        .Select(g => new ProductSalesViewModel
+                        {
+                            ProductId = g.Key.ProductId,
+                            ProductName = g.Key.ProductName,
+                            ImageUrl = g.Key.ImageUrl,
+                            TotalSold = g.Sum(od => od.Quantity),
+                            Revenue = g.Sum(od => od.TotalPrice)
+                        })
+                        .OrderByDescending(p => p.TotalSold)
+                        .Take(5)
+                        .ToListAsync()
+                };
+
+                return View(model);
             }
-
-            var employeeId = GetEmployeeId();
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
-
-            var today = DateTime.Today;
-            var startOfMonth = new DateTime(today.Year, today.Month, 1);
-
-            var model = new StaffDashboardViewModel
+            catch (Exception ex)
             {
-                EmployeeName = employee?.FullName ?? "Staff",
-                EmployeeCode = employee?.EmployeeCode ?? "",
-                Position = employee?.Position ?? "",
-
-                // Doanh thu hôm nay
-                TodayRevenue = await _context.Orders
-                    .Where(o => o.CreatedDate.HasValue && 
-                                o.CreatedDate.Value.Date == today &&
-                                o.PaymentStatus == "Đã thanh toán")
-                    .SumAsync(o => o.FinalAmount),
-
-                // Doanh thu tháng này
-                MonthRevenue = await _context.Orders
-                    .Where(o => o.CreatedDate.HasValue && 
-                                o.CreatedDate.Value >= startOfMonth &&
-                                o.PaymentStatus == "Đã thanh toán")
-                    .SumAsync(o => o.FinalAmount),
-
-                // Đơn hàng hôm nay
-                TodayOrders = await _context.Orders
-                    .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value.Date == today),
-
-                // Đơn hàng tháng này
-                MonthOrders = await _context.Orders
-                    .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value >= startOfMonth),
-
-                // Đơn hàng chờ xử lý
-                PendingOrders = await _context.Orders
-                    .CountAsync(o => o.OrderStatus == "Chờ xác nhận" || o.OrderStatus == "Đang xử lý"),
-
-                // Sản phẩm sắp hết hàng
-                LowStockProducts = await _context.Products
-                    .CountAsync(p => p.StockQuantity <= p.MinStockLevel),
-
-                // Đơn hàng gần đây
-                RecentOrders = await _context.Orders
-                    .Include(o => o.Customer)
-                    .OrderByDescending(o => o.CreatedDate)
-                    .Take(10)
-                    .ToListAsync(),
-
-                // Top sản phẩm bán chạy
-                TopSellingProducts = await _context.OrderDetails
-                    .Where(od => od.Order.CreatedDate.HasValue && od.Order.CreatedDate.Value >= startOfMonth)
-                    .GroupBy(od => new { od.ProductId, od.Product.ProductName, od.Product.ImageUrl })
-                    .Select(g => new ProductSalesViewModel
-                    {
-                        ProductId = g.Key.ProductId,
-                        ProductName = g.Key.ProductName,
-                        ImageUrl = g.Key.ImageUrl,
-                        TotalSold = g.Sum(od => od.Quantity),
-                        Revenue = g.Sum(od => od.TotalPrice)
-                    })
-                    .OrderByDescending(p => p.TotalSold)
-                    .Take(5)
-                    .ToListAsync()
-            };
-
-            return View(model);
+                return Content($"LỖI DASHBOARD: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
+            }
         }
 
         // ==================== QUẢN LÝ SẢN PHẨM ====================
@@ -1403,7 +1410,8 @@ namespace Exe_Demo.Controllers
                     return Json(new { success = false, message = "Khoảng thời gian không hợp lệ" });
             }
 
-            var excelData = await _excelService.ExportOrdersToExcel(start, end);
+            var excelService = new ExcelOrderService(_context);
+            var excelData = await excelService.ExportOrdersToExcel(start, end);
             var fileName = $"DonHang_{start:yyyyMMdd}_{end:yyyyMMdd}.xlsx";
 
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
@@ -1430,7 +1438,8 @@ namespace Exe_Demo.Controllers
             try
             {
                 using var stream = file.OpenReadStream();
-                var result = await _excelService.ImportOrdersFromExcel(stream);
+                var excelService = new ExcelOrderService(_context);
+                var result = await excelService.ImportOrdersFromExcel(stream);
                     
                     if (result.failed > 0)
                     {
