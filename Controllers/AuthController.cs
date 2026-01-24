@@ -48,11 +48,24 @@ namespace Exe_Demo.Controllers
                 var passwordHash = HashPassword(model.Password);
 
                 // Tìm user theo email (có tracking để update LastLogin)
+                // Tìm user theo email trước
                 var user = await _context.Users
                     .AsTracking()
                     .Include(u => u.Customer)
                     .Include(u => u.Employee)
-                    .FirstOrDefaultAsync(u => u.Email == model.Email && u.PasswordHash == passwordHash);
+                    .FirstOrDefaultAsync(u => u.Email == model.Email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Email không tồn tại trong hệ thống.");
+                    return View(model);
+                }
+
+                if (user.PasswordHash != passwordHash)
+                {
+                    ModelState.AddModelError(string.Empty, $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs Hash nhập: {passwordHash.Substring(0, 10)}...)");
+                    return View(model);
+                }
 
                 if (user != null)
                 {
