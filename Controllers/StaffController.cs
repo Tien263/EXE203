@@ -412,6 +412,12 @@ namespace Exe_Demo.Controllers
                 TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
                 return RedirectToAction(nameof(Products));
             }
+            else 
+            {
+                // Debug ModelState Errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Console.WriteLine($"[ERROR] EditProduct POST Invalid ModelState: {string.Join(", ", errors)}");
+            }
 
             model.Categories = await _context.Categories.Where(c => c.IsActive == true).ToListAsync();
             return View(model);
