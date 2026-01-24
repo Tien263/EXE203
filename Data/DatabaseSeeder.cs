@@ -114,14 +114,19 @@ public static class DatabaseSeeder
             context.SaveChanges();
         }
 
-        if (!context.Employees.Any())
+        var adminEmail = "admin@mocvistore.com";
+        var staffEmail = "staff@mocvistore.com";
+
+        // 1. Ensure Staff Employee Exists
+        var emp1 = context.Employees.FirstOrDefault(e => e.Email == staffEmail);
+        if (emp1 == null)
         {
-            var newEmp1 = new Employee
+            emp1 = new Employee
             {
                 EmployeeCode = "NV001",
                 FullName = "Nguyễn Văn A",
                 PhoneNumber = "0901234567",
-                Email = "staff@mocvistore.com",
+                Email = staffEmail,
                 Position = "Nhân viên bán hàng",
                 Department = "Bán hàng",
                 Salary = 8000000,
@@ -129,13 +134,21 @@ public static class DatabaseSeeder
                 IsActive = true,
                 CreatedDate = DateTime.Now
             };
+            context.Employees.Add(emp1);
+            context.SaveChanges();
+            Console.WriteLine("Created missing Staff Employee");
+        }
 
-            var newEmp2 = new Employee
+        // 2. Ensure Admin Employee Exists
+        var emp2 = context.Employees.FirstOrDefault(e => e.Email == adminEmail);
+        if (emp2 == null)
+        {
+            emp2 = new Employee
             {
                 EmployeeCode = "ADMIN001",
                 FullName = "Quản Trị Viên",
                 PhoneNumber = "0912345678",
-                Email = "admin@mocvistore.com",
+                Email = adminEmail,
                 Position = "Quản lý",
                 Department = "Quản lý",
                 Salary = 15000000,
@@ -143,19 +156,10 @@ public static class DatabaseSeeder
                 IsActive = true,
                 CreatedDate = DateTime.Now
             };
-
-            context.Employees.Add(newEmp1);
-            context.Employees.Add(newEmp2);
+            context.Employees.Add(emp2);
             context.SaveChanges();
+            Console.WriteLine("Created missing Admin Employee");
         }
-
-        // Seed Users if specific admin/staff emails don't exist
-        var adminEmail = "admin@mocvistore.com";
-        var staffEmail = "staff@mocvistore.com";
-
-        // Retrieve employees to ensure we have them (whether just created or already existed)
-        var emp1 = context.Employees.FirstOrDefault(e => e.Email == staffEmail);
-        var emp2 = context.Employees.FirstOrDefault(e => e.Email == adminEmail);
 
         if (context.Users.Any(u => u.Email == staffEmail))
         {
