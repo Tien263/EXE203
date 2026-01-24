@@ -116,7 +116,7 @@ public static class DatabaseSeeder
 
         if (!context.Employees.Any())
         {
-            var emp1 = new Employee
+            var newEmp1 = new Employee
             {
                 EmployeeCode = "NV001",
                 FullName = "Nguyễn Văn A",
@@ -130,7 +130,7 @@ public static class DatabaseSeeder
                 CreatedDate = DateTime.Now
             };
 
-            var emp2 = new Employee
+            var newEmp2 = new Employee
             {
                 EmployeeCode = "ADMIN001",
                 FullName = "Quản Trị Viên",
@@ -144,8 +144,8 @@ public static class DatabaseSeeder
                 CreatedDate = DateTime.Now
             };
 
-            context.Employees.Add(emp1);
-            context.Employees.Add(emp2);
+            context.Employees.Add(newEmp1);
+            context.Employees.Add(newEmp2);
             context.SaveChanges();
         }
 
