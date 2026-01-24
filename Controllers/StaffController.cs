@@ -366,8 +366,10 @@ namespace Exe_Demo.Controllers
                 product.Weight = model.Weight;
                 
                 // Handle Image Upload
+                Console.WriteLine($"[DEBUG] EditProduct POST. ID: {model.ProductId}, Has ImageFile: {model.ImageFile != null}");
                 if (model.ImageFile != null)
                 {
+                    Console.WriteLine($"[DEBUG] File Name: {model.ImageFile.FileName}, Length: {model.ImageFile.Length}");
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
                     if (!Directory.Exists(uploadsFolder))
                     {
