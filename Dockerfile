@@ -6,19 +6,19 @@ WORKDIR /src
 COPY ["Exe_Demo.csproj", "./"]
 RUN dotnet restore "Exe_Demo.csproj"
 
-# Copy the rest of the source code
-COPY . .
-
-# NUCLEAR FIX: Isolate the real Program.cs and nuke everything else resembling it
-RUN ls -la
-RUN cp Program.cs Keep.cs
-RUN find . -maxdepth 1 -name "Program*" -delete
-RUN mv Keep.cs Program.cs
-# Also clean up any potential src subdirectory recursion
-RUN rm -rf src/Program.csec* || true
-
-# Verify state
-RUN echo "Final file list:" && ls -la
+# Copy only necessary folders (Whitelist approach to avoid junk files)
+COPY Program.cs .
+COPY appsettings.json .
+COPY Controllers/ ./Controllers/
+COPY Data/ ./Data/
+COPY Database/ ./Database/
+COPY Helpers/ ./Helpers/
+COPY Migrations/ ./Migrations/
+COPY Models/ ./Models/
+COPY Repositories/ ./Repositories/
+COPY Services/ ./Services/
+COPY Views/ ./Views/
+COPY wwwroot/ ./wwwroot/
 
 # Build the application
 RUN dotnet build "Exe_Demo.csproj" -c Release -o /app/build
