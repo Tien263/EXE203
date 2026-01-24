@@ -194,7 +194,8 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         // Apply any pending EF Core migrations to keep database schema in sync
-        context.Database.Migrate();
+        // context.Database.Migrate(); // Swapping to EnsureCreated to prevent migration mismatch
+        context.Database.EnsureCreated();
 
         // Seed initial data if needed
         try
