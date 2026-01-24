@@ -216,7 +216,7 @@
                             <div class="col-sm-6 col-md-4 col-lg-4 mb-4 ftco-animate">
                                 <div class="product">
                                     <a href="@Url.Action("Details", new { id = product.ProductId })" class="img-prod">
-                                        <img class="img-fluid" src="/images/prod-6.jpg" alt="@product.ProductName">
+                                        <img class="img-fluid" src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/prod-6.jpg" : product.ImageUrl)" alt="@product.ProductName">
                                         @if (product.IsNew == true)
                                         {
                                             <span class="status">Mới</span>

@@ -48,7 +48,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     if (builder.Environment.IsProduction())
     {
         // Always use SQLite in Production
-        var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "mocvistore.db");
+        var dbFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "DbStorage");
+        if (!Directory.Exists(dbFolderPath))
+        {
+            Directory.CreateDirectory(dbFolderPath);
+        }
+        var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
         options.UseSqlite($"Data Source={dbPath}");
         Console.WriteLine($"Using SQLite database at: {dbPath}");
     }
@@ -84,6 +89,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
+
+// Add HttpClient for AI Proxy
+builder.Services.AddHttpClient();
 
 // Add Authentication
 var authBuilder = builder.Services.AddAuthentication(options =>

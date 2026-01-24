@@ -96,6 +96,8 @@ services:
       - AI__ApiUrl=http://ai-service:8000
     env_file:
       - .env
+    volumes:
+      - ./docker_data:/app/DbStorage
     depends_on:
       - ai-service
 
