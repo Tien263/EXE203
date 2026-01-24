@@ -48,26 +48,55 @@ namespace Exe_Demo.Controllers
                 var today = DateTime.Today;
                 var startOfMonth = new DateTime(today.Year, today.Month, 1);
 
+                // Client-Side Evaluation for SQLite Compatibility
+
+                // Doanh thu hôm nay (Fetch data first, then Sum)
+                var todayOrdersList = await _context.Orders
+                    .Where(o => o.CreatedDate.HasValue && 
+                                o.CreatedDate.Value.Date == today &&
+                                o.PaymentStatus == "Đã thanh toán")
+                    .Select(o => o.FinalAmount)
+                    .ToListAsync();
+                var todayRevenue = todayOrdersList.Sum();
+
+                // Doanh thu tháng này
+                var monthOrdersList = await _context.Orders
+                    .Where(o => o.CreatedDate.HasValue && 
+                                o.CreatedDate.Value >= startOfMonth &&
+                                o.PaymentStatus == "Đã thanh toán")
+                    .Select(o => o.FinalAmount)
+                    .ToListAsync();
+                var monthRevenue = monthOrdersList.Sum();
+
+                // Top sản phẩm bán chạy (Fetch detail first, then GroupBy in memory)
+                var monthOrderDetails = await _context.OrderDetails
+                    .Include(od => od.Product)
+                    .Where(od => od.Order.CreatedDate.HasValue && od.Order.CreatedDate.Value >= startOfMonth)
+                    .ToListAsync();
+
+                var topSellingProducts = monthOrderDetails
+                    .GroupBy(od => new { od.ProductId, od.Product?.ProductName, od.Product?.ImageUrl })
+                    .Select(g => new ProductSalesViewModel
+                    {
+                        ProductId = g.Key.ProductId,
+                        ProductName = g.Key.ProductName ?? "Unknown",
+                        ImageUrl = g.Key.ImageUrl,
+                        TotalSold = g.Sum(od => od.Quantity),
+                        Revenue = g.Sum(od => od.TotalPrice)
+                    })
+                    .OrderByDescending(p => p.TotalSold)
+                    .Take(5)
+                    .ToList();
+
                 var model = new StaffDashboardViewModel
                 {
                     EmployeeName = employee?.FullName ?? "Staff",
                     EmployeeCode = employee?.EmployeeCode ?? "",
                     Position = employee?.Position ?? "",
 
-                    // Doanh thu hôm nay
-                    TodayRevenue = await _context.Orders
-                        .Where(o => o.CreatedDate.HasValue && 
-                                    o.CreatedDate.Value.Date == today &&
-                                    o.PaymentStatus == "Đã thanh toán")
-                        .SumAsync(o => o.FinalAmount),
-
-                    // Doanh thu tháng này
-                    MonthRevenue = await _context.Orders
-                        .Where(o => o.CreatedDate.HasValue && 
-                                    o.CreatedDate.Value >= startOfMonth &&
-                                    o.PaymentStatus == "Đã thanh toán")
-                        .SumAsync(o => o.FinalAmount),
-
+                    TodayRevenue = todayRevenue,
+                    MonthRevenue = monthRevenue,
+                    
                     // Đơn hàng hôm nay
                     TodayOrders = await _context.Orders
                         .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value.Date == today),
@@ -91,21 +120,7 @@ namespace Exe_Demo.Controllers
                         .Take(10)
                         .ToListAsync(),
 
-                    // Top sản phẩm bán chạy
-                    TopSellingProducts = await _context.OrderDetails
-                        .Where(od => od.Order.CreatedDate.HasValue && od.Order.CreatedDate.Value >= startOfMonth)
-                        .GroupBy(od => new { od.ProductId, od.Product.ProductName, od.Product.ImageUrl })
-                        .Select(g => new ProductSalesViewModel
-                        {
-                            ProductId = g.Key.ProductId,
-                            ProductName = g.Key.ProductName,
-                            ImageUrl = g.Key.ImageUrl,
-                            TotalSold = g.Sum(od => od.Quantity),
-                            Revenue = g.Sum(od => od.TotalPrice)
-                        })
-                        .OrderByDescending(p => p.TotalSold)
-                        .Take(5)
-                        .ToListAsync()
+                    TopSellingProducts = topSellingProducts
                 };
 
                 return View(model);
