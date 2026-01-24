@@ -29,6 +29,8 @@ RUN dotnet publish "Exe_Demo.csproj" -c Release -o /app/publish /p:UseAppHost=fa
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Ensure we run as root to have write permissions for mounted volumes
+USER root
 WORKDIR /app
 COPY --from=publish /app/publish .
 
