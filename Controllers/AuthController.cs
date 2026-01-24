@@ -47,8 +47,9 @@ namespace Exe_Demo.Controllers
                 // Hash password để so sánh
                 var passwordHash = HashPassword(model.Password);
 
-                // Tìm user theo email
+                // Tìm user theo email (có tracking để update LastLogin)
                 var user = await _context.Users
+                    .AsTracking()
                     .Include(u => u.Customer)
                     .Include(u => u.Employee)
                     .FirstOrDefaultAsync(u => u.Email == model.Email && u.PasswordHash == passwordHash);
@@ -274,8 +275,9 @@ namespace Exe_Demo.Controllers
             {
                 try
                 {
-                    // Tìm OTP
+                    // Tìm OTP (Kèm tracking để update)
                     var otp = await _context.OtpVerifications
+                        .AsTracking()
                         .Where(o => o.Email == model.Email && o.OtpCode == model.OtpCode && !o.IsUsed)
                         .OrderByDescending(o => o.CreatedAt)
                         .FirstOrDefaultAsync();
@@ -292,8 +294,8 @@ namespace Exe_Demo.Controllers
                         return View(model);
                     }
 
-                    // Active user first
-                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+                    // Active user first (Kèm tracking để update)
+                    var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Email == model.Email);
                     if (user != null)
                     {
                         // Sử dụng transaction để đảm bảo dữ liệu được lưu
