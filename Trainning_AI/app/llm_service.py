@@ -211,7 +211,7 @@ Hãy thân thiện, nhiệt tình và tập trung vào việc hỗ trợ khách 
         # Add debug info if available
         debug_info = ""
         if hasattr(self, 'init_error') and self.init_error:
-            debug_info = f"\n\n(Debug: {self.init_error})"
+            debug_info = f"\n\n(Debug [v3]: {self.init_error})"
 
         message_lower = message.lower()
 
