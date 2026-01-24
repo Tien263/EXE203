@@ -61,21 +61,22 @@ class LLMService:
                 ]
                 
                 selected_model = None
+                error_logs = []
+                available_models_log = "Could not list models"
                 
                 # Try to list models to confirm availability (optional but good for debugging)
                 try:
                     available_models = [m.name for m in genai.list_models()]
+                    available_models_log = ", ".join(available_models)
                     print(f"[DEBUG] Available Gemini models: {available_models}")
                 except Exception as ex:
                     print(f"[ERROR] Failed to list models: {ex}")
+                    error_logs.append(f"ListModels Error: {str(ex)}")
 
                 # Try initializing each model
                 for model_name in candidate_models:
                     try:
                         print(f"[DEBUG] Trying model: {model_name}")
-                        # Just creating the object doesn't validate it, but we can try a dry run if needed.
-                        # However, for now we will just set it and let the chat method handle runtime errors 
-                        # OR we can try a simple generation to validate.
                         model = genai.GenerativeModel(model_name)
                         
                         # Test the model with a simple prompt to ensure it works
@@ -87,11 +88,17 @@ class LLMService:
                             print(f"[OK] ✅ Sử dụng thành công Google Gemini Model: {model_name}")
                             return
                     except Exception as e:
+                        error_msg = str(e)
+                        # Simplify error message to save space
+                        if "404" in error_msg: error_msg = "404 Not Found"
+                        elif "403" in error_msg: error_msg = "403 Permission Denied"
+                        
+                        error_logs.append(f"{model_name}: {error_msg}")
                         print(f"[DEBUG] Model {model_name} failed: {e}")
                         continue
                 
                 if not selected_model:
-                     raise Exception("No working Gemini model found")
+                     raise Exception(f"All models failed. Available: [{available_models_log}]. Errors: {'; '.join(error_logs)}")
                      
             except Exception as e:
                 self.init_error = f"Gemini Init Error: {str(e)}"
