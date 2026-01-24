@@ -9,15 +9,16 @@ RUN dotnet restore "Exe_Demo.csproj"
 # Copy the rest of the source code
 COPY . .
 
-# Emergency fix: Remove junk files, build artifacts (bin/obj), and duplicates
-RUN rm -rf bin obj
-RUN rm -f Program.csecProgram.cs src/Program.csecProgram.cs
-# Delete potential duplicate Program files (case insensitive check usually handled by simple find on Linux)
-RUN find . -maxdepth 2 -name "program.cs" -delete
-RUN find . -maxdepth 2 -name "Program*.cs" ! -name "Program.cs" -delete
+# NUCLEAR FIX: Isolate the real Program.cs and nuke everything else resembling it
+RUN ls -la
+RUN cp Program.cs Keep.cs
+RUN find . -maxdepth 1 -name "Program*" -delete
+RUN mv Keep.cs Program.cs
+# Also clean up any potential src subdirectory recursion
+RUN rm -rf src/Program.csec* || true
 
-# Debug: List all CS files to verify clean state
-RUN echo "Listing .cs files:" && find . -name "*.cs"
+# Verify state
+RUN echo "Final file list:" && ls -la
 
 # Build the application
 RUN dotnet build "Exe_Demo.csproj" -c Release -o /app/build
