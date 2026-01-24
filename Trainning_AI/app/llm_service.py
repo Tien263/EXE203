@@ -43,16 +43,55 @@ class LLMService:
         else:
             print("[DEBUG] No OpenAI API key found")
         
-        # Try Gemini as fallback
         if gemini_key:
             try:
                 print("[DEBUG] Attempting to use Gemini...")
                 import google.generativeai as genai
                 genai.configure(api_key=gemini_key)
-                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
-                self.model_type = "gemini"
-                print("[OK] Sử dụng Google Gemini 1.5 Flash (miễn phí)")
-                return
+                
+                # List of models to try in order of preference
+                candidate_models = [
+                    'gemini-1.5-flash',
+                    'gemini-1.5-flash-latest',
+                    'gemini-1.5-pro',
+                    'gemini-1.5-pro-latest',
+                    'gemini-1.0-pro',
+                    'gemini-pro'
+                ]
+                
+                selected_model = None
+                
+                # Try to list models to confirm availability (optional but good for debugging)
+                try:
+                    available_models = [m.name for m in genai.list_models()]
+                    print(f"[DEBUG] Available Gemini models: {available_models}")
+                except Exception as ex:
+                    print(f"[ERROR] Failed to list models: {ex}")
+
+                # Try initializing each model
+                for model_name in candidate_models:
+                    try:
+                        print(f"[DEBUG] Trying model: {model_name}")
+                        # Just creating the object doesn't validate it, but we can try a dry run if needed.
+                        # However, for now we will just set it and let the chat method handle runtime errors 
+                        # OR we can try a simple generation to validate.
+                        model = genai.GenerativeModel(model_name)
+                        
+                        # Test the model with a simple prompt to ensure it works
+                        response = model.generate_content("test")
+                        if response:
+                            selected_model = model_name
+                            self.gemini_model = model
+                            self.model_type = "gemini"
+                            print(f"[OK] ✅ Sử dụng thành công Google Gemini Model: {model_name}")
+                            return
+                    except Exception as e:
+                        print(f"[DEBUG] Model {model_name} failed: {e}")
+                        continue
+                
+                if not selected_model:
+                     raise Exception("No working Gemini model found")
+                     
             except Exception as e:
                 self.init_error = f"Gemini Init Error: {str(e)}"
                 print(f"[ERROR] Gemini initialization failed: {e}")
