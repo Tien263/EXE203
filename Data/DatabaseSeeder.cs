@@ -33,7 +33,9 @@ public static class DatabaseSeeder
         // Revised logic:
         Console.WriteLine("Seeding database...");
 
-        if (!context.Categories.Any())
+        try
+        {
+            if (!context.Categories.Any())
         {
              // ... (Keep existing Category seeding)
              var categories = new List<Category>
