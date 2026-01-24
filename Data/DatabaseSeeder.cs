@@ -153,6 +153,10 @@ public static class DatabaseSeeder
         var adminEmail = "admin@mocvistore.com";
         var staffEmail = "staff@mocvistore.com";
 
+        // Retrieve employees to ensure we have them (whether just created or already existed)
+        var emp1 = context.Employees.FirstOrDefault(e => e.Email == staffEmail);
+        var emp2 = context.Employees.FirstOrDefault(e => e.Email == adminEmail);
+
         if (context.Users.Any(u => u.Email == staffEmail))
         {
              // Update password if exists
