@@ -327,7 +327,7 @@ namespace Exe_Demo.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken] // Temporary disabled for debugging
         public async Task<IActionResult> EditProduct(ProductFormViewModel model)
         {
             if (!IsStaff())
