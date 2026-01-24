@@ -123,13 +123,20 @@ Paste nội dung đã điền vào đây.
 *(Bấm `Ctrl+O` -> `Enter` để lưu, `Ctrl+X` để thoát)*
 
 ### 4. Chạy Server
-**Lưu ý quan trọng**: Nếu gặp lỗi build, hãy chạy lệnh fix dưới đây trước:
-```bash
-bash fix_build.sh
-```
+**Lưu ý quan trọng**: Copy và chạy 3 lệnh sau để sửa lỗi build:
 
-Sau đó chạy build:
 ```bash
+# 1. Xóa file gây xung đột (nếu có)
+rm -f .dockerignore
+
+# 2. Cập nhật code mới nhất
+git reset --hard
+git pull origin main
+
+# 3. Xóa file rác & Build lại (Copy cả đoạn này paste vào)
+rm -f Program.csecProgram.cs
+rm -f src/Program.csecProgram.cs
+docker-compose down
 docker-compose up -d --build
 ```
 

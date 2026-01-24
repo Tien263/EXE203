@@ -9,6 +9,10 @@ RUN dotnet restore "Exe_Demo.csproj"
 # Copy the rest of the source code
 COPY . .
 
+# Emergency fix: Remove junk files causing build errors
+RUN rm -f Program.csecProgram.cs src/Program.csecProgram.cs || true
+RUN find . -name "*csec*" -delete || true
+
 # Build the application
 RUN dotnet build "Exe_Demo.csproj" -c Release -o /app/build
 
