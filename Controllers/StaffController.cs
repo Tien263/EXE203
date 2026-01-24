@@ -366,7 +366,18 @@ namespace Exe_Demo.Controllers
                 product.Weight = model.Weight;
                 
                 // Handle Image Upload
-                Console.WriteLine($"[DEBUG] EditProduct POST. ID: {model.ProductId}, Has ImageFile: {model.ImageFile != null}");
+                Console.WriteLine($"[DEBUG] EditProduct POST. ID: {model.ProductId}");
+                Console.WriteLine($"[DEBUG] Content Type: {Request.ContentType}");
+                
+                // Fallback: Try retrieval from Request.Form if binding failed
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                    Console.WriteLine($"[DEBUG] Manually retrieved ImageFile from Request.Form.Files. Name: {model.ImageFile?.FileName}");
+                }
+                
+                Console.WriteLine($"[DEBUG] Has ImageFile: {model.ImageFile != null}");
+                
                 if (model.ImageFile != null)
                 {
                     Console.WriteLine($"[DEBUG] File Name: {model.ImageFile.FileName}, Length: {model.ImageFile.Length}");
