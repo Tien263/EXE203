@@ -255,6 +255,26 @@ namespace Exe_Demo.Controllers
                     CreatedDate = DateTime.Now
                 };
 
+                // Handle Image Upload
+                if (model.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    product.ImageUrl = "/images/products/" + uniqueFileName;
+                }
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
@@ -344,7 +364,31 @@ namespace Exe_Demo.Controllers
                 product.MinStockLevel = model.MinStockLevel;
                 product.Unit = model.Unit;
                 product.Weight = model.Weight;
-                product.ImageUrl = model.ImageUrl;
+                
+                // Handle Image Upload
+                if (model.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    product.ImageUrl = "/images/products/" + uniqueFileName;
+                }
+                else if (!string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    product.ImageUrl = model.ImageUrl;
+                }
+                
                 product.IsActive = model.IsActive;
                 product.IsFeatured = model.IsFeatured;
                 product.IsNew = model.IsNew;

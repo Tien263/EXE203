@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Exe_Demo.Models.ViewModels
 {
@@ -64,6 +65,8 @@ namespace Exe_Demo.Models.ViewModels
         public string? Weight { get; set; }
         
         public string? ImageUrl { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
         
         public bool IsActive { get; set; } = true;
         public bool IsFeatured { get; set; }
