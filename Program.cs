@@ -226,6 +226,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     // app.UseHttpsRedirection(); // Disable HTTPS Redirection to fix Docker port mapping issues
+}
 
 // Configure static files with cache control
 if (app.Environment.IsDevelopment())
