@@ -123,6 +123,12 @@ Paste nội dung đã điền vào đây.
 *(Bấm `Ctrl+O` -> `Enter` để lưu, `Ctrl+X` để thoát)*
 
 ### 4. Chạy Server
+**Lưu ý quan trọng**: Nếu gặp lỗi build, hãy chạy lệnh fix dưới đây trước:
+```bash
+bash fix_build.sh
+```
+
+Sau đó chạy build:
 ```bash
 docker-compose up -d --build
 ```
