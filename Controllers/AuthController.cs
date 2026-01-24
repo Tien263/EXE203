@@ -75,6 +75,7 @@ namespace Exe_Demo.Controllers
                          catch(Exception ex)
                          {
                              _logger.LogError($"JIT Seeding failed: {ex.Message}");
+                             ModelState.AddModelError(string.Empty, $"Lỗi tự động tạo tài khoản (JIT): {ex.Message} - {ex.InnerException?.Message}");
                          }
                     }
                 }
