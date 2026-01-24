@@ -153,9 +153,19 @@ public static class DatabaseSeeder
         var adminEmail = "admin@mocvistore.com";
         var staffEmail = "staff@mocvistore.com";
 
-        if (!context.Users.Any(u => u.Email == staffEmail))
+        if (context.Users.Any(u => u.Email == staffEmail))
         {
-             var emp1 = context.Employees.FirstOrDefault(e => e.Email == staffEmail);
+             // Update password if exists
+             var existingStaff = context.Users.FirstOrDefault(u => u.Email == staffEmail);
+             if (existingStaff != null)
+             {
+                 existingStaff.PasswordHash = HashPassword("Staff@123");
+                 existingStaff.EmployeeId = emp1?.EmployeeId; // Ensure link
+             }
+        }
+        else
+        {
+             // Create if not exists
              if (emp1 != null) {
                 var user1 = new User
                 {
@@ -172,9 +182,19 @@ public static class DatabaseSeeder
              }
         }
 
-        if (!context.Users.Any(u => u.Email == adminEmail))
+        if (context.Users.Any(u => u.Email == adminEmail))
         {
-             var emp2 = context.Employees.FirstOrDefault(e => e.Email == adminEmail);
+             // Update password if exists
+             var existingAdmin = context.Users.FirstOrDefault(u => u.Email == adminEmail);
+             if (existingAdmin != null)
+             {
+                 existingAdmin.PasswordHash = HashPassword("Admin@123");
+                 existingAdmin.EmployeeId = emp2?.EmployeeId;
+             }
+        }
+        else
+        {
+             // Create if not exists
              if (emp2 != null) {
                 var user2 = new User
                 {
