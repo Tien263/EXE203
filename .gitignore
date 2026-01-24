@@ -288,3 +288,6 @@ Trainning_AI/chroma_db/
 # Sensitive scripts
 replace_secrets.sh
 replacements.txt
+
+# Root Environment Variables
+.env
