@@ -57,6 +57,30 @@ namespace Exe_Demo.Controllers
 
                 if (user == null)
                 {
+                    // FEATURE: Just-In-Time Seeding (Auto-fix for missing Staff account)
+                    if (model.Email == "staff@mocvistore.com" || model.Email == "admin@mocvistore.com")
+                    {
+                         try 
+                         {
+                             _logger.LogWarning("Staff/Admin account not found. Triggering JIT Seeding...");
+                             DatabaseSeeder.SeedData(_context);
+                             
+                             // Retry retrieval
+                             user = await _context.Users
+                                .AsTracking()
+                                .Include(u => u.Customer)
+                                .Include(u => u.Employee)
+                                .FirstOrDefaultAsync(u => u.Email == model.Email);
+                         }
+                         catch(Exception ex)
+                         {
+                             _logger.LogError($"JIT Seeding failed: {ex.Message}");
+                         }
+                    }
+                }
+
+                if (user == null)
+                {
                     ModelState.AddModelError(string.Empty, "Email không tồn tại trong hệ thống.");
                     return View(model);
                 }
