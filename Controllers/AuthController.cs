@@ -208,7 +208,11 @@ namespace Exe_Demo.Controllers
                                 _logger.LogError($"Error sending OTP email: {ex.Message}");
                                 // Rollback transaction nếu gửi email fail
                                 await transaction.RollbackAsync();
-                                ModelState.AddModelError("", "Lỗi gửi email. Vui lòng thử lại sau.");
+                                ModelState.AddModelError("", $"Lỗi gửi email OTP: {ex.Message}");
+                                if (ex.InnerException != null)
+                                {
+                                     ModelState.AddModelError("", $"Chi tiết: {ex.InnerException.Message}");
+                                }
                                 return View(model);
                             }
 
