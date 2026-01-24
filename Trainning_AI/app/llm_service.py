@@ -10,6 +10,7 @@ class LLMService:
         self.client = None
         self.gemini_model = None
         self.model_type = "none"
+        self.init_error = None
         
         print(f"[DEBUG] Initializing LLM Service...")
         
@@ -34,8 +35,10 @@ class LLMService:
                 return
                 
             except ImportError as e:
+                self.init_error = f"OpenAI Import Error: {str(e)}"
                 print(f"[ERROR] OpenAI import failed: {e}")
             except Exception as e:
+                self.init_error = f"OpenAI Init Error: {str(e)}"
                 print(f"[ERROR] OpenAI initialization failed: {e}")
         else:
             print("[DEBUG] No OpenAI API key found")
@@ -46,12 +49,16 @@ class LLMService:
                 print("[DEBUG] Attempting to use Gemini...")
                 import google.generativeai as genai
                 genai.configure(api_key=gemini_key)
-                self.gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
                 self.model_type = "gemini"
-                print("[OK] Sử dụng Google Gemini 2.0 Flash (miễn phí)")
+                print("[OK] Sử dụng Google Gemini 1.5 Flash (miễn phí)")
                 return
             except Exception as e:
+                self.init_error = f"Gemini Init Error: {str(e)}"
                 print(f"[ERROR] Gemini initialization failed: {e}")
+        else:
+            if not self.init_error:
+                self.init_error = "No API Key found"
         
         print("[WARNING] Không có AI API key hợp lệ. Sử dụng chế độ simple response.")
 
@@ -154,19 +161,24 @@ Hãy thân thiện, nhiệt tình và tập trung vào việc hỗ trợ khách 
         """Phản hồi đơn giản khi không có AI"""
         print("[DEBUG] Using simple response")
         
+        # Add debug info if available
+        debug_info = ""
+        if hasattr(self, 'init_error') and self.init_error:
+            debug_info = f"\n\n(Debug: {self.init_error})"
+
         message_lower = message.lower()
-        
+
         if any(word in message_lower for word in ['xin chào', 'hello', 'hi', 'chào']):
-            return """Xin chào! 👋 Chào mừng bạn đến với Mộc Vị Store! 
+            return f"""Xin chào! 👋 Chào mừng bạn đến với Mộc Vị Store! 
             
 Tôi có thể giúp bạn tìm hiểu về các sản phẩm hoa quả sấy cao cấp từ Mộc Châu:
 🍓 Sấy dẻo: Mận, Xoài, Đào, Dâu, Hồng
 🥭 Sấy giòn: Mít, Chuối  
 ✨ Sấy thăng hoa: Dâu, Sữa chua
 
-Bạn quan tâm loại nào nhất? 😊"""
+Bạn quan tâm loại nào nhất? 😊{debug_info}"""
         else:
-            return f"Cảm ơn bạn đã nhắn tin: '{message}'. Tôi là AI assistant của Mộc Vị Store, sẵn sàng hỗ trợ bạn về các sản phẩm hoa quả sấy! 😊"
+            return f"Cảm ơn bạn đã nhắn tin: '{message}'. Tôi là AI assistant của Mộc Vị Store, sẵn sàng hỗ trợ bạn về các sản phẩm hoa quả sấy! 😊{debug_info}"
 
     def detect_purchase_intent(self, query: str) -> Dict:
         """Phát hiện ý định mua hàng và trích xuất sản phẩm"""
