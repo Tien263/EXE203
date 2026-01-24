@@ -618,6 +618,7 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<OtpVerification>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
             entity.Property(e => e.Email)
                 .IsRequired()
