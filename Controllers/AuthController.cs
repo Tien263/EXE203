@@ -226,8 +226,16 @@ namespace Exe_Demo.Controllers
                         catch (Exception ex)
                         {
                             await transaction.RollbackAsync();
-                            _logger.LogError($"Error during registration: {ex.Message}");
+                            _logger.LogError($"Error during registration: {ex}");
                             ModelState.AddModelError("", $"Lỗi đăng ký: {ex.Message}");
+                            
+                            var inner = ex.InnerException;
+                            while (inner != null)
+                            {
+                                ModelState.AddModelError("", $"Chi tiết SQL: {inner.Message}");
+                                inner = inner.InnerException;
+                            }
+                            
                             return View(model);
                         }
                     }
