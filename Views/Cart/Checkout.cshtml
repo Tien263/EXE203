@@ -67,8 +67,38 @@
                         
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Địa chỉ giao hàng <span class="text-danger">*</span></label>
-                                <textarea name="Address" class="form-control" rows="3" required>@customer.Address</textarea>
+                                <label>Tỉnh / Thành phố <span class="text-danger">*</span></label>
+                                <select id="citySelect" class="form-control" required>
+                                    <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                                </select>
+                                <input type="hidden" name="City" id="cityInput" value="@customer.City">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Quận / Huyện <span class="text-danger">*</span></label>
+                                <select id="districtSelect" class="form-control" required>
+                                    <option value="">-- Chọn Quận/Huyện --</option>
+                                </select>
+                                <input type="hidden" name="District" id="districtInput" value="@customer.District">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Phường / Xã <span class="text-danger">*</span></label>
+                                <select id="wardSelect" class="form-control" required>
+                                    <option value="">-- Chọn Phường/Xã --</option>
+                                </select>
+                                <input type="hidden" name="Ward" id="wardInput" value="@customer.Ward">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Địa chỉ chi tiết (Số nhà, đường...) <span class="text-danger">*</span></label>
+                                <textarea name="Address" class="form-control" rows="2" required placeholder="Ví dụ: Số 123, Đường Nguyễn Trãi">@customer.Address</textarea>
                             </div>
                         </div>
                         
@@ -205,12 +235,16 @@
 </section>
 
 @section Scripts {
+    <script src="~/js/address-validation.js"></script>
     <script>
         let originalTotal = @total.Value;
         let voucherDiscount = 0;
         let pointsDiscount = 0;
         
         $(document).ready(function(){
+            // Initialize Address Validation
+            AddressValidation.init('cityInput', 'districtInput', 'wardInput', 'citySelect', 'districtSelect', 'wardSelect');
+
             // Log form data before submit
             $('form').on('submit', function(e) {
                 console.log('Form submitting with:');

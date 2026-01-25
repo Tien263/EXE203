@@ -411,7 +411,7 @@ namespace Exe_Demo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder(string FullName, string Phone, string Email, string Address, string Note, string PaymentMethod, string? VoucherCode, decimal? DiscountAmount, decimal? FinalAmount)
+        public async Task<IActionResult> PlaceOrder(string FullName, string Phone, string Email, string Address, string City, string District, string Ward, string Note, string PaymentMethod, string? VoucherCode, decimal? DiscountAmount, decimal? FinalAmount)
         {
             // Kiểm tra đăng nhập
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -463,6 +463,9 @@ namespace Exe_Demo.Controllers
                             CustomerEmail = Email,
                             CustomerPhone = Phone,
                             ShippingAddress = Address,
+                            City = City,
+                            District = District,
+                            Ward = Ward,
                             TotalAmount = totalAmount,
                             FinalAmount = finalOrderAmount,
                             PaymentMethod = PaymentMethod,
