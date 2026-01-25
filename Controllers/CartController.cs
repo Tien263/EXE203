@@ -130,12 +130,27 @@ namespace Exe_Demo.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, message = "Đã thêm vào giỏ hàng!" });
+                // Check if it is an AJAX request
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = true, message = "Đã thêm vào giỏ hàng!" });
+                }
+
+                // Fallback for non-AJAX requests (standard form submit)
+                TempData["SuccessMessage"] = "Đã thêm vào giỏ hàng!";
+                return RedirectToAction("Details", "Product", new { id = productId });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding to cart");
-                return Json(new { success = false, message = "Có lỗi xảy ra. Vui lòng thử lại!" });
+                
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Có lỗi xảy ra. Vui lòng thử lại!" });
+                }
+                
+                TempData["ErrorMessage"] = "Có lỗi xảy ra. Vui lòng thử lại!";
+                return RedirectToAction("Details", "Product", new { id = productId });
             }
         }
 

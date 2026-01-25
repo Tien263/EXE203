@@ -217,6 +217,7 @@
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     data: form.serialize(),
                     success: function(response) {
                         alert('Đã thêm sản phẩm vào giỏ hàng!');
