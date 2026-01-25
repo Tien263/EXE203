@@ -8,6 +8,8 @@ using System.Security.Claims;
 
 namespace Exe_Demo.Controllers
 {
+    public class StaffController : Controller
+    {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Services.ICacheService _cacheService;
@@ -297,7 +299,7 @@ namespace Exe_Demo.Controllers
             return View(model);
         }
 
-        nnnm  
+
 
         [HttpPost]
         // [ValidateAntiForgeryToken] // Temporary disabled for debugging
