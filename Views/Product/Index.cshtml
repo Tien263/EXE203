@@ -286,6 +286,34 @@
                 }
             </div>
         </div>
+        
+        @if (Model.TotalPages > 1)
+        {
+            <div class="row mt-5">
+                <div class="col text-center">
+                    <div class="block-27">
+                        <ul>
+                            @if (Model.PageNumber > 1)
+                            {
+                                <li><a href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = Model.CurrentSort })">&lt;</a></li>
+                            }
+                            
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="@(i == Model.PageNumber ? "active" : "")">
+                                    <a href="@Url.Action("Index", new { pageNumber = i, categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = Model.CurrentSort })">@i</a>
+                                </li>
+                            }
+                            
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <li><a href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = Model.CurrentSort })">&gt;</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </section>
 

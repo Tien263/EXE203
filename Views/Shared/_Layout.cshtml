@@ -181,10 +181,10 @@
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sản Phẩm</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown04">
                             <a class="dropdown-item" asp-controller="Product" asp-action="Index">Tất cả sản phẩm</a>
-                            <a class="dropdown-item" href="#">Hoa quả sấy dẻo</a>
-                            <a class="dropdown-item" href="#">Hoa quả sấy giòn</a>
-                            <a class="dropdown-item" href="#">Hoa quả sấy thăng hoa</a>
-                            <a class="dropdown-item" href="#">Combo quà tặng</a>
+                            <a class="dropdown-item" href="@Url.Action("Index", "Product", new { categoryId = 1 })">Hoa quả sấy</a>
+                            <a class="dropdown-item" href="@Url.Action("Index", "Product", new { categoryId = 2 })">Hoa quả sấy dẻo</a>
+                            <a class="dropdown-item" href="@Url.Action("Index", "Product", new { categoryId = 3 })">Hoa quả sấy thăng hoa</a>
+                            <a class="dropdown-item" href="@Url.Action("Index", "Product", new { categoryId = 4 })">Combo quà tặng</a>
                         </div>
                     </li>
                     <li class="nav-item">
