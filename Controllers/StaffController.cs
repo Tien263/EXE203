@@ -85,6 +85,7 @@ namespace Exe_Demo.Controllers
                 EmployeeCode = "NV" + DateTime.Now.ToString("yyMMddHHmm"), // Auto-generate code
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
+                Address = model.Address, // Fix: Save Address
                 Email = user.Email,
                 Position = "Nhân viên bán hàng",
                 Department = "Bán hàng",
