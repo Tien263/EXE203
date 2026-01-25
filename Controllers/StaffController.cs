@@ -301,6 +301,47 @@ namespace Exe_Demo.Controllers
 
 
 
+
+        [HttpGet]
+        public async Task<IActionResult> EditProduct(int id)
+        {
+            if (!IsStaff())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ProductFormViewModel
+            {
+                ProductId = product.ProductId,
+                ProductCode = product.ProductCode,
+                ProductName = product.ProductName,
+                CategoryId = product.CategoryId,
+                Description = product.Description,
+                ShortDescription = product.ShortDescription,
+                Price = product.Price,
+                OriginalPrice = product.OriginalPrice,
+                CostPrice = product.CostPrice,
+                DiscountPercent = product.DiscountPercent,
+                StockQuantity = product.StockQuantity,
+                MinStockLevel = product.MinStockLevel,
+                Unit = product.Unit,
+                Weight = product.Weight,
+                ImageUrl = product.ImageUrl,
+                IsActive = product.IsActive ?? true,
+                IsFeatured = product.IsFeatured ?? false,
+                IsNew = product.IsNew ?? false,
+                Categories = await _context.Categories.Where(c => c.IsActive == true).ToListAsync()
+            };
+
+            return View(model);
+        }
+
         [HttpPost]
         // [ValidateAntiForgeryToken] // Temporary disabled for debugging
         public async Task<IActionResult> EditProduct(ProductFormViewModel model)
