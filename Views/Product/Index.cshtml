@@ -326,6 +326,13 @@
             // Xử lý nút "Mua ngay" - Show modal
             $('.btn-add-to-cart').click(function(e){
                 e.preventDefault();
+                
+                var isLoggedIn = '@(User.Identity.IsAuthenticated.ToString().ToLower())' === 'true';
+                if (!isLoggedIn) {
+                    window.location.href = '/Auth/Login';
+                    return;
+                }
+
                 var productId = $(this).data('product-id');
                 var productName = $(this).data('product-name');
                 var productPrice = $(this).data('product-price');

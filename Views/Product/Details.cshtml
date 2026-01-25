@@ -212,6 +212,13 @@
             
             $('#addToCartForm').on('submit', function(e){
                 e.preventDefault();
+                
+                var isLoggedIn = '@(User.Identity.IsAuthenticated.ToString().ToLower())' === 'true';
+                if (!isLoggedIn) {
+                    window.location.href = '/Auth/Login';
+                    return;
+                }
+
                 var form = $(this);
                 $.ajax({
                     url: form.attr('action'),
