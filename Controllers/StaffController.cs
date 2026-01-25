@@ -14,7 +14,7 @@ namespace Exe_Demo.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Services.ICacheService _cacheService;
 
-        public StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, Services.ICacheService cacheService) : Controller
+        public StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, Services.ICacheService cacheService)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
