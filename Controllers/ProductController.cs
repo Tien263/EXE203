@@ -53,8 +53,8 @@ namespace Exe_Demo.Controllers
                     return NotFound();
                 }
 
-                // Increment view count (async, non-blocking)
-                _ = Task.Run(() => _productService.IncrementViewCountAsync(id));
+                // Increment view count (sequentially to avoid DbContext threading issues)
+                await _productService.IncrementViewCountAsync(id);
 
                 // Get related products
                 var relatedProducts = await _productService.GetRelatedProductsAsync(
