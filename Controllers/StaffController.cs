@@ -39,6 +39,89 @@ namespace Exe_Demo.Controllers
             return null;
         }
 
+        // ==================== UPDATE PROFILE (FIRST LOGIN) ====================
+        [HttpGet]
+        public IActionResult UpdateProfile()
+        {
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            
+            // Check if already has EmployeeId
+            var employeeIdClaim = User.FindFirst("EmployeeId");
+            if (employeeIdClaim != null)
+            {
+                return RedirectToAction("Dashboard");
+            }
+
+            return View(new StaffUpdateProfileViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(StaffUpdateProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return RedirectToAction("Login", "Auth");
+
+            // Create new Employee record
+            var newEmployee = new Employee
+            {
+                EmployeeCode = "NV" + DateTime.Now.ToString("yyMMddHHmm"), // Auto-generate code
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                Email = user.Email,
+                Position = "Nhân viên bán hàng",
+                Department = "Bán hàng",
+                Salary = 5000000, // Default starting salary
+                HireDate = DateOnly.FromDateTime(DateTime.Now),
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
+
+            _context.Employees.Add(newEmployee);
+            await _context.SaveChangesAsync();
+
+            // Link to User
+            user.EmployeeId = newEmployee.EmployeeId;
+            user.PhoneNumber = model.PhoneNumber;
+            user.FullName = model.FullName;
+            await _context.SaveChangesAsync();
+
+            // Re-SignIn to update Claims (add EmployeeId)
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role ?? "Staff"),
+                new Claim("EmployeeId", newEmployee.EmployeeId.ToString()) // Critical for StaffController checks
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+            await Microsoft.AspNetCore.Authentication.HttpContextExtensions.SignInAsync(
+                HttpContext,
+                Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                new Microsoft.AspNetCore.Authentication.AuthenticationProperties { IsPersistent = true });
+            
+            TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
+            return RedirectToAction("Dashboard");
+        }
+
         // ==================== DASHBOARD ====================
         [HttpGet]
         public async Task<IActionResult> Dashboard()

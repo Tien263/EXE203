@@ -145,9 +145,15 @@ namespace Exe_Demo.Controllers
                         return Redirect(returnUrl);
                     }
                     
-                    // Redirect Staff/Admin to Dashboard
+                    // Redirect Staff/Admin logic
                     if (user.Role == "Staff" || user.Role == "Admin")
                     {
+                        // Check if Staff profile is incomplete (First Login)
+                        if (user.Role == "Staff" && !user.EmployeeId.HasValue)
+                        {
+                            return RedirectToAction("UpdateProfile", "Staff");
+                        }
+
                         return RedirectToAction("Dashboard", "Staff");
                     }
                     

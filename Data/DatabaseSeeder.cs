@@ -188,6 +188,26 @@ public static class DatabaseSeeder
                 };
                 context.Users.Add(user1);
              }
+
+             // Seed 3 Staff Accounts for First-Login Flow (nv1, nv2, nv3)
+             var staffAccounts = new[] { "nv1@gmail.com", "nv2@gmail.com", "nv3@gmail.com" };
+             foreach (var email in staffAccounts)
+             {
+                 if (!context.Users.Any(u => u.Email == email))
+                 {
+                     context.Users.Add(new User
+                     {
+                         Email = email,
+                         PasswordHash = HashPassword("Mocvi@123"),
+                         FullName = "Nhân viên mới", // Placeholder
+                         Role = "Staff",
+                         EmployeeId = null, // IMPORTANT: Null to trigger Update Profile flow
+                         IsActive = true,
+                         CreatedDate = DateTime.Now
+                     });
+                     Console.WriteLine($"Created staff account: {email}");
+                 }
+             }
         }
 
         if (context.Users.Any(u => u.Email == adminEmail))
