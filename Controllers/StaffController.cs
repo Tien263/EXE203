@@ -407,7 +407,7 @@ namespace Exe_Demo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProductApi(int id)
         {
             if (!IsStaff())
             {
@@ -434,6 +434,14 @@ namespace Exe_Demo.Controllers
             await _context.SaveChangesAsync();
 
             return Json(new { success = true, message = "Xóa sản phẩm thành công" });
+        }
+
+        [HttpGet]
+        public IActionResult DeleteProduct(int id)
+        {
+            // Fallback for old cached HTML links
+            TempData["ErrorMessage"] = "Hệ thống đã cập nhật. Vui lòng tải lại trang (Ctrl + F5) để sử dụng tính năng Xóa mới.";
+            return RedirectToAction(nameof(Products));
         }
 
         // ==================== QUẢN LÝ ĐỚN HÀNG ====================

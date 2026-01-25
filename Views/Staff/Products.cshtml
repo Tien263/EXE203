@@ -233,7 +233,7 @@
     <script>
         function deleteProduct(id) {
             if (confirm('Bạn chắc chắn muốn xóa sản phẩm này?')) {
-                fetch('/Staff/DeleteProduct/' + id, {
+                fetch('/Staff/DeleteProductApi/' + id, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
