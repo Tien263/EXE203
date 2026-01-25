@@ -166,6 +166,9 @@
         
         fetch('/Cart/AddToCart', {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         })
         .then(response => {
