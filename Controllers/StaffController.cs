@@ -771,8 +771,26 @@ namespace Exe_Demo.Controllers
                     {
                         if (detail.Product != null)
                         {
+                            // 1. Cập nhật số lượng
                             detail.Product.StockQuantity -= detail.Quantity;
                             detail.Product.SoldCount = (detail.Product.SoldCount ?? 0) + detail.Quantity;
+                            
+                            // Đánh dấu đã thay đổi để chắc chắn lưu vào DB
+                            _context.Update(detail.Product);
+
+                            // 2. Ghi lịch sử kho (Inventory Log)
+                            var transaction = new InventoryTransaction
+                            {
+                                ProductId = detail.ProductId,
+                                TransactionType = "Xuất kho",
+                                Quantity = -detail.Quantity,
+                                ReferenceType = "Order",
+                                ReferenceId = order.OrderId,
+                                Notes = $"Xuất kho bán hàng đơn #{order.OrderCode}",
+                                CreatedDate = DateTime.Now,
+                                EmployeeId = GetEmployeeId()
+                            };
+                            _context.InventoryTransactions.Add(transaction);
                         }
                     }
 
@@ -788,6 +806,7 @@ namespace Exe_Demo.Controllers
                             // Quy tắc: 10.000đ = 1 điểm
                             int pointsToAdd = (int)(order.FinalAmount / 10000);
                             customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
+                            _context.Update(customer);
                         }
                     }
                 }
