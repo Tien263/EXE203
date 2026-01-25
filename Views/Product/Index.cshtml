@@ -270,7 +270,7 @@
                                                data-product-name="@product.ProductName"
                                                data-product-price="@product.Price"
                                                data-product-stock="@product.StockQuantity"
-                                               data-product-image="/images/prod-6.jpg">Mua ngay<span><i class="fa fa-shopping-cart"></i></span></a>
+                                               data-product-image="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/prod-6.jpg" : product.ImageUrl)">Mua ngay<span><i class="fa fa-shopping-cart"></i></span></a>
                                         </p>
                                     </div>
                                 </div>
