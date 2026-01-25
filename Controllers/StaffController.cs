@@ -579,6 +579,44 @@ namespace Exe_Demo.Controllers
         }
 
         // ==================== QUẢN LÝ ĐỚN HÀNG ====================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearAllOrders()
+        {
+            if (!IsStaff())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            try 
+            {
+                // Delete dependencies first
+                var points = await _context.LoyaltyPointsHistories.ToListAsync();
+                _context.LoyaltyPointsHistories.RemoveRange(points);
+
+                var payments = await _context.Payments.ToListAsync();
+                _context.Payments.RemoveRange(payments);
+
+                var orderDetails = await _context.OrderDetails.ToListAsync();
+                _context.OrderDetails.RemoveRange(orderDetails);
+
+                // Delete Orders
+                var orders = await _context.Orders.ToListAsync();
+                _context.Orders.RemoveRange(orders);
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Đã xóa toàn bộ dữ liệu đơn hàng cũ!";
+            }
+            catch(Exception ex) 
+            {
+                TempData["ErrorMessage"] = "Lỗi khi xóa dữ liệu: " + ex.Message;
+            }
+
+            return RedirectToAction(nameof(Orders));
+        }
+
         [HttpGet]
         public async Task<IActionResult> Orders(int page = 1, string? search = null, string? status = null, 
             string? paymentStatus = null, DateTime? fromDate = null, DateTime? toDate = null)
