@@ -758,18 +758,37 @@ namespace Exe_Demo.Controllers
             {
                 order.CompletedDate = DateTime.Now;
                 
-                // Cộng điểm tích lũy khi đơn hàng hoàn thành (chỉ cộng 1 lần)
-                if (oldStatus != "Đã hoàn thành" && order.CustomerId.HasValue)
+                // Trừ tồn kho khi đơn hàng hoàn thành (chỉ trừ 1 lần)
+                if (oldStatus != "Đã hoàn thành")
                 {
-                    var customer = await _context.Customers
-                        .AsTracking()
-                        .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
-                        
-                    if (customer != null)
+                    // Fetch order details to update stock
+                    var orderDetails = await _context.OrderDetails
+                        .Include(od => od.Product)
+                        .Where(od => od.OrderId == order.OrderId)
+                        .ToListAsync();
+
+                    foreach (var detail in orderDetails)
                     {
-                        // Quy tắc: 10.000đ = 1 điểm
-                        int pointsToAdd = (int)(order.FinalAmount / 10000);
-                        customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
+                        if (detail.Product != null)
+                        {
+                            detail.Product.StockQuantity -= detail.Quantity;
+                            detail.Product.SoldCount = (detail.Product.SoldCount ?? 0) + detail.Quantity;
+                        }
+                    }
+
+                    // Cộng điểm tích lũy khi đơn hàng hoàn thành
+                    if (order.CustomerId.HasValue)
+                    {
+                        var customer = await _context.Customers
+                            .AsTracking()
+                            .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
+                            
+                        if (customer != null)
+                        {
+                            // Quy tắc: 10.000đ = 1 điểm
+                            int pointsToAdd = (int)(order.FinalAmount / 10000);
+                            customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
+                        }
                     }
                 }
             }
