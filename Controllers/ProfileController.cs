@@ -1,5 +1,6 @@
 using Exe_Demo.Data;
 using Exe_Demo.Models.ViewModels;
+using Exe_Demo.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
