@@ -120,13 +120,18 @@
 
             // Re-init Select2 when options are updated by address-validation.js
             document.getElementById('districtSelect').addEventListener('options-updated', function() {
+                 // Destroy previous instance to avoid conflicts
+                 if ($('#districtSelect').data('select2')) {
+                     $('#districtSelect').select2('destroy');
+                 }
                  $(`#districtSelect`).select2({ placeholder: "-- Chọn Quận/Huyện --", width: '100%' });
-                 $(`#districtSelect`).prop('disabled', false); // Ensure enabled
             });
             
             document.getElementById('wardSelect').addEventListener('options-updated', function() {
+                 if ($('#wardSelect').data('select2')) {
+                     $('#wardSelect').select2('destroy');
+                 }
                  $(`#wardSelect`).select2({ placeholder: "-- Chọn Phường/Xã --", width: '100%' });
-                 $(`#wardSelect`).prop('disabled', false); // Ensure enabled
             });
         });
     </script>
