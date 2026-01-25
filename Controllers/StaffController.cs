@@ -5,6 +5,8 @@ using Exe_Demo.Models;
 using Exe_Demo.Models.ViewModels;
 using Exe_Demo.Services;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Exe_Demo.Controllers
 {
@@ -111,12 +113,13 @@ namespace Exe_Demo.Controllers
                 new Claim("EmployeeId", newEmployee.EmployeeId.ToString()) // Critical for StaffController checks
             };
 
-            var claimsIdentity = new ClaimsIdentity(claims, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
-            await Microsoft.AspNetCore.Authentication.HttpContextExtensions.SignInAsync(
-                HttpContext,
-                Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            // Standard SignInAsync call
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
-                new Microsoft.AspNetCore.Authentication.AuthenticationProperties { IsPersistent = true });
+                new AuthenticationProperties { IsPersistent = true });
             
             TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
             return RedirectToAction("Dashboard");
