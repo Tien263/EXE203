@@ -48,30 +48,34 @@ namespace Exe_Demo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1, bool isAjax = false)
         {
             try
             {
-                _logger.LogInformation($"AddToCart called with productId: {productId}, quantity: {quantity}");
+                _logger.LogInformation($"AddToCart called with productId: {productId}, quantity: {quantity}, isAjax: {isAjax}");
                 
                 // Check product exists
                 var product = await _context.Products.FindAsync(productId);
                 
-                _logger.LogInformation($"Product found: {product != null}, ProductId in DB: {product?.ProductId}");
-                
                 if (product == null)
                 {
-                    // Try to find all products to debug
-                    var allProducts = await _context.Products.Select(p => p.ProductId).ToListAsync();
-                    _logger.LogWarning($"Product {productId} not found. Available products: {string.Join(", ", allProducts)}");
-                    
-                    return Json(new { success = false, message = $"Sản phẩm không tồn tại! (ID: {productId})" });
+                    if (isAjax || Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = false, message = $"Sản phẩm không tồn tại! (ID: {productId})" });
+                    }
+                    TempData["ErrorMessage"] = "Sản phẩm không tồn tại!";
+                    return RedirectToAction("Index", "Product");
                 }
 
                 // Check stock
                 if (product.StockQuantity < quantity)
                 {
-                    return Json(new { success = false, message = $"Chỉ còn {product.StockQuantity} sản phẩm!" });
+                    if (isAjax || Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = false, message = $"Chỉ còn {product.StockQuantity} sản phẩm!" });
+                    }
+                    TempData["ErrorMessage"] = $"Chỉ còn {product.StockQuantity} sản phẩm!";
+                    return RedirectToAction("Details", "Product", new { id = productId });
                 }
 
                 // Get customer ID or session ID
@@ -111,7 +115,12 @@ namespace Exe_Demo.Controllers
                     // Check stock again
                     if (existingCart.Quantity > product.StockQuantity)
                     {
-                        return Json(new { success = false, message = $"Chỉ còn {product.StockQuantity} sản phẩm!" });
+                         if (isAjax || Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                        {
+                            return Json(new { success = false, message = $"Chỉ còn {product.StockQuantity} sản phẩm!" });
+                        }
+                        TempData["ErrorMessage"] = $"Chỉ còn {product.StockQuantity} sản phẩm!";
+                        return RedirectToAction("Details", "Product", new { id = productId });
                     }
                 }
                 else
@@ -130,13 +139,13 @@ namespace Exe_Demo.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Check if it is an AJAX request
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                // Check for explicit AJAX flag or header
+                if (isAjax || Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     return Json(new { success = true, message = "Đã thêm vào giỏ hàng!" });
                 }
 
-                // Fallback for non-AJAX requests (standard form submit)
+                // Fallback for standard form submit
                 TempData["SuccessMessage"] = "Đã thêm vào giỏ hàng!";
                 return RedirectToAction("Details", "Product", new { id = productId });
             }
@@ -144,7 +153,7 @@ namespace Exe_Demo.Controllers
             {
                 _logger.LogError(ex, "Error adding to cart");
                 
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                if (isAjax || Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     return Json(new { success = false, message = "Có lỗi xảy ra. Vui lòng thử lại!" });
                 }

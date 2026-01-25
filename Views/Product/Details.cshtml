@@ -217,7 +217,7 @@
                     url: form.attr('action'),
                     type: 'POST',
                     headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                    data: form.serialize(),
+                    data: form.serialize() + "&isAjax=true",
                     success: function(response) {
                         alert('Đã thêm sản phẩm vào giỏ hàng!');
                         // Reload để cập nhật số lượng giỏ hàng
