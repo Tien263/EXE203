@@ -69,7 +69,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         else
         {
             // Fallback to SQLite if no connection string in Development
-            var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "mocvistore.db");
+            // FIX: Always use DbStorage folder to ensure Docker persistence even in Dev mode
+            var dbFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "DbStorage");
+            if (!Directory.Exists(dbFolderPath))
+            {
+                Directory.CreateDirectory(dbFolderPath);
+            }
+            var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
             options.UseSqlite($"Data Source={dbPath}");
             Console.WriteLine($"Using SQLite database at: {dbPath}");
         }
