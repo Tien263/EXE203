@@ -8,10 +8,16 @@ using System.Security.Claims;
 
 namespace Exe_Demo.Controllers
 {
-    public class StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : Controller
-    {
-        private readonly ApplicationDbContext _context = context;
-        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly Services.ICacheService _cacheService;
+
+        public StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, Services.ICacheService cacheService) : Controller
+        {
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            _cacheService = cacheService;
+        }
 
 
         // Kiểm tra quyền Staff
@@ -278,6 +284,11 @@ namespace Exe_Demo.Controllers
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
+                // Clear Cache
+                await _cacheService.RemoveAsync("FeaturedProducts");
+                await _cacheService.RemoveAsync("NewProducts");
+                await _cacheService.RemoveByPrefixAsync("ProductList_");
+
                 TempData["SuccessMessage"] = "Thêm sản phẩm thành công!";
                 return RedirectToAction(nameof(Products));
             }
@@ -286,45 +297,7 @@ namespace Exe_Demo.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EditProduct(int id)
-        {
-            if (!IsStaff())
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            var model = new ProductFormViewModel
-            {
-                ProductId = product.ProductId,
-                ProductCode = product.ProductCode,
-                ProductName = product.ProductName,
-                CategoryId = product.CategoryId,
-                Description = product.Description,
-                ShortDescription = product.ShortDescription,
-                Price = product.Price,
-                OriginalPrice = product.OriginalPrice,
-                CostPrice = product.CostPrice,
-                DiscountPercent = product.DiscountPercent,
-                StockQuantity = product.StockQuantity ?? 0,
-                MinStockLevel = product.MinStockLevel,
-                Unit = product.Unit,
-                Weight = product.Weight,
-                ImageUrl = product.ImageUrl,
-                IsActive = product.IsActive ?? true,
-                IsFeatured = product.IsFeatured ?? false,
-                IsNew = product.IsNew ?? false,
-                Categories = await _context.Categories.Where(c => c.IsActive == true).ToListAsync()
-            };
-
-            return View(model);
-        }
+        nnnm  
 
         [HttpPost]
         // [ValidateAntiForgeryToken] // Temporary disabled for debugging
@@ -411,6 +384,13 @@ namespace Exe_Demo.Controllers
                 _context.Products.Update(product);
 
                 await _context.SaveChangesAsync();
+
+                // Clear Cache
+                await _cacheService.RemoveAsync("FeaturedProducts");
+                await _cacheService.RemoveAsync("NewProducts");
+                await _cacheService.RemoveByPrefixAsync("ProductList_");
+                await _cacheService.RemoveAsync($"Product_{product.ProductId}");
+                await _cacheService.RemoveAsync($"Product_Details_{product.ProductId}");
 
                 TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
                 return RedirectToAction(nameof(Products));

@@ -1,3 +1,4 @@
+@model Exe_Demo.Models.ViewModels.HomeViewModel
 @{
     ViewData["Title"] = "Trang Chủ";
 }
@@ -110,134 +111,140 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="/images/prod-1.jpg" alt="Product">
-                        <span class="status">30%</span>
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Mận sấy dẻo Mộc Châu</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="mr-2 price-dc">100.000đ</span><span class="price-sale">85.000đ</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area d-flex px-3">
-                            <div class="m-auto d-flex">
-                                <a href="#" class="add-to-cart d-flex justify-content-center align-items-center text-center">
-                                    <span><i class="ion-ios-menu"></i></span>
-                                </a>
-                                <a href="#" class="buy-now d-flex justify-content-center align-items-center mx-1">
-                                    <span><i class="ion-ios-cart"></i></span>
-                                </a>
-                                <a href="#" class="heart d-flex justify-content-center align-items-center ">
-                                    <span><i class="ion-ios-heart"></i></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="/images/prod-2.jpg" alt="Product">
-                        <span class="status">20%</span>
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Dâu tây sấy dẻo</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="mr-2 price-dc">150.000đ</span><span class="price-sale">120.000đ</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area d-flex px-3">
-                            <div class="m-auto d-flex">
-                                <a href="#" class="add-to-cart d-flex justify-content-center align-items-center text-center">
-                                    <span><i class="ion-ios-menu"></i></span>
-                                </a>
-                                <a href="#" class="buy-now d-flex justify-content-center align-items-center mx-1">
-                                    <span><i class="ion-ios-cart"></i></span>
-                                </a>
-                                <a href="#" class="heart d-flex justify-content-center align-items-center ">
-                                    <span><i class="ion-ios-heart"></i></span>
-                                </a>
+            @if (Model.FeaturedProducts != null && Model.FeaturedProducts.Any())
+            {
+                foreach (var product in Model.FeaturedProducts)
+                {
+                    <div class="col-md-6 col-lg-3 ftco-animate">
+                        <div class="product">
+                            <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="img-prod">
+                                <img class="img-fluid" src="@(product.ImageUrl ?? "/images/prod-1.jpg")" alt="@product.ProductName">
+                                @if (product.IsNew == true)
+                                {
+                                    <span class="status">New</span>
+                                }
+                                else if (product.DiscountPercent > 0)
+                                {
+                                    <span class="status">@product.DiscountPercent%</span>
+                                }
+                                <div class="overlay"></div>
+                            </a>
+                            <div class="text py-3 pb-4 px-3 text-center">
+                                <h3><a href="@Url.Action("Details", "Product", new { id = product.ProductId })">@product.ProductName</a></h3>
+                                <div class="d-flex">
+                                    <div class="pricing">
+                                        <p class="price">
+                                            @if (product.OriginalPrice > product.Price)
+                                            {
+                                                <span class="mr-2 price-dc">@product.OriginalPrice.Value.ToString("N0") đ</span>
+                                            }
+                                            <span class="price-sale">@product.Price.ToString("N0") đ</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="bottom-area d-flex px-3">
+                                    <div class="m-auto d-flex">
+                                        <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                                            <span><i class="ion-ios-menu"></i></span>
+                                        </a>
+                                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                            <input type="hidden" name="productId" value="@product.ProductId" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="buy-now d-flex justify-content-center align-items-center mx-1 border-0" style="cursor: pointer;">
+                                                <span><i class="ion-ios-cart"></i></span>
+                                            </button>
+                                        </form>
+                                        <a href="#" class="heart d-flex justify-content-center align-items-center ">
+                                            <span><i class="ion-ios-heart"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p>Chưa có sản phẩm nổi bật nào.</p>
                 </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="/images/prod-4.jpg" alt="Product">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Xoài sấy giòn</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="price-sale">75.000đ</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area d-flex px-3">
-                            <div class="m-auto d-flex">
-                                <a href="#" class="add-to-cart d-flex justify-content-center align-items-center text-center">
-                                    <span><i class="ion-ios-menu"></i></span>
-                                </a>
-                                <a href="#" class="buy-now d-flex justify-content-center align-items-center mx-1">
-                                    <span><i class="ion-ios-cart"></i></span>
-                                </a>
-                                <a href="#" class="heart d-flex justify-content-center align-items-center ">
-                                    <span><i class="ion-ios-heart"></i></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="/images/prod-7.jpg" alt="Product">
-                        <span class="status">NEW</span>
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Dứa sấy thăng hoa</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="price-sale">110.000đ</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area d-flex px-3">
-                            <div class="m-auto d-flex">
-                                <a href="#" class="add-to-cart d-flex justify-content-center align-items-center text-center">
-                                    <span><i class="ion-ios-menu"></i></span>
-                                </a>
-                                <a href="#" class="buy-now d-flex justify-content-center align-items-center mx-1">
-                                    <span><i class="ion-ios-cart"></i></span>
-                                </a>
-                                <a href="#" class="heart d-flex justify-content-center align-items-center ">
-                                    <span><i class="ion-ios-heart"></i></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
         
         <div class="row mt-5">
             <div class="col text-center">
                 <a href="@Url.Action("Index", "Product")" class="btn btn-primary py-3 px-5">Xem tất cả sản phẩm</a>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- New Products Section -->
+<section class="ftco-section ftco-no-pt bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-3 pb-3">
+            <div class="col-md-12 heading-section text-center ftco-animate">
+                <span class="subheading">Sản Phẩm Mới</span>
+                <h2 class="mb-4">Món Ngon Mới Ra Lò</h2>
+                <p>Thưởng thức những hương vị mới nhất từ Mộc Châu</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            @if (Model.NewProducts != null && Model.NewProducts.Any())
+            {
+                foreach (var product in Model.NewProducts)
+                {
+                    <div class="col-md-6 col-lg-3 ftco-animate">
+                        <div class="product">
+                            <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="img-prod">
+                                <img class="img-fluid" src="@(product.ImageUrl ?? "/images/prod-1.jpg")" alt="@product.ProductName">
+                                <span class="status">New</span>
+                                <div class="overlay"></div>
+                            </a>
+                            <div class="text py-3 pb-4 px-3 text-center">
+                                <h3><a href="@Url.Action("Details", "Product", new { id = product.ProductId })">@product.ProductName</a></h3>
+                                <div class="d-flex">
+                                    <div class="pricing">
+                                        <p class="price">
+                                            @if (product.OriginalPrice > product.Price)
+                                            {
+                                                <span class="mr-2 price-dc">@product.OriginalPrice.Value.ToString("N0") đ</span>
+                                            }
+                                            <span class="price-sale">@product.Price.ToString("N0") đ</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="bottom-area d-flex px-3">
+                                    <div class="m-auto d-flex">
+                                        <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                                            <span><i class="ion-ios-menu"></i></span>
+                                        </a>
+                                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                            <input type="hidden" name="productId" value="@product.ProductId" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="buy-now d-flex justify-content-center align-items-center mx-1 border-0" style="cursor: pointer;">
+                                                <span><i class="ion-ios-cart"></i></span>
+                                            </button>
+                                        </form>
+                                        <a href="#" class="heart d-flex justify-content-center align-items-center ">
+                                            <span><i class="ion-ios-heart"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else 
+            {
+                <div class="col-12 text-center">
+                    <p>Đang cập nhật sản phẩm mới...</p>
+                </div>
+            }
         </div>
     </div>
 </section>
