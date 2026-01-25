@@ -13,6 +13,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     
     <style>
         * {
@@ -297,6 +298,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="~/js/address-validation.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -304,6 +306,22 @@
                 "cityInput", "districtInput", "wardInput",
                 "citySelect", "districtSelect", "wardSelect"
             );
+
+             // Initialize Select2
+            $('#citySelect').select2({ placeholder: "-- Chọn Tỉnh/TP --", width: '100%' });
+            $('#districtSelect').select2({ placeholder: "-- Chọn Quận/Huyện --", width: '100%' });
+            $('#wardSelect').select2({ placeholder: "-- Chọn Phường/Xã --", width: '100%' });
+
+            // Re-bind change events for Select2
+            $('#citySelect').on('select2:select', function (e) {
+                this.dispatchEvent(new Event('change'));
+            });
+            $('#districtSelect').on('select2:select', function (e) {
+                this.dispatchEvent(new Event('change'));
+            });
+             $('#wardSelect').on('select2:select', function (e) {
+                this.dispatchEvent(new Event('change'));
+            });
         });
     </script>
 </body>
