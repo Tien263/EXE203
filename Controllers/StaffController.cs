@@ -76,7 +76,8 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var user = await _context.Users.FindAsync(userId);
+            // Fix: Use AsTracking() to ensure changes are persisted even with Global NoTracking
+            var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.UserId == userId);
             if (user == null) return RedirectToAction("Login", "Auth");
 
             // Create new Employee record
@@ -102,6 +103,9 @@ namespace Exe_Demo.Controllers
             user.EmployeeId = newEmployee.EmployeeId;
             user.PhoneNumber = model.PhoneNumber;
             user.FullName = model.FullName;
+            
+            // Force update state to ensure EF Core tracks it
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
             // Re-SignIn to update Claims (add EmployeeId)
