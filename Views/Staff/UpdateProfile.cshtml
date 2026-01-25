@@ -71,7 +71,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Address" class="font-weight-bold">Địa chỉ cụ thể <span class="text-danger">*</span></label>
+                            <label asp-for="Address" class="font-weight-bold">Địa chỉ cụ thể (Tùy chọn)</label>
                             <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường..." />
                             <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
@@ -104,15 +104,30 @@
                 "citySelect", "districtSelect", "wardSelect"
             );
 
-            // Initialize Select2 for better UX
-            $('#citySelect').select2({ placeholder: "-- Chọn Tỉnh/TP --", width: '100%' });
-            $('#districtSelect').select2({ placeholder: "-- Chọn Quận/Huyện --", width: '100%' });
-            $('#wardSelect').select2({ placeholder: "-- Chọn Phường/Xã --", width: '100%' });
+            // Initialize Select2
+            const initSelect2 = (id, placeholder) => {
+                $(`#${id}`).select2({ placeholder: placeholder, width: '100%' });
+            };
 
-            // Sync Select2 with AddressValidation
+            initSelect2('citySelect', "-- Chọn Tỉnh/TP --");
+            initSelect2('districtSelect', "-- Chọn Quận/Huyện --");
+            initSelect2('wardSelect', "-- Chọn Phường/Xã --");
+
+            // Sync Select2 with AddressValidation (Trigger change on selection)
             $('#citySelect').on('select2:select', function (e) { this.dispatchEvent(new Event('change')); });
             $('#districtSelect').on('select2:select', function (e) { this.dispatchEvent(new Event('change')); });
             $('#wardSelect').on('select2:select', function (e) { this.dispatchEvent(new Event('change')); });
+
+            // Re-init Select2 when options are updated by address-validation.js
+            document.getElementById('districtSelect').addEventListener('options-updated', function() {
+                 $(`#districtSelect`).select2({ placeholder: "-- Chọn Quận/Huyện --", width: '100%' });
+                 $(`#districtSelect`).prop('disabled', false); // Ensure enabled
+            });
+            
+            document.getElementById('wardSelect').addEventListener('options-updated', function() {
+                 $(`#wardSelect`).select2({ placeholder: "-- Chọn Phường/Xã --", width: '100%' });
+                 $(`#wardSelect`).prop('disabled', false); // Ensure enabled
+            });
         });
     </script>
     

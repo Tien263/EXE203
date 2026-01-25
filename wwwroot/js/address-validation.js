@@ -83,6 +83,9 @@ const AddressValidation = {
             // Note: We don't set selected here usually, we set it by value logic above
             selectElement.appendChild(option);
         });
+
+        // Notify listeners that options have changed (Use for Select2 sync)
+        selectElement.dispatchEvent(new Event('options-updated'));
     },
 
     bindEvents: function () {

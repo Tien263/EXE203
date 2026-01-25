@@ -17,9 +17,8 @@ namespace Exe_Demo.Models.ViewModels
         [Display(Name = "Giới tính")]
         public string Gender { get; set; } = null!;
 
-        [Required(ErrorMessage = "Vui lòng nhập địa chỉ cụ thể")]
         [Display(Name = "Địa chỉ")]
-        public string Address { get; set; } = null!;
+        public string? Address { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn Tỉnh/Thành phố")]
         [Display(Name = "Tỉnh/Thành phố")]
