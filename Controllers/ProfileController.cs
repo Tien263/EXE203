@@ -117,15 +117,41 @@ namespace Exe_Demo.Controllers
             user.PhoneNumber = model.PhoneNumber;
 
             // Cập nhật thông tin Customer
-            if (user.Customer != null)
+            if (user.Customer == null)
             {
-                user.Customer.FullName = model.FullName;
-                user.Customer.PhoneNumber = model.PhoneNumber ?? string.Empty;
-                user.Customer.Address = model.Address;
-                user.Customer.City = model.City;
-                user.Customer.District = model.District;
-                user.Customer.Ward = model.Ward;
+                // Create new customer if not exists
+                var lastCustomer = await _context.Customers
+                    .OrderByDescending(c => c.CustomerId)
+                    .FirstOrDefaultAsync();
+
+                int nextNumber = 1;
+                if (lastCustomer != null && !string.IsNullOrEmpty(lastCustomer.CustomerCode))
+                {
+                    var numberPart = lastCustomer.CustomerCode.Replace("KH", "");
+                    if (int.TryParse(numberPart, out int lastNumber))
+                    {
+                        nextNumber = lastNumber + 1;
+                    }
+                }
+
+                user.Customer = new Customer
+                {
+                    CustomerCode = $"KH{nextNumber:D4}",
+                    Email = user.Email,
+                    CustomerType = "Thường",
+                    LoyaltyPoints = 0,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                };
+                _context.Customers.Add(user.Customer);
             }
+
+            user.Customer.FullName = model.FullName;
+            user.Customer.PhoneNumber = model.PhoneNumber ?? string.Empty;
+            user.Customer.Address = model.Address;
+            user.Customer.City = model.City;
+            user.Customer.District = model.District;
+            user.Customer.Ward = model.Ward;
 
             await _context.SaveChangesAsync();
 

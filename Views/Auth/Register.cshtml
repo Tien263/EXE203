@@ -389,12 +389,38 @@
                         </div>
                     </div>
 
+                <div class="form-row">
                     <div class="form-group">
-                        <label asp-for="City">Thành phố (Tùy chọn)</label>
+                        <label asp-for="City">Tỉnh/Thành phố</label>
                         <div class="input-wrapper">
                             <i class="fas fa-city"></i>
-                            <input asp-for="City" class="form-control" placeholder="Thành phố" />
+                            <select id="citySelect" class="form-control" style="padding-left: 40px; appearance: none; -webkit-appearance: none;">
+                                <option value="">-- Chọn Tỉnh/TP --</option>
+                            </select>
+                            <input type="hidden" asp-for="City" id="cityInput" />
                         </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="District">Quận/Huyện</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-map"></i>
+                            <select id="districtSelect" class="form-control" style="padding-left: 40px; appearance: none; -webkit-appearance: none;">
+                                <option value="">-- Chọn Quận/Huyện --</option>
+                            </select>
+                            <input type="hidden" asp-for="District" id="districtInput" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Ward">Phường/Xã</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-map-signs"></i>
+                        <select id="wardSelect" class="form-control" style="padding-left: 40px; appearance: none; -webkit-appearance: none;">
+                            <option value="">-- Chọn Phường/Xã --</option>
+                        </select>
+                         <input type="hidden" asp-for="Ward" id="wardInput" />
                     </div>
                 </div>
 
@@ -436,7 +462,15 @@
         </div>
     </div>
 
+    <script src="~/js/address-validation.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            AddressValidation.init(
+                "cityInput", "districtInput", "wardInput",
+                "citySelect", "districtSelect", "wardSelect"
+            );
+        });
+
         function registerWithGoogle() {
             alert('Chức năng đăng ký Google sẽ được tích hợp sau!');
             // TODO: Implement Google OAuth

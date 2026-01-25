@@ -223,7 +223,10 @@
                         <label asp-for="City">
                             <i class="fa fa-building"></i> Tỉnh/Thành phố
                         </label>
-                        <input asp-for="City" class="form-control" placeholder="VD: Hà Nội" />
+                        <select id="citySelect" class="form-control">
+                            <option value="">-- Chọn --</option>
+                        </select>
+                        <input type="hidden" asp-for="City" id="cityInput" />
                         <span asp-validation-for="City" class="text-danger"></span>
                     </div>
                     
@@ -231,7 +234,10 @@
                         <label asp-for="District">
                             <i class="fa fa-map"></i> Quận/Huyện
                         </label>
-                        <input asp-for="District" class="form-control" placeholder="VD: Cầu Giấy" />
+                        <select id="districtSelect" class="form-control">
+                            <option value="">-- Chọn --</option>
+                        </select>
+                        <input type="hidden" asp-for="District" id="districtInput" />
                         <span asp-validation-for="District" class="text-danger"></span>
                     </div>
                 </div>
@@ -240,7 +246,10 @@
                     <label asp-for="Ward">
                         <i class="fa fa-map-signs"></i> Phường/Xã
                     </label>
-                    <input asp-for="Ward" class="form-control" placeholder="VD: Dịch Vọng" />
+                    <select id="wardSelect" class="form-control">
+                        <option value="">-- Chọn --</option>
+                    </select>
+                    <input type="hidden" asp-for="Ward" id="wardInput" />
                     <span asp-validation-for="Ward" class="text-danger"></span>
                 </div>
                 
@@ -259,4 +268,13 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/address-validation.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            AddressValidation.init(
+                "cityInput", "districtInput", "wardInput",
+                "citySelect", "districtSelect", "wardSelect"
+            );
+        });
+    </script>
 }

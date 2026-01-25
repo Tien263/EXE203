@@ -213,6 +213,8 @@ namespace Exe_Demo.Controllers
                                 Email = model.Email,
                                 Address = model.Address,
                                 City = model.City,
+                                District = model.District,
+                                Ward = model.Ward,
                                 CustomerType = "Thường",
                                 LoyaltyPoints = 0,
                                 IsActive = true,
