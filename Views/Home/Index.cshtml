@@ -99,11 +99,175 @@
     </div>
 </section>
 
+<!-- CSS for Premium Product Card -->
+<style>
+    .product-card-premium {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f0f0f0;
+    }
+
+    .product-card-premium:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        border-color: #d8e2dc;
+    }
+
+    .product-img-wrap {
+        position: relative;
+        overflow: hidden;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+    }
+
+    .product-img-wrap img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card-premium:hover .product-img-wrap img {
+        transform: scale(1.05);
+    }
+
+    .product-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .product-category {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .product-title {
+        font-family: 'Spectral', serif;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        line-height: 1.3;
+    }
+
+    .product-title a {
+        color: #333;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .product-title a:hover {
+        color: #4f6a4c;
+    }
+
+    .product-price-row {
+        margin-top: auto;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .current-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: #4f6a4c;
+    }
+
+    .old-price {
+        font-size: 15px;
+        color: #aaa;
+        text-decoration: line-through;
+        margin-right: 10px;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-view {
+        background: #f8f9fa;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        text-decoration: none !important;
+    }
+
+    .btn-view:hover {
+        background: #e2e6ea;
+        color: #333;
+    }
+
+    .btn-buy {
+        background: #4f6a4c;
+        color: white;
+    }
+
+    .btn-buy:hover {
+        background: #3d5239;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(79, 106, 76, 0.3);
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        z-index: 2;
+    }
+
+    .status-new {
+        background: #4f6a4c;
+        color: white;
+    }
+
+    .status-sale {
+        background: #dc3545;
+        color: white;
+    }
+</style>
+
 <!-- Products Section -->
 <section class="ftco-section bg-light">
     <div class="container">
         <div class="row justify-content-center mb-3 pb-3">
             <div class="col-md-12 heading-section text-center ftco-animate">
+                <span class="subheading">Lựa Chọn Hàng Đầu</span>
                 <h2 class="mb-4">Sản Phẩm Nổi Bật</h2>
                 <p>Khám phá các loại hoa quả sấy đặc sản từ Mộc Châu</p>
             </div>
@@ -116,48 +280,43 @@
                 foreach (var product in Model.FeaturedProducts)
                 {
                     <div class="col-md-6 col-lg-3 ftco-animate">
-                        <div class="product">
-                            <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="img-prod">
-                                <img class="img-fluid" src="@(product.ImageUrl ?? "/images/prod-1.jpg")" alt="@product.ProductName">
+                        <div class="product-card-premium">
+                            <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="product-img-wrap">
+                                <img src="@(product.ImageUrl ?? "/images/prod-1.jpg")" alt="@product.ProductName">
                                 @if (product.IsNew == true)
                                 {
-                                    <span class="status">New</span>
+                                    <span class="status-badge status-new">Mới</span>
                                 }
                                 else if (product.DiscountPercent > 0)
                                 {
-                                    <span class="status">@product.DiscountPercent%</span>
+                                    <span class="status-badge status-sale">-@product.DiscountPercent%</span>
                                 }
-                                <div class="overlay"></div>
                             </a>
-                            <div class="text py-3 pb-4 px-3 text-center">
-                                <h3><a href="@Url.Action("Details", "Product", new { id = product.ProductId })">@product.ProductName</a></h3>
-                                <div class="d-flex">
-                                    <div class="pricing">
-                                        <p class="price">
-                                            @if (product.OriginalPrice > product.Price)
-                                            {
-                                                <span class="mr-2 price-dc">@product.OriginalPrice.Value.ToString("N0") đ</span>
-                                            }
-                                            <span class="price-sale">@product.Price.ToString("N0") đ</span>
-                                        </p>
-                                    </div>
+                            <div class="product-content">
+                                <div class="product-category">Hoa Quả Sấy</div>
+                                <h3 class="product-title">
+                                    <a href="@Url.Action("Details", "Product", new { id = product.ProductId })">@product.ProductName</a>
+                                </h3>
+                                
+                                <div class="product-price-row">
+                                    @if (product.OriginalPrice > product.Price)
+                                    {
+                                        <span class="old-price">@product.OriginalPrice.Value.ToString("N0") đ</span>
+                                    }
+                                    <span class="current-price">@product.Price.ToString("N0") đ</span>
                                 </div>
-                                <div class="bottom-area d-flex px-3">
-                                    <div class="m-auto d-flex">
-                                        <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="add-to-cart d-flex justify-content-center align-items-center text-center">
-                                            <span><i class="ion-ios-menu"></i></span>
-                                        </a>
-                                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
-                                            <input type="hidden" name="productId" value="@product.ProductId" />
-                                            <input type="hidden" name="quantity" value="1" />
-                                            <button type="submit" class="buy-now d-flex justify-content-center align-items-center mx-1 border-0" style="cursor: pointer;">
-                                                <span><i class="ion-ios-cart"></i></span>
-                                            </button>
-                                        </form>
-                                        <a href="#" class="heart d-flex justify-content-center align-items-center ">
-                                            <span><i class="ion-ios-heart"></i></span>
-                                        </a>
-                                    </div>
+
+                                <div class="product-actions">
+                                    <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="btn-action btn-view">
+                                        <i class="fa fa-eye"></i> Chi tiết
+                                    </a>
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-grow-1" style="flex: 1; display: flex;">
+                                        <input type="hidden" name="productId" value="@product.ProductId" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn-action btn-buy w-100">
+                                            <i class="fa fa-shopping-cart"></i> Mua ngay
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -198,41 +357,36 @@
                 foreach (var product in Model.NewProducts)
                 {
                     <div class="col-md-6 col-lg-3 ftco-animate">
-                        <div class="product">
-                            <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="img-prod">
-                                <img class="img-fluid" src="@(product.ImageUrl ?? "/images/prod-1.jpg")" alt="@product.ProductName">
-                                <span class="status">New</span>
-                                <div class="overlay"></div>
+                        <div class="product-card-premium">
+                            <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="product-img-wrap">
+                                <img src="@(product.ImageUrl ?? "/images/prod-1.jpg")" alt="@product.ProductName">
+                                <span class="status-badge status-new">Mới</span>
                             </a>
-                            <div class="text py-3 pb-4 px-3 text-center">
-                                <h3><a href="@Url.Action("Details", "Product", new { id = product.ProductId })">@product.ProductName</a></h3>
-                                <div class="d-flex">
-                                    <div class="pricing">
-                                        <p class="price">
-                                            @if (product.OriginalPrice > product.Price)
-                                            {
-                                                <span class="mr-2 price-dc">@product.OriginalPrice.Value.ToString("N0") đ</span>
-                                            }
-                                            <span class="price-sale">@product.Price.ToString("N0") đ</span>
-                                        </p>
-                                    </div>
+                            <div class="product-content">
+                                <div class="product-category">Hoa Quả Sấy</div>
+                                <h3 class="product-title">
+                                    <a href="@Url.Action("Details", "Product", new { id = product.ProductId })">@product.ProductName</a>
+                                </h3>
+                                
+                                <div class="product-price-row">
+                                    @if (product.OriginalPrice > product.Price)
+                                    {
+                                        <span class="old-price">@product.OriginalPrice.Value.ToString("N0") đ</span>
+                                    }
+                                    <span class="current-price">@product.Price.ToString("N0") đ</span>
                                 </div>
-                                <div class="bottom-area d-flex px-3">
-                                    <div class="m-auto d-flex">
-                                        <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="add-to-cart d-flex justify-content-center align-items-center text-center">
-                                            <span><i class="ion-ios-menu"></i></span>
-                                        </a>
-                                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
-                                            <input type="hidden" name="productId" value="@product.ProductId" />
-                                            <input type="hidden" name="quantity" value="1" />
-                                            <button type="submit" class="buy-now d-flex justify-content-center align-items-center mx-1 border-0" style="cursor: pointer;">
-                                                <span><i class="ion-ios-cart"></i></span>
-                                            </button>
-                                        </form>
-                                        <a href="#" class="heart d-flex justify-content-center align-items-center ">
-                                            <span><i class="ion-ios-heart"></i></span>
-                                        </a>
-                                    </div>
+
+                                <div class="product-actions">
+                                    <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="btn-action btn-view">
+                                        <i class="fa fa-eye"></i> Chi tiết
+                                    </a>
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-grow-1" style="flex: 1; display: flex;">
+                                        <input type="hidden" name="productId" value="@product.ProductId" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn-action btn-buy w-100">
+                                            <i class="fa fa-shopping-cart"></i> Mua ngay
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
