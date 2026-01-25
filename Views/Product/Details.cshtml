@@ -10,8 +10,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 mb-5 ftco-animate">
-                <a href="/images/prod-6.jpg" class="image-popup prod-img-bg">
-                    <img src="/images/prod-6.jpg" class="img-fluid" alt="@Model.ProductName">
+                <a href="@(Model.ImageUrl ?? "/images/prod-6.jpg")" class="image-popup prod-img-bg">
+                    <img src="@(Model.ImageUrl ?? "/images/prod-6.jpg")" class="img-fluid" alt="@Model.ProductName">
                 </a>
             </div>
             <div class="col-lg-6 product-details pl-md-5 ftco-animate">
@@ -152,7 +152,7 @@
                     <div class="col-md-6 col-lg-3 ftco-animate">
                         <div class="product">
                             <a href="@Url.Action("Details", new { id = product.ProductId })" class="img-prod">
-                                <img class="img-fluid" src="/images/prod-6.jpg" alt="@product.ProductName">
+                                <img class="img-fluid" src="@(product.ImageUrl ?? "/images/prod-6.jpg")" alt="@product.ProductName">
                                 @if (product.IsNew == true)
                                 {
                                     <span class="status">Mới</span>
