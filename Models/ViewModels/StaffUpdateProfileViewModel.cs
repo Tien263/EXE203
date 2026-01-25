@@ -20,16 +20,5 @@ namespace Exe_Demo.Models.ViewModels
         [Display(Name = "Địa chỉ")]
         public string? Address { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng chọn Tỉnh/Thành phố")]
-        [Display(Name = "Tỉnh/Thành phố")]
-        public string City { get; set; } = null!;
-
-        [Required(ErrorMessage = "Vui lòng chọn Quận/Huyện")]
-        [Display(Name = "Quận/Huyện")]
-        public string District { get; set; } = null!;
-
-        [Required(ErrorMessage = "Vui lòng chọn Phường/Xã")]
-        [Display(Name = "Phường/Xã")]
-        public string Ward { get; set; } = null!;
     }
 }
