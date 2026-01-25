@@ -1238,6 +1238,12 @@ namespace Exe_Demo.Controllers
             if (ModelState.IsValid)
             {
                 // Xử lý upload ảnh
+                // Fallback: Try retrieval from Request.Form if model binding failed
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                }
+
                 if (model.ImageFile != null)
                 {
                     string uniqueFileName = UploadFile(model.ImageFile);
@@ -1313,6 +1319,12 @@ namespace Exe_Demo.Controllers
                 }
 
                 // Xử lý upload ảnh mới
+                // Fallback: Try retrieval from Request.Form if model binding failed
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                }
+
                 if (model.ImageFile != null)
                 {
                     // Xóa ảnh cũ nếu có (tùy chọn)
