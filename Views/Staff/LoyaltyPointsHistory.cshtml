@@ -90,7 +90,7 @@
                                     <tr>
                                         <td style="font-weight: 600;">@stt</td>
                                         <td>
-                                            <div>@history.CreatedDate?.ToString("dd/MM/yyyy")</div>
+                                            <div>@history.CreatedDate?.AddHours(7).ToString("dd/MM/yyyy")</div>
                                             <small class="text-muted">@history.CreatedDate?.ToString("HH:mm:ss")</small>
                                         </td>
                                         <td>

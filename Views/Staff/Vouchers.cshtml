@@ -133,8 +133,8 @@
                                 </td>
                                 <td>
                                     <small>
-                                        Từ: @voucher.ValidFrom?.ToString("dd/MM/yyyy")<br />
-                                        Đến: @voucher.ValidTo?.ToString("dd/MM/yyyy")
+                                        Từ: @voucher.ValidFrom?.AddHours(7).ToString("dd/MM/yyyy")<br />
+                                        Đến: @voucher.ValidTo?.AddHours(7).ToString("dd/MM/yyyy")
                                     </small>
                                 </td>
                                 <td class="text-center">

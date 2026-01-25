@@ -191,8 +191,8 @@
                                                     }
                                                 </td>
                                                 <td>
-                                                    <small>@order.CreatedDate?.ToString("dd/MM/yyyy")</small><br>
-                                                    <small class="text-muted">@order.CreatedDate?.ToString("HH:mm")</small>
+                                                    <small>@order.CreatedDate?.AddHours(7).ToString("dd/MM/yyyy")</small><br>
+                                                    <small class="text-muted">@order.CreatedDate?.AddHours(7).ToString("HH:mm")</small>
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <a asp-action="OrderDetail" asp-route-id="@order.OrderId" 
