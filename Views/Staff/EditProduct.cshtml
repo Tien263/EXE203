@@ -72,11 +72,11 @@
                                 <span asp-validation-for="Price" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <label asp-for="OriginalPrice" class="form-label">Giá gốc</label>
+                                <label asp-for="OriginalPrice" class="form-label">Giá vốn nhập hàng</label>
                                 <input asp-for="OriginalPrice" type="number" class="form-control" placeholder="0">
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="CostPrice" class="form-label">Giá vốn</label>
+                            <div class="col-md-4" style="display:none;">
+                                <label asp-for="CostPrice" class="form-label">Giá vốn cũ (Ẩn)</label>
                                 <input asp-for="CostPrice" type="number" class="form-control" placeholder="0">
                             </div>
                         </div>
