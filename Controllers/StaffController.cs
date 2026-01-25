@@ -328,7 +328,7 @@ namespace Exe_Demo.Controllers
                 OriginalPrice = product.OriginalPrice,
                 CostPrice = product.CostPrice,
                 DiscountPercent = product.DiscountPercent,
-                StockQuantity = product.StockQuantity,
+                StockQuantity = product.StockQuantity ?? 0,
                 MinStockLevel = product.MinStockLevel,
                 Unit = product.Unit,
                 Weight = product.Weight,
