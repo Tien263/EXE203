@@ -19,7 +19,7 @@ namespace Exe_Demo.Controllers
         }
 
         // GET: Product
-        // [ResponseCache(CacheProfileName = "Default30")] // Removed to fix User Authentication display issue
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index(int? categoryId, string? search, string? sortBy, int pageNumber = 1)
         {
             try
@@ -41,7 +41,7 @@ namespace Exe_Demo.Controllers
         }
 
         // GET: Product/Details/5
-        // [ResponseCache(Duration = 600, VaryByQueryKeys = new[] { "id" })] // Removed to fix User Authentication display issue
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Details(int id)
         {
             try
