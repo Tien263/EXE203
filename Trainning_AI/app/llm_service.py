@@ -51,13 +51,16 @@ class LLMService:
                 genai.configure(api_key=gemini_key)
                 
                 # List of models to try in order of preference
+                # List of models to try in order of preference
                 candidate_models = [
-                    'gemini-flash-latest',
-                    'gemini-pro-latest',
-                    'gemini-2.0-flash-exp',
-                    'gemini-2.0-flash',
                     'gemini-1.5-flash',
                     'gemini-1.5-flash-latest',
+                    'gemini-flash-latest',
+                    'gemini-1.5-pro',
+                    'gemini-1.5-pro-latest',
+                    'gemini-2.0-flash-exp',
+                    'gemini-pro'
+                ]
                     'gemini-1.5-pro',
                     'gemini-1.5-pro-latest',
                     'gemini-1.0-pro',
@@ -205,8 +208,14 @@ Hãy thân thiện, nhiệt tình và tập trung vào việc hỗ trợ khách 
             response = self.gemini_model.generate_content(message)
             return response.text.strip()
         except Exception as e:
-            print(f"[ERROR] Gemini chat error: {e}")
-            return f"Lỗi Gemini: {str(e)}"
+            error_msg = str(e)
+            print(f"[ERROR] Gemini chat error: {error_msg}")
+            
+            # Check for Quota Exceeded (429)
+            if "429" in error_msg or "Quota exceeded" in error_msg or "Resource has been exhausted" in error_msg:
+                return "⚠️ Hệ thống AI đang quá tải (Hết hạn mức miễn phí). Vui lòng thử lại sau 30 giây hoặc sử dụng tìm kiếm thông thường."
+            
+            return f"Lỗi Gemini: {error_msg}"
 
     def _simple_response(self, message: str) -> str:
         """Phản hồi đơn giản khi không có AI"""
