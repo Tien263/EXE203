@@ -18,10 +18,11 @@ namespace Exe_Demo.Controllers
             _logger = logger;
         }
 
+        // GET: Product
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index(int? categoryId, string? search, string? sortBy, int pageNumber = 1)
         {
             try
-            {
             {
                 var viewModel = await _productService.GetProductsAsync(
                     categoryId, 
