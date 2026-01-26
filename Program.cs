@@ -16,13 +16,13 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+// builder.Services.AddControllersWithViews(); // Removed duplicate call
 
 // Add Memory Cache for performance optimization
 builder.Services.AddMemoryCache();
 
 // Add Response Caching
-builder.Services.AddResponseCaching();
+// builder.Services.AddResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
 
 // Configure Response Caching options
 builder.Services.AddControllersWithViews(options =>
@@ -266,7 +266,7 @@ else
 }
 
 // Add Response Caching middleware (must be before UseRouting)
-app.UseResponseCaching();
+// app.UseResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
 
 app.UseRouting();
 
