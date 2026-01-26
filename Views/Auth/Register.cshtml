@@ -28,9 +28,9 @@
             background: linear-gradient(135deg, #4f6a4c 0%, #6b8f67 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: center; 
             justify-content: center;
-            padding: 20px;
+            padding: 40px 20px; /* Increased padding */
         }
 
         .register-container {
@@ -43,14 +43,13 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        .register-form-section {
             flex: 1;
             padding: 50px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            max-height: 90vh;
-            overflow-y: auto;
+            /* max-height: 90vh; REMOVED to fix scrollbar */
+            /* overflow-y: auto; REMOVED to fix scrollbar */
         }
 
         .register-video-section {
