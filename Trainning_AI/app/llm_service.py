@@ -238,9 +238,30 @@ Tôi có thể giúp bạn tìm hiểu về các sản phẩm hoa quả sấy ca
 🥭 Sấy giòn: Mít, Chuối  
 ✨ Sấy thăng hoa: Dâu, Sữa chua
 
-Bạn quan tâm loại nào nhất? 😊{debug_info}"""
-        else:
-            return f"Cảm ơn bạn đã nhắn tin: '{message}'. Tôi là AI assistant của Mộc Vị Store, sẵn sàng hỗ trợ bạn về các sản phẩm hoa quả sấy! 😊{debug_info}"
+Bạn quan tâm loại nào nhất? 😊"""
+
+        # Keyword matching for products (Fallback when AI is down)
+        products_db = {
+            'dâu': "🍓 **Dâu Tây Mộc Châu**:\n- Dâu sấy dẻo: 90k/200g (Chua ngọt tự nhiên)\n- Dâu sấy thăng hoa: 140k/100g (Giòn xốp, giữ nguyên hình dáng)",
+            'mận': "🍒 **Mận Hậu Mộc Châu**:\n- Mận sấy dẻo: 65k/200g\n- Vị chua ngọt đặc trưng, dẻo thơm.",
+            'xoài': "🥭 **Xoài Sấy Dẻo**:\n- Giá: 70k/200g\n- Miếng xoài vàng ươm, dẻo ngọt tự nhiên.",
+            'đào': "🍑 **Đào Sấy Dẻo**:\n- Giá: 65k/200g\n- Thơm lừng hương đào, vị ngọt thanh.",
+            'hồng': "🍅 **Hồng Giòn Sấy Dẻo**:\n- Giá: 95k/200g\n- Đặc sản Mộc Châu, ngọt đậm đà.",
+            'mít': "jackfruit **Mít Sấy Giòn**:\n- Giá: 80k/200g\n- Giòn tan, ngọt lịm.",
+            'chuối': "🍌 **Chuối Sấy Giòn**:\n- Giá: 80k/200g\n- Giòn rụm, thơm ngon.",
+            'sữa chua': "🥛 **Sữa Chua Sấy Thăng Hoa**:\n- Giá: 95k/100g\n- Tan ngay trong miệng, tốt cho tiêu hóa.",
+            'giá': "💰 **Bảng Giá Sản Phẩm**:\n- Mận/Đào sấy dẻo: 65k\n- Xoài sấy dẻo: 70k\n- Dâu sấy dẻo: 90k\n- Mít/Chuối sấy giòn: 80k\n- Dâu sấy thăng hoa: 140k"
+        }
+
+        response_parts = []
+        for key, info in products_db.items():
+            if key in message_lower:
+                response_parts.append(info)
+        
+        if response_parts:
+             return "🔍 **Thông tin sản phẩm bạn quan tâm:**\n\n" + "\n\n".join(response_parts) + "\n\n📞 Đặt hàng ngay: 0929.161.999"
+
+        return f"Cảm ơn bạn đã nhắn tin: '{message}'.\nHiện tại hệ thống AI đang bảo trì, vui lòng liên hệ Hotline 0929.161.999 để được hỗ trợ nhanh nhất! 😊"
 
     def detect_purchase_intent(self, query: str) -> Dict:
         """Phát hiện ý định mua hàng và trích xuất sản phẩm"""
