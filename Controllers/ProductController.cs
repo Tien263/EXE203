@@ -18,15 +18,10 @@ namespace Exe_Demo.Controllers
             _logger = logger;
         }
 
-        // GET: Product
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index(int? categoryId, string? search, string? sortBy, int pageNumber = 1)
         {
-            // Debug: Check if User is authenticated
-            Response.Headers.Add("X-Debug-Auth", User.Identity?.IsAuthenticated.ToString() ?? "Null");
-            Response.Headers.Add("X-Debug-User", User.Identity?.Name ?? "Anonymous");
-
             try
+            {
             {
                 var viewModel = await _productService.GetProductsAsync(
                     categoryId, 
