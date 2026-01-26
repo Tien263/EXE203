@@ -50,6 +50,15 @@ public static class DatabaseSeeder
             context.SaveChanges();
         }
 
+        // Fix: Rename "Hoa Quả Sấy" to "Hoa Quả Sấy Giòn"
+        var oldCat = context.Categories.FirstOrDefault(c => c.CategoryName == "Hoa Quả Sấy");
+        if (oldCat != null)
+        {
+            oldCat.CategoryName = "Hoa Quả Sấy Giòn";
+            context.SaveChanges();
+            Console.WriteLine("Updated category 'Hoa Quả Sấy' to 'Hoa Quả Sấy Giòn'");
+        }
+
         if (!context.Products.Any())
         {
              // ... (Keep existing Product seeding)
