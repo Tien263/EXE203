@@ -3,9 +3,171 @@
     ViewData["Title"] = "Sản Phẩm";
 }
 
+
 <style>
-    /* Chỉ dùng 3 màu: #4F6A4C (xanh), Trắng, Đen */
-    
+    /* Premium Product Card Styles (Copied from Home/Index) */
+    .product-card-premium {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f0f0f0;
+    }
+
+    .product-card-premium:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        border-color: #d8e2dc;
+    }
+
+    .product-img-wrap {
+        position: relative;
+        overflow: hidden;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        display: block;
+    }
+
+    .product-img-wrap img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card-premium:hover .product-img-wrap img {
+        transform: scale(1.05);
+    }
+
+    .product-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .product-category {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .product-title {
+        font-family: 'Spectral', serif;
+        font-size: 18px; /* Adjusted for grid */
+        font-weight: 600;
+        margin-bottom: 15px;
+        line-height: 1.3;
+    }
+
+    .product-title a {
+        color: #333;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .product-title a:hover {
+        color: #4f6a4c;
+    }
+
+    .product-price-row {
+        margin-top: auto;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .current-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: #4f6a4c;
+    }
+
+    .old-price {
+        font-size: 14px;
+        color: #aaa;
+        text-decoration: line-through;
+        margin-right: 10px;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 8px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-view {
+        background: #f8f9fa;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        text-decoration: none !important;
+    }
+
+    .btn-view:hover {
+        background: #e2e6ea;
+        color: #333;
+    }
+
+    .btn-buy {
+        background: #4f6a4c;
+        color: white;
+    }
+
+    .btn-buy:hover {
+        background: #3d5239;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(79, 106, 76, 0.3);
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        z-index: 2;
+    }
+
+    .status-new {
+        background: #4f6a4c;
+        color: white;
+    }
+
+    .status-sale {
+        background: #dc3545;
+        color: white;
+    }
+
+    /* Sidebar Styles */
     .sidebar-box h3 {
         color: #4f6a4c;
         border-bottom: 2px solid #4f6a4c;
@@ -21,137 +183,14 @@
     .categories li a:hover {
         background: #4f6a4c;
         color: white;
-        padding: 8px 15px;
+        padding: 5px 12px;
         border-radius: 5px;
         display: inline-block;
     }
-    
-    .search-form .btn-primary {
-        background: #4f6a4c;
-        border-color: #4f6a4c;
-        color: white;
-    }
-    
-    .search-form .btn-primary:hover {
-        background: #3d5239;
-        border-color: #3d5239;
-    }
-    
-    .product {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        overflow: hidden;
-        transition: all 0.3s;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .product .img-prod {
-        position: relative;
-        display: block;
-        overflow: hidden;
-        width: 100%;
-        padding-top: 50%; /* Tỷ lệ 2:1 - chiều ngang rất rộng */
-    }
-    
-    .product .img-prod img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    .product:hover {
-        border-color: #4f6a4c;
-        box-shadow: 0 5px 20px rgba(79, 106, 76, 0.2);
-        transform: translateY(-5px);
-    }
-    
-    .product .text {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .product .bottom-area {
-        margin-top: auto;
-    }
-    
-    /* Responsive spacing */
-    @@media (max-width: 767px) {
-        .col-sm-6 {
-            margin-bottom: 20px;
-        }
-    }
-    
-    .product .status {
-        background: #4f6a4c !important;
-        color: white !important;
-    }
-    
-    .product h3 a {
-        color: #000;
-        transition: color 0.3s;
-    }
-    
-    .product h3 a:hover {
-        color: #4f6a4c;
-    }
-    
-    .rating i.fa-star {
-        color: #4f6a4c;
-    }
-    
-    .add-to-cart {
-        background: #4f6a4c;
-        color: white !important;
-        border: none;
-    }
-    
-    .add-to-cart:hover {
-        background: #3d5239;
-    }
-    
-    .buy-now {
-        background: #4f6a4c;
-        color: white !important;
-        border: none;
-    }
-    
-    .buy-now:hover {
-        background: #3d5239;
-    }
-    
-    .badge-danger {
-        background: #4f6a4c !important;
-        color: white !important;
-    }
-    
-    .form-control {
-        border-color: #ddd;
-        color: #000;
-    }
-    
+
     .form-control:focus {
         border-color: #4f6a4c;
         box-shadow: 0 0 0 0.2rem rgba(79, 106, 76, 0.25);
-    }
-    
-    select.form-control {
-        border-color: #4f6a4c;
-        color: #000;
-    }
-    
-    .price-sale {
-        color: #4f6a4c !important;
-    }
-    
-    .price-dc {
-        color: #999 !important;
     }
 </style>
 
@@ -183,7 +222,7 @@
                     <form asp-action="Index" method="get" class="search-form">
                         <div class="form-group">
                             <input type="text" name="search" class="form-control" placeholder="Tìm sản phẩm..." value="@Model.CurrentSearch">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                            <button type="submit" class="btn btn-primary mt-2 w-100" style="background:#4f6a4c; border:none;">Tìm Kiếm</button>
                         </div>
                     </form>
                 </div>
@@ -194,9 +233,9 @@
                 <!-- Filter & Sort -->
                 <div class="row mb-4">
                     <div class="col-md-12 d-flex justify-content-between align-items-center">
-                        <p class="text-muted">Hiển thị @Model.Products.Count() sản phẩm</p>
+                        <p class="text-muted mb-0">Hiển thị @Model.Products.Count() sản phẩm</p>
                         <div class="form-group mb-0">
-                            <select class="form-control" id="sortSelect" onchange="location = this.value;">
+                            <select class="form-control" id="sortSelect" onchange="location = this.value;" style="min-width: 200px;">
                                 <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch })">Sắp xếp mặc định</option>
                                 <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "price_asc" })" selected="@(Model.CurrentSort == "price_asc" ? "selected" : null)">Giá: Thấp đến Cao</option>
                                 <option value="@Url.Action("Index", new { categoryId = Model.CurrentCategory, search = Model.CurrentSearch, sortBy = "price_desc" })" selected="@(Model.CurrentSort == "price_desc" ? "selected" : null)">Giá: Cao đến Thấp</option>
@@ -214,64 +253,46 @@
                         @foreach (var product in Model.Products)
                         {
                             <div class="col-sm-6 col-md-4 col-lg-4 mb-4 ftco-animate">
-                                <div class="product">
-                                    <a href="@Url.Action("Details", new { id = product.ProductId })" class="img-prod">
-                                        <img class="img-fluid" src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/prod-6.jpg" : product.ImageUrl)" alt="@product.ProductName">
+                                <div class="product-card-premium">
+                                    <a href="@Url.Action("Details", new { id = product.ProductId })" class="product-img-wrap">
+                                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/prod-6.jpg" : product.ImageUrl)" alt="@product.ProductName">
                                         @if (product.IsNew == true)
                                         {
-                                            <span class="status">Mới</span>
+                                            <span class="status-badge status-new">Mới</span>
                                         }
-                                        @if (product.DiscountPercent > 0)
+                                        else if (product.DiscountPercent > 0)
                                         {
-                                            <div class="overlay"></div>
+                                            <span class="status-badge status-sale">-@product.DiscountPercent%</span>
                                         }
                                     </a>
-                                    <div class="text py-3 px-3">
-                                        <div class="d-flex">
-                                            <div class="cat">
-                                                <span>@product.Category.CategoryName</span>
-                                            </div>
-                                            @if (product.Rating > 0)
-                                            {
-                                                <div class="rating">
-                                                    @for (int i = 1; i <= 5; i++)
-                                                    {
-                                                        <i class="fa fa-star@(i <= product.Rating ? "" : "-o")"></i>
-                                                    }
-                                                </div>
-                                            }
-                                        </div>
-                                        <h3><a href="@Url.Action("Details", new { id = product.ProductId })">@product.ProductName</a></h3>
-                                        <p class="mb-3" style="color: #000; font-size: 14px;">
-                                            <i class="fa fa-cube"></i> @product.Weight
-                                        </p>
-                                        <div class="pricing">
+                                    <div class="product-content">
+                                        <div class="product-category">@product.Category?.CategoryName</div>
+                                        <h3 class="product-title">
+                                            <a href="@Url.Action("Details", new { id = product.ProductId })">@product.ProductName</a>
+                                        </h3>
+                                        
+                                        <div class="product-price-row">
                                             @if (product.OriginalPrice > product.Price)
                                             {
-                                                <p class="price mb-1">
-                                                    <span class="price-dc" style="text-decoration: line-through; color: #999; font-size: 14px;">@product.OriginalPrice.Value.ToString("N0") đ</span>
-                                                </p>
-                                                <p class="price mb-2">
-                                                    <span class="price-sale" style="color: #4f6a4c; font-size: 20px; font-weight: 700;">@product.Price.ToString("N0") đ</span>
-                                                    <span class="badge badge-danger ml-2">-@(((product.OriginalPrice - product.Price) / product.OriginalPrice * 100).Value.ToString("0"))%</span>
-                                                </p>
+                                                <span class="old-price">@product.OriginalPrice.Value.ToString("N0") đ</span>
                                             }
-                                            else
-                                            {
-                                                <p class="price mb-2">
-                                                    <span class="price-sale" style="color: #4f6a4c; font-size: 20px; font-weight: 700;">@product.Price.ToString("N0") đ</span>
-                                                </p>
-                                            }
+                                            <span class="current-price">@product.Price.ToString("N0") đ</span>
                                         </div>
-                                        <p class="bottom-area d-flex px-3">
-                                            <a href="@Url.Action("Details", new { id = product.ProductId })" class="add-to-cart text-center py-2 mr-1"><span>Xem chi tiết <i class="fa fa-eye"></i></span></a>
-                                            <a href="#" class="buy-now text-center py-2 btn-add-to-cart" 
+
+                                        <div class="product-actions">
+                                            <a href="@Url.Action("Details", new { id = product.ProductId })" class="btn-action btn-view">
+                                                <i class="fa fa-eye"></i> Chi tiết
+                                            </a>
+                                            <!-- Use same data attributes for Add to Cart script -->
+                                            <a href="#" class="btn-action btn-buy btn-add-to-cart" 
                                                data-product-id="@product.ProductId"
                                                data-product-name="@product.ProductName"
                                                data-product-price="@product.Price"
                                                data-product-stock="@product.StockQuantity"
-                                               data-product-image="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/prod-6.jpg" : product.ImageUrl)">Mua ngay<span><i class="fa fa-shopping-cart"></i></span></a>
-                                        </p>
+                                               data-product-image="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/prod-6.jpg" : product.ImageUrl)">
+                                                <i class="fa fa-shopping-cart"></i> Mua ngay
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -280,8 +301,10 @@
                 }
                 else
                 {
-                    <div class="alert alert-info">
-                        <i class="fa fa-info-circle"></i> Không tìm thấy sản phẩm nào.
+                    <div class="alert alert-info text-center py-5">
+                        <i class="fa fa-info-circle fa-2x mb-3"></i><br/>
+                        <h4>Không tìm thấy sản phẩm nào.</h4>
+                        <p>Vui lòng thử tìm kiếm với từ khóa khác.</p>
                     </div>
                 }
             </div>
