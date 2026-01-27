@@ -131,7 +131,136 @@
                     <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-day-3-tab">
                         <div class="p-4">
                             <h3 class="mb-4">Đánh giá sản phẩm</h3>
-                            <p class="text-muted">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+
+                            <!-- Review Summary -->
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    @{
+                                        var reviews = Model.Reviews?.OrderByDescending(r => r.CreatedDate).ToList() ?? new List<Exe_Demo.Models.Review>();
+                                        var averageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rating), 1) : 0;
+                                        var totalReviews = reviews.Count;
+                                    }
+                                    <div class="bg-white p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-4 text-center">
+                                                <h1 class="display-4 text-primary m-0">@averageRating</h1>
+                                                <div class="text-primary">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= Math.Round(averageRating))
+                                                        {
+                                                            <i class="fas fa-star"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="far fa-star"></i>
+                                                        }
+                                                    }
+                                                </div>
+                                                <small class="text-muted">@totalReviews đánh giá</small>
+                                            </div>
+                                            
+                                            <div class="flex-grow-1">
+                                                @if(User.Identity.IsAuthenticated)
+                                                {
+                                                    <button class="btn btn-primary float-right" type="button" data-toggle="collapse" data-target="#reviewForm">
+                                                        <i class="fas fa-pen"></i> Viết đánh giá
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <a href="/Auth/Login?returnUrl=@Context.Request.Path" class="btn btn-outline-primary float-right">
+                                                        Đăng nhập để đánh giá
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Review Form -->
+                            <div class="collapse mb-5" id="reviewForm">
+                                <div class="card card-body bg-light border-0">
+                                    <form asp-controller="Review" asp-action="AddReview" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="productId" value="@Model.ProductId" />
+                                        <div class="form-group">
+                                            <label>Chất lượng sản phẩm:</label>
+                                            <div class="rating-select">
+                                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                    <label class="btn btn-outline-warning active">
+                                                        <input type="radio" name="rating" value="5" checked> 5 <i class="fas fa-star"></i>
+                                                    </label>
+                                                    <label class="btn btn-outline-warning">
+                                                        <input type="radio" name="rating" value="4"> 4 <i class="fas fa-star"></i>
+                                                    </label>
+                                                    <label class="btn btn-outline-warning">
+                                                        <input type="radio" name="rating" value="3"> 3 <i class="fas fa-star"></i>
+                                                    </label>
+                                                    <label class="btn btn-outline-warning">
+                                                        <input type="radio" name="rating" value="2"> 2 <i class="fas fa-star"></i>
+                                                    </label>
+                                                    <label class="btn btn-outline-warning">
+                                                        <input type="radio" name="rating" value="1"> 1 <i class="fas fa-star"></i>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ cảm nhận của bạn về sản phẩm này..." required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Hình ảnh (Nếu có):</label>
+                                            <input type="file" name="reviewImage" class="form-control-file" accept="image/*">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Review List -->
+                            <div class="review-list">
+                                @if (reviews.Any())
+                                {
+                                    foreach (var review in reviews)
+                                    {
+                                        <div class="review-item border-bottom pb-3 mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar bg-light rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 45px; height: 45px;">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 font-weight-bold">@review.CustomerName</h6>
+                                                        <small class="text-muted">@review.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</small>
+                                                    </div>
+                                                </div>
+                                                <div class="text-warning">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= review.Rating) { <i class="fas fa-star"></i> }
+                                                        else { <i class="far fa-star"></i> }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <p class="mb-2">@review.Comment</p>
+                                            @if (!string.IsNullOrEmpty(review.MediaUrl))
+                                            {
+                                                <div class="mt-2">
+                                                    <img src="@review.MediaUrl" alt="Review Image" class="img-thumbnail" style="max-height: 150px; cursor: pointer;" onclick="window.open(this.src)" />
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="text-center py-5">
+                                        <i class="far fa-comment-dots fa-3x text-muted mb-3"></i>
+                                        <p>Chưa có đánh giá nào.</p>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
