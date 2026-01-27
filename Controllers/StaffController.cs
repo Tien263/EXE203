@@ -1749,7 +1749,6 @@ namespace Exe_Demo.Controllers
                 return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
             }
         }
-    }
 
         // ==================== REVIEW MANAGEMENT ====================
         public async Task<IActionResult> Reviews()
@@ -1783,8 +1782,11 @@ namespace Exe_Demo.Controllers
                 TempData["ErrorMessage"] = "Không tìm thấy đánh giá.";
             }
 
+
             return RedirectToAction(nameof(Reviews));
         }
+
+    }
 
     // ViewModel cho Adjust Loyalty Points
     public class AdjustLoyaltyPointsViewModel
