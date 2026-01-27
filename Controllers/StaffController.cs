@@ -1757,5 +1757,39 @@ namespace Exe_Demo.Controllers
         public int CustomerId { get; set; }
         public int Points { get; set; }
         public string Reason { get; set; } = null!;
+        // ==================== REVIEW MANAGEMENT ====================
+        public async Task<IActionResult> Reviews()
+        {
+            if (!IsStaff()) return RedirectToAction("Login", "Auth");
+
+            var reviews = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.Customer)
+                .OrderByDescending(r => r.CreatedDate)
+                .ToListAsync();
+
+            return View(reviews);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            if (!IsStaff()) return RedirectToAction("Login", "Auth");
+
+            var review = await _context.Reviews.FindAsync(id);
+            if (review != null)
+            {
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã xóa đánh giá thành công.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy đánh giá.";
+            }
+
+            return RedirectToAction(nameof(Reviews));
+        }
     }
 }
