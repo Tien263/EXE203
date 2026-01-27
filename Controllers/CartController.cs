@@ -14,13 +14,15 @@ namespace Exe_Demo.Controllers
         private readonly ILogger<CartController> _logger;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly IVnPayService _vnPayService;
 
-        public CartController(ApplicationDbContext context, ILogger<CartController> logger, IConfiguration configuration, IEmailService emailService)
+        public CartController(ApplicationDbContext context, ILogger<CartController> logger, IConfiguration configuration, IEmailService emailService, IVnPayService vnPayService)
         {
             _context = context;
             _logger = logger;
             _configuration = configuration;
             _emailService = emailService;
+            _vnPayService = vnPayService;
         }
 
         public async Task<IActionResult> Index()
@@ -554,6 +556,18 @@ namespace Exe_Demo.Controllers
                             TempData["SuccessMessage"] = $"Đặt hàng thành công! Mã đơn hàng: #{order.OrderCode}. Chúng tôi sẽ liên hệ với bạn sớm nhất. Thông tin chi tiết đã được gửi qua email.{pointsMessage}";
                             return RedirectToAction("Index", "Home");
                         }
+                        else if (PaymentMethod == "VnPay")
+                        {
+                            var vnPayModel = new Models.ViewModels.VnPayRequestModel
+                            {
+                                Amount = (decimal)order.FinalAmount,
+                                CreatedDate = DateTime.Now,
+                                Description = $"{order.CustomerName} {order.CustomerPhone}",
+                                FullName = order.CustomerName,
+                                OrderId = order.OrderId
+                            };
+                            return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+                        }
 
                         return RedirectToAction("Index", "Home");
                     }
@@ -629,5 +643,61 @@ namespace Exe_Demo.Controllers
                 stock = product?.StockQuantity
             });
         }
+        [HttpGet]
+        public async Task<IActionResult> PaymentCallback()
+        {
+            var response = _vnPayService.ExecutePayment(Request.Query);
+
+            if (await response)
+            {
+                var vnp_TxnRef = Request.Query["vnp_TxnRef"].ToString();
+                var vnp_TransactionNo = Request.Query["vnp_TransactionNo"].ToString();
+                var vnp_ResponseCode = Request.Query["vnp_ResponseCode"].ToString();
+                var vnp_OrderInfo = Request.Query["vnp_OrderInfo"].ToString();
+                var vnp_Amount = Request.Query["vnp_Amount"].ToString();
+                
+                int orderId = Convert.ToInt32(vnp_TxnRef);
+                var order = await _context.Orders.FindAsync(orderId);
+                
+                if (order != null)
+                {
+                    order.PaymentStatus = "Paid";
+                    order.OrderStatus = "Processing"; // Tự động chuyển trang thái sang đang xử lý vì đã thanh toán
+                    // Có thể lưu thêm mã giao dịch VNPay vào order nếu DB có cột đó
+                    
+                    // Tính điểm tích lũy ngay
+                    int pointsToEarn = (int)(order.FinalAmount / 10000);
+                    // Cập nhật điểm tích lũy cho customer
+                     try {
+                        var customer = await _context.Customers.FindAsync(order.CustomerId);
+                        if(customer != null) {
+                            customer.LoyaltyPoints += pointsToEarn;
+                            
+                            // Lưu lịch sử điểm
+                             _context.LoyaltyPointsHistories.Add(new LoyaltyPointsHistory {
+                                CustomerId = customer.CustomerId,
+                                Points = pointsToEarn,
+                                TransactionType = "Earn",
+                                Description = $"Tích điểm từ đơn hàng #{order.OrderCode}",
+                                CreatedDate = DateTime.Now,
+                                OrderId = order.OrderId
+                            });
+                        }
+                    } catch (Exception) { /* Ignore point update errors */ }
+
+                    await _context.SaveChangesAsync();
+                    
+                    ViewBag.Message = "Giao dịch thành công!";
+                    ViewBag.OrderId = order.OrderId;
+                    ViewBag.OrderCode = order.OrderCode;
+                    ViewBag.Amount = order.FinalAmount;
+                    return View("PaymentResult");
+                }
+            }
+
+            ViewBag.Message = "Giao dịch thất bại hoặc bị hủy bỏ.";
+            return View("PaymentResult");
+        }
+
     }
 }

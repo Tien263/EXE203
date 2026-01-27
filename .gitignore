@@ -291,3 +291,10 @@ replacements.txt
 
 # Root Environment Variables
 .env
+
+# Local Database
+DbStorage/
+docker_data/
+*.db
+*.db-shm
+*.db-wal
