@@ -1751,12 +1751,6 @@ namespace Exe_Demo.Controllers
         }
     }
 
-    // ViewModel cho Adjust Loyalty Points
-    public class AdjustLoyaltyPointsViewModel
-    {
-        public int CustomerId { get; set; }
-        public int Points { get; set; }
-        public string Reason { get; set; } = null!;
         // ==================== REVIEW MANAGEMENT ====================
         public async Task<IActionResult> Reviews()
         {
@@ -1791,5 +1785,12 @@ namespace Exe_Demo.Controllers
 
             return RedirectToAction(nameof(Reviews));
         }
+
+    // ViewModel cho Adjust Loyalty Points
+    public class AdjustLoyaltyPointsViewModel
+    {
+        public int CustomerId { get; set; }
+        public int Points { get; set; }
+        public string Reason { get; set; } = null!;
     }
 }
