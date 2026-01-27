@@ -21,6 +21,7 @@ services:
       - .env
     depends_on:
       - ai-service
+      - redis
 
   nginx:
     image: nginx:alpine
@@ -54,3 +55,15 @@ services:
       - HOST=0.0.0.0
     env_file:
       - .env
+
+  redis:
+    image: redis:alpine
+    container_name: mocvi_redis
+    restart: always
+    volumes:
+      - ./docker_data/redis:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis_data:

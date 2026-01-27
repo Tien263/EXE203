@@ -19,7 +19,12 @@ builder.WebHost.ConfigureKestrel(options =>
 // builder.Services.AddControllersWithViews(); // Removed duplicate call
 
 // Add Memory Cache for performance optimization
-builder.Services.AddMemoryCache();
+// Cấu hình Redis Cache
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "MocVi_";
+});
 
 // Add Response Caching
 // builder.Services.AddResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
