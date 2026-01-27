@@ -29,7 +29,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                            <i class="fa fa-comments fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@avgRating / 5</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-star fa-2x text-gray-300"></i>
+                            <i class="fa fa-star fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                                 </td>
                                 <td>@item.CustomerName</td>
                                 <td>
-                                    <span class="text-warning font-weight-bold">@item.Rating</span> <i class="fas fa-star text-warning" style="font-size: 0.8rem;"></i>
+                                    <span class="text-warning font-weight-bold">@item.Rating</span> <i class="fa fa-star text-warning" style="font-size: 0.8rem;"></i>
                                 </td>
                                 <td>@item.Comment</td>
                                 <td>
@@ -105,7 +105,7 @@
                                 <td>
                                     <form asp-action="DeleteReview" asp-route-id="@item.ReviewId" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá này không?');" style="display:inline;">
                                         <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
