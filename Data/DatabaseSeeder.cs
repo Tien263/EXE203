@@ -1,4 +1,4 @@
-using Exe_Demo.Models;
+﻿using Exe_Demo.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -32,10 +32,10 @@ public static class DatabaseSeeder
             // Seed Categories
             var categories = new List<Category>
             {
-                new Category { CategoryName = "Hoa Quả Sấy", Description = "Các loại hoa quả sấy khô tự nhiên" },
-                new Category { CategoryName = "Hoa Quả Sấy Dẻo", Description = "Hoa quả sấy giữ độ mềm tự nhiên" },
-                new Category { CategoryName = "Hoa Quả Sấy Thăng Hoa", Description = "Hoa quả sấy công nghệ thăng hoa" },
-                new Category { CategoryName = "Combo Quà Tặng", Description = "Combo hoa quả sấy làm quà" }
+                new Category { CategoryName = "Hoa Quáº£ Sáº¥y", Description = "CÃ¡c loáº¡i hoa quáº£ sáº¥y khÃ´ tá»± nhiÃªn" },
+                new Category { CategoryName = "Hoa Quáº£ Sáº¥y Dáº»o", Description = "Hoa quáº£ sáº¥y giá»¯ Ä‘á»™ má»m tá»± nhiÃªn" },
+                new Category { CategoryName = "Hoa Quáº£ Sáº¥y ThÄƒng Hoa", Description = "Hoa quáº£ sáº¥y cÃ´ng nghá»‡ thÄƒng hoa" },
+                new Category { CategoryName = "Combo QuÃ  Táº·ng", Description = "Combo hoa quáº£ sáº¥y lÃ m quÃ " }
             };
             context.Categories.AddRange(categories);
             context.SaveChanges();
@@ -46,55 +46,55 @@ public static class DatabaseSeeder
                 new Product
                 {
                     ProductCode = "MIT001",
-                    ProductName = "Mít Sấy Giòn",
+                    ProductName = "MÃ­t Sáº¥y GiÃ²n",
                     CategoryId = 1,
                     Price = 150000,
                     StockQuantity = 100,
-                    Description = "Mít sấy giòn tự nhiên, không chất bảo quản",
+                    Description = "MÃ­t sáº¥y giÃ²n tá»± nhiÃªn, khÃ´ng cháº¥t báº£o quáº£n",
                     ImageUrl = "/images/products/mit-say.jpg",
                     IsActive = true
                 },
                 new Product
                 {
                     ProductCode = "CHUOI001",
-                    ProductName = "Chuối Sấy Dẻo",
+                    ProductName = "Chuá»‘i Sáº¥y Dáº»o",
                     CategoryId = 2,
                     Price = 120000,
                     StockQuantity = 150,
-                    Description = "Chuối sấy dẻo thơm ngon, giữ nguyên vị tự nhiên",
+                    Description = "Chuá»‘i sáº¥y dáº»o thÆ¡m ngon, giá»¯ nguyÃªn vá»‹ tá»± nhiÃªn",
                     ImageUrl = "/images/products/chuoi-say.jpg",
                     IsActive = true
                 },
                 new Product
                 {
                     ProductCode = "XOAI001",
-                    ProductName = "Xoài Sấy Dẻo",
+                    ProductName = "XoÃ i Sáº¥y Dáº»o",
                     CategoryId = 2,
                     Price = 180000,
                     StockQuantity = 80,
-                    Description = "Xoài sấy dẻo chua ngọt đậm đà",
+                    Description = "XoÃ i sáº¥y dáº»o chua ngá»t Ä‘áº­m Ä‘Ã ",
                     ImageUrl = "/images/products/xoai-say.jpg",
                     IsActive = true
                 },
                 new Product
                 {
                     ProductCode = "DAU001",
-                    ProductName = "Dâu Tây Sấy Thăng Hoa",
+                    ProductName = "DÃ¢u TÃ¢y Sáº¥y ThÄƒng Hoa",
                     CategoryId = 3,
                     Price = 250000,
                     StockQuantity = 50,
-                    Description = "Dâu tây sấy thăng hoa giữ nguyên hương vị",
+                    Description = "DÃ¢u tÃ¢y sáº¥y thÄƒng hoa giá»¯ nguyÃªn hÆ°Æ¡ng vá»‹",
                     ImageUrl = "/images/products/dau-say.jpg",
                     IsActive = true
                 },
                 new Product
                 {
                     ProductCode = "COMBO001",
-                    ProductName = "Combo Hoa Quả Sấy 5 Loại",
+                    ProductName = "Combo Hoa Quáº£ Sáº¥y 5 Loáº¡i",
                     CategoryId = 4,
                     Price = 350000,
                     StockQuantity = 30,
-                    Description = "Combo 5 loại hoa quả sấy đa dạng",
+                    Description = "Combo 5 loáº¡i hoa quáº£ sáº¥y Ä‘a dáº¡ng",
                     ImageUrl = "/images/products/combo-5.jpg",
                     IsActive = true
                 }
@@ -106,11 +106,11 @@ public static class DatabaseSeeder
             var emp1 = new Employee
             {
                 EmployeeCode = "NV001",
-                FullName = "Nguyễn Văn A",
+                FullName = "Nguyá»…n VÄƒn A",
                 PhoneNumber = "0901234567",
                 Email = "staff@mocvistore.com",
-                Position = "Nhân viên bán hàng",
-                Department = "Bán hàng",
+                Position = "NhÃ¢n viÃªn bÃ¡n hÃ ng",
+                Department = "BÃ¡n hÃ ng",
                 Salary = 8000000,
                 HireDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-2)),
                 IsActive = true,
@@ -120,11 +120,11 @@ public static class DatabaseSeeder
             var emp2 = new Employee
             {
                 EmployeeCode = "ADMIN001",
-                FullName = "Quản Trị Viên",
+                FullName = "Quáº£n Trá»‹ ViÃªn",
                 PhoneNumber = "0912345678",
                 Email = "admin@mocvistore.com",
-                Position = "Quản lý",
-                Department = "Quản lý",
+                Position = "Quáº£n lÃ½",
+                Department = "Quáº£n lÃ½",
                 Salary = 15000000,
                 HireDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-3)),
                 IsActive = true,
@@ -140,7 +140,7 @@ public static class DatabaseSeeder
             {
                 Email = "staff@mocvistore.com",
                 PasswordHash = HashPassword("Staff@123"),
-                FullName = "Nguyễn Văn A",
+                FullName = "Nguyá»…n VÄƒn A",
                 PhoneNumber = "0901234567",
                 Role = "Staff",
                 EmployeeId = emp1.EmployeeId,
@@ -152,7 +152,7 @@ public static class DatabaseSeeder
             {
                 Email = "admin@mocvistore.com",
                 PasswordHash = HashPassword("Admin@123"),
-                FullName = "Quản Trị Viên",
+                FullName = "Quáº£n Trá»‹ ViÃªn",
                 PhoneNumber = "0912345678",
                 Role = "Admin",
                 EmployeeId = emp2.EmployeeId,
@@ -169,188 +169,188 @@ public static class DatabaseSeeder
             {
                 new Blog
                 {
-                    Title = "🍓 Dâu Tây Mộc Châu - Nữ Hoàng Hoa Quả Cao Nguyên",
+                    Title = "ðŸ“ DÃ¢u TÃ¢y Má»™c ChÃ¢u - Ná»¯ HoÃ ng Hoa Quáº£ Cao NguyÃªn",
                     Slug = "dau-tay-moc-chau-nu-hoang-hoa-qua-cao-nguyen",
-                    ShortDescription = "Khám phá dâu tây Mộc Châu được mệnh danh là 'Nữ hoàng hoa quả cao nguyên' với vitamin C gấp 3 lần cam!",
-                    Content = @"<h2>Nữ Hoàng Hoa Quả Cao Nguyên</h2>
-<p>Dâu tây Mộc Châu được mệnh danh là 'Nữ hoàng hoa quả cao nguyên'! Mỗi trái dâu được chọn lọc kỹ càng từ vườn dâu Mộc Châu 1200m so với mặt nước biển, nơi có khí hậu mát mẻ quanh năm.</p>
+                    ShortDescription = "KhÃ¡m phÃ¡ dÃ¢u tÃ¢y Má»™c ChÃ¢u Ä‘Æ°á»£c má»‡nh danh lÃ  'Ná»¯ hoÃ ng hoa quáº£ cao nguyÃªn' vá»›i vitamin C gáº¥p 3 láº§n cam!",
+                    Content = @"<h2>Ná»¯ HoÃ ng Hoa Quáº£ Cao NguyÃªn</h2>
+<p>DÃ¢u tÃ¢y Má»™c ChÃ¢u Ä‘Æ°á»£c má»‡nh danh lÃ  'Ná»¯ hoÃ ng hoa quáº£ cao nguyÃªn'! Má»—i trÃ¡i dÃ¢u Ä‘Æ°á»£c chá»n lá»c ká»¹ cÃ ng tá»« vÆ°á»n dÃ¢u Má»™c ChÃ¢u 1200m so vá»›i máº·t nÆ°á»›c biá»ƒn, nÆ¡i cÃ³ khÃ­ háº­u mÃ¡t máº» quanh nÄƒm.</p>
 
-<h3>Công Nghệ Sấy Thông Minh</h3>
-<p>Sấy dẻo ở nhiệt độ thấp 50-60°C, giữ trọn 95% vitamin C - gấp 3 lần cam! Màu đỏ tươi rực rỡ 100% tự nhiên, không một giọt màu nhân tạo.</p>
+<h3>CÃ´ng Nghá»‡ Sáº¥y ThÃ´ng Minh</h3>
+<p>Sáº¥y dáº»o á»Ÿ nhiá»‡t Ä‘á»™ tháº¥p 50-60Â°C, giá»¯ trá»n 95% vitamin C - gáº¥p 3 láº§n cam! MÃ u Ä‘á» tÆ°Æ¡i rá»±c rá»¡ 100% tá»± nhiÃªn, khÃ´ng má»™t giá»t mÃ u nhÃ¢n táº¡o.</p>
 
-<h3>Dinh Dưỡng Tuyệt Vời</h3>
+<h3>Dinh DÆ°á»¡ng Tuyá»‡t Vá»i</h3>
 <ul>
-<li><strong>Vitamin C:</strong> Siêu cao (180mg/100g) - Gấp 3 lần cam, đáp ứng 200% nhu cầu hàng ngày</li>
-<li><strong>Anthocyanin:</strong> Chất chống oxy hóa mạnh từ màu đỏ tự nhiên - Bảo vệ tim mạch</li>
-<li><strong>Folate (Vitamin B9):</strong> Cao - Tốt cho phụ nữ mang thai và não bộ</li>
-<li><strong>Chất xơ:</strong> 3.5g/100g - Giúp no lâu, hỗ trợ giảm cân hiệu quả</li>
+<li><strong>Vitamin C:</strong> SiÃªu cao (180mg/100g) - Gáº¥p 3 láº§n cam, Ä‘Ã¡p á»©ng 200% nhu cáº§u hÃ ng ngÃ y</li>
+<li><strong>Anthocyanin:</strong> Cháº¥t chá»‘ng oxy hÃ³a máº¡nh tá»« mÃ u Ä‘á» tá»± nhiÃªn - Báº£o vá»‡ tim máº¡ch</li>
+<li><strong>Folate (Vitamin B9):</strong> Cao - Tá»‘t cho phá»¥ ná»¯ mang thai vÃ  nÃ£o bá»™</li>
+<li><strong>Cháº¥t xÆ¡:</strong> 3.5g/100g - GiÃºp no lÃ¢u, há»— trá»£ giáº£m cÃ¢n hiá»‡u quáº£</li>
 </ul>
 
-<h3>Lợi Ích Sức Khỏe</h3>
-<p><strong>💪 Tăng Cường Miễn Dịch Vượt Trội</strong> - Vitamin C siêu cao giúp cơ thể chống lại virus, cảm cúm</p>
-<p><strong>✨ Làm Đẹp Da Từ Bên Trong</strong> - Chống oxy hóa mạnh, giảm nám, sạm, da sáng mịn tự nhiên</p>
-<p><strong>❤️ Bảo Vệ Tim Mạch</strong> - Anthocyanin giảm cholesterol xấu, ngăn ngừa đột quỵ</p>
+<h3>Lá»£i Ãch Sá»©c Khá»e</h3>
+<p><strong>ðŸ’ª TÄƒng CÆ°á»ng Miá»…n Dá»‹ch VÆ°á»£t Trá»™i</strong> - Vitamin C siÃªu cao giÃºp cÆ¡ thá»ƒ chá»‘ng láº¡i virus, cáº£m cÃºm</p>
+<p><strong>âœ¨ LÃ m Äáº¹p Da Tá»« BÃªn Trong</strong> - Chá»‘ng oxy hÃ³a máº¡nh, giáº£m nÃ¡m, sáº¡m, da sÃ¡ng má»‹n tá»± nhiÃªn</p>
+<p><strong>â¤ï¸ Báº£o Vá»‡ Tim Máº¡ch</strong> - Anthocyanin giáº£m cholesterol xáº¥u, ngÄƒn ngá»«a Ä‘á»™t quá»µ</p>
 
-<h3>Cách Dùng Dâu Tây Sấy</h3>
+<h3>CÃ¡ch DÃ¹ng DÃ¢u TÃ¢y Sáº¥y</h3>
 <ul>
-<li>🍵 Ăn vặt trực tiếp - Thay thế kẹo, bánh không lành mạnh</li>
-<li>🥤 Pha trà dâu detox - Ngâm với nước ấm, thêm mật ong</li>
-<li>🍨 Topping yogurt/kem - Trang trí đẹp mắt, tăng dinh dưỡng</li>
-<li>🎂 Làm bánh, trang trí món ăn - Màu đỏ tự nhiên bắt mắt</li>
+<li>ðŸµ Ä‚n váº·t trá»±c tiáº¿p - Thay tháº¿ káº¹o, bÃ¡nh khÃ´ng lÃ nh máº¡nh</li>
+<li>ðŸ¥¤ Pha trÃ  dÃ¢u detox - NgÃ¢m vá»›i nÆ°á»›c áº¥m, thÃªm máº­t ong</li>
+<li>ðŸ¨ Topping yogurt/kem - Trang trÃ­ Ä‘áº¹p máº¯t, tÄƒng dinh dÆ°á»¡ng</li>
+<li>ðŸŽ‚ LÃ m bÃ¡nh, trang trÃ­ mÃ³n Äƒn - MÃ u Ä‘á» tá»± nhiÃªn báº¯t máº¯t</li>
 </ul>",
-                    AuthorId = user2.UserId,
+                    AuthorId = user2.Id,
                     IsPublished = true,
                     PublishedDate = DateTime.Now.AddDays(-5),
                     CreatedDate = DateTime.Now
                 },
                 new Blog
                 {
-                    Title = "🌟 Công Nghệ Freeze-Dried - Dâu Sấy Thăng Hoa Cao Cấp",
+                    Title = "ðŸŒŸ CÃ´ng Nghá»‡ Freeze-Dried - DÃ¢u Sáº¥y ThÄƒng Hoa Cao Cáº¥p",
                     Slug = "cong-nghe-freeze-dried-dau-say-thang-hoa-cao-cap",
-                    ShortDescription = "Khám phá công nghệ freeze-dried hiện đại từ Nhật Bản giữ 98% dinh dưỡng và tạo kết cấu giòn xốp kỳ diệu!",
-                    Content = @"<h2>Đỉnh Cao Công Nghệ - Dâu Sấy Thăng Hoa</h2>
-<p>Bạn đã bao giờ thử dâu tây 'tan như tuyết' trong miệng chưa? Đây là sản phẩm CAO CẤP NHẤT của Mộc Vị!</p>
+                    ShortDescription = "KhÃ¡m phÃ¡ cÃ´ng nghá»‡ freeze-dried hiá»‡n Ä‘áº¡i tá»« Nháº­t Báº£n giá»¯ 98% dinh dÆ°á»¡ng vÃ  táº¡o káº¿t cáº¥u giÃ²n xá»‘p ká»³ diá»‡u!",
+                    Content = @"<h2>Äá»‰nh Cao CÃ´ng Nghá»‡ - DÃ¢u Sáº¥y ThÄƒng Hoa</h2>
+<p>Báº¡n Ä‘Ã£ bao giá» thá»­ dÃ¢u tÃ¢y 'tan nhÆ° tuyáº¿t' trong miá»‡ng chÆ°a? ÄÃ¢y lÃ  sáº£n pháº©m CAO Cáº¤P NHáº¤T cá»§a Má»™c Vá»‹!</p>
 
-<h3>Công Nghệ Freeze-Dried Nhật Bản</h3>
-<p>Sử dụng công nghệ Freeze-Dried (sấy đông khô) hiện đại từ Nhật Bản, sấy ở nhiệt độ âm sâu -40°C, giữ trọn 98% dinh dưỡng và màu sắc tự nhiên.</p>
+<h3>CÃ´ng Nghá»‡ Freeze-Dried Nháº­t Báº£n</h3>
+<p>Sá»­ dá»¥ng cÃ´ng nghá»‡ Freeze-Dried (sáº¥y Ä‘Ã´ng khÃ´) hiá»‡n Ä‘áº¡i tá»« Nháº­t Báº£n, sáº¥y á»Ÿ nhiá»‡t Ä‘á»™ Ã¢m sÃ¢u -40Â°C, giá»¯ trá»n 98% dinh dÆ°á»¡ng vÃ  mÃ u sáº¯c tá»± nhiÃªn.</p>
 
-<h3>Đặc Điểm Nổi Bật</h3>
+<h3>Äáº·c Äiá»ƒm Ná»•i Báº­t</h3>
 <ul>
-<li><strong>Kết Cấu Giòn Xốp Kỳ Diệu:</strong> Tan ngay khi chạm lưỡi, trải nghiệm hoàn toàn mới</li>
-<li><strong>Hương Vị Đậm Đà:</strong> Gấp 10 lần dâu tươi, cô đặc tinh túy Mộc Châu</li>
-<li><strong>Màu Sắc Tự Nhiên:</strong> Đỏ rực rỡ như vừa mới hái</li>
-<li><strong>Không Thêm Chất Lạ:</strong> Không đường, không dầu mỡ, không chất bảo quản</li>
+<li><strong>Káº¿t Cáº¥u GiÃ²n Xá»‘p Ká»³ Diá»‡u:</strong> Tan ngay khi cháº¡m lÆ°á»¡i, tráº£i nghiá»‡m hoÃ n toÃ n má»›i</li>
+<li><strong>HÆ°Æ¡ng Vá»‹ Äáº­m ÄÃ :</strong> Gáº¥p 10 láº§n dÃ¢u tÆ°Æ¡i, cÃ´ Ä‘áº·c tinh tÃºy Má»™c ChÃ¢u</li>
+<li><strong>MÃ u Sáº¯c Tá»± NhiÃªn:</strong> Äá» rá»±c rá»¡ nhÆ° vá»«a má»›i hÃ¡i</li>
+<li><strong>KhÃ´ng ThÃªm Cháº¥t Láº¡:</strong> KhÃ´ng Ä‘Æ°á»ng, khÃ´ng dáº§u má»¡, khÃ´ng cháº¥t báº£o quáº£n</li>
 </ul>
 
-<h3>Dinh Dưỡng Siêu Cô Đặc</h3>
+<h3>Dinh DÆ°á»¡ng SiÃªu CÃ´ Äáº·c</h3>
 <ul>
-<li><strong>Vitamin C:</strong> 300mg/100g - Gấp 5 lần dâu tươi, gấp 5 lần cam</li>
-<li><strong>Anthocyanin:</strong> Cô đặc gấp 8 lần - Chống oxy hóa mạnh nhất</li>
-<li><strong>Folate:</strong> Cao gấp 6 lần - Tốt cho thai nhi và não bộ</li>
-<li><strong>Kali:</strong> Điều hòa huyết áp hiệu quả</li>
+<li><strong>Vitamin C:</strong> 300mg/100g - Gáº¥p 5 láº§n dÃ¢u tÆ°Æ¡i, gáº¥p 5 láº§n cam</li>
+<li><strong>Anthocyanin:</strong> CÃ´ Ä‘áº·c gáº¥p 8 láº§n - Chá»‘ng oxy hÃ³a máº¡nh nháº¥t</li>
+<li><strong>Folate:</strong> Cao gáº¥p 6 láº§n - Tá»‘t cho thai nhi vÃ  nÃ£o bá»™</li>
+<li><strong>Kali:</strong> Äiá»u hÃ²a huyáº¿t Ã¡p hiá»‡u quáº£</li>
 </ul>
 
-<h3>Ai Nên Thử Dâu Sấy Thăng Hoa?</h3>
-<p>👑 Người thành đạt, yêu chất lượng</p>
-<p>🏋️ Gymer, vận động viên</p>
-<p>🎁 Quà tặng cao cấp dịp lễ, Tết</p>
-<p>👨‍💼 Doanh nhân, CEO</p>",
-                    AuthorId = user2.UserId,
+<h3>Ai NÃªn Thá»­ DÃ¢u Sáº¥y ThÄƒng Hoa?</h3>
+<p>ðŸ‘‘ NgÆ°á»i thÃ nh Ä‘áº¡t, yÃªu cháº¥t lÆ°á»£ng</p>
+<p>ðŸ‹ï¸ Gymer, váº­n Ä‘á»™ng viÃªn</p>
+<p>ðŸŽ QuÃ  táº·ng cao cáº¥p dá»‹p lá»…, Táº¿t</p>
+<p>ðŸ‘¨â€ðŸ’¼ Doanh nhÃ¢n, CEO</p>",
+                    AuthorId = user2.Id,
                     IsPublished = true,
                     PublishedDate = DateTime.Now.AddDays(-3),
                     CreatedDate = DateTime.Now
                 },
                 new Blog
                 {
-                    Title = "🍑 Mận Mộc Châu - Vị Chua Ngọt Đỉnh Cao & Chất Xơ Cao Nhất",
+                    Title = "ðŸ‘ Máº­n Má»™c ChÃ¢u - Vá»‹ Chua Ngá»t Äá»‰nh Cao & Cháº¥t XÆ¡ Cao Nháº¥t",
                     Slug = "man-moc-chau-vi-chua-ngot-dinh-cao-chat-xo-cao-nhat",
-                    ShortDescription = "Mận hậu Mộc Châu với vị chua ngọt cân bằng hoàn hảo, chất xơ cao nhất trong các loại sấy!",
-                    Content = @"<h2>Mận Hậu Mộc Châu - Ký Ức Ngọt Ngào</h2>
-<p>Bạn nhớ vị mận hậu Mộc Châu thuở nhỏ chứ? Giờ đây, Mộc Vị đã 'đóng gói' cả ký ức ấy vào từng miếng mận sấy dẻo!</p>
+                    ShortDescription = "Máº­n háº­u Má»™c ChÃ¢u vá»›i vá»‹ chua ngá»t cÃ¢n báº±ng hoÃ n háº£o, cháº¥t xÆ¡ cao nháº¥t trong cÃ¡c loáº¡i sáº¥y!",
+                    Content = @"<h2>Máº­n Háº­u Má»™c ChÃ¢u - KÃ½ á»¨c Ngá»t NgÃ o</h2>
+<p>Báº¡n nhá»› vá»‹ máº­n háº­u Má»™c ChÃ¢u thuá»Ÿ nhá» chá»©? Giá» Ä‘Ã¢y, Má»™c Vá»‹ Ä‘Ã£ 'Ä‘Ã³ng gÃ³i' cáº£ kÃ½ á»©c áº¥y vÃ o tá»«ng miáº¿ng máº­n sáº¥y dáº»o!</p>
 
-<h3>Vị Chua Ngọt Kích Thích Vị Giác</h3>
-<p>Mận hậu thu hoạch tháng 4-6, chọn trái chín vừa tới, màu tím đen tự nhiên. Sấy dẻo giữ nguyên vị chua thanh kích thích vị giác, ngọt mát hậu vị. Mềm dẻo dai dai, thơm mùi mận chín.</p>
+<h3>Vá»‹ Chua Ngá»t KÃ­ch ThÃ­ch Vá»‹ GiÃ¡c</h3>
+<p>Máº­n háº­u thu hoáº¡ch thÃ¡ng 4-6, chá»n trÃ¡i chÃ­n vá»«a tá»›i, mÃ u tÃ­m Ä‘en tá»± nhiÃªn. Sáº¥y dáº»o giá»¯ nguyÃªn vá»‹ chua thanh kÃ­ch thÃ­ch vá»‹ giÃ¡c, ngá»t mÃ¡t háº­u vá»‹. Má»m dáº»o dai dai, thÆ¡m mÃ¹i máº­n chÃ­n.</p>
 
-<h3>Dinh Dưỡng Tuyệt Vời</h3>
+<h3>Dinh DÆ°á»¡ng Tuyá»‡t Vá»i</h3>
 <ul>
-<li><strong>Vitamin C:</strong> Rất cao (85mg/100g) - Tăng cường miễn dịch mạnh mẽ</li>
-<li><strong>Vitamin A:</strong> Tốt cho mắt, da sáng khỏe</li>
-<li><strong>Anthocyanin:</strong> Chất chống oxy hóa từ màu tím tự nhiên</li>
-<li><strong>Kali:</strong> Điều hòa huyết áp, tốt cho tim</li>
-<li><strong>Chất Xơ:</strong> 4.2g/100g - CAO NHẤT trong các loại sấy, hỗ trợ tiêu hóa cực tốt</li>
+<li><strong>Vitamin C:</strong> Ráº¥t cao (85mg/100g) - TÄƒng cÆ°á»ng miá»…n dá»‹ch máº¡nh máº½</li>
+<li><strong>Vitamin A:</strong> Tá»‘t cho máº¯t, da sÃ¡ng khá»e</li>
+<li><strong>Anthocyanin:</strong> Cháº¥t chá»‘ng oxy hÃ³a tá»« mÃ u tÃ­m tá»± nhiÃªn</li>
+<li><strong>Kali:</strong> Äiá»u hÃ²a huyáº¿t Ã¡p, tá»‘t cho tim</li>
+<li><strong>Cháº¥t XÆ¡:</strong> 4.2g/100g - CAO NHáº¤T trong cÃ¡c loáº¡i sáº¥y, há»— trá»£ tiÃªu hÃ³a cá»±c tá»‘t</li>
 </ul>
 
-<h3>Lợi Ích Sức Khỏe</h3>
-<p><strong>💪 Tăng Cường Miễn Dịch</strong> - Vitamin C cao, phòng chống cảm cúm</p>
-<p><strong>🚽 Hỗ Trợ Tiêu Hóa Mạnh Mẽ</strong> - Chất xơ cao, chống táo bón hiệu quả</p>
-<p><strong>✨ Làm Đẹp Da Tự Nhiên</strong> - Chống oxy hóa, giảm mụn, da sáng</p>
-<p><strong>⚖️ Hỗ Trợ Giảm Cân</strong> - Ít calo (220 kcal/100g), no lâu</p>
+<h3>Lá»£i Ãch Sá»©c Khá»e</h3>
+<p><strong>ðŸ’ª TÄƒng CÆ°á»ng Miá»…n Dá»‹ch</strong> - Vitamin C cao, phÃ²ng chá»‘ng cáº£m cÃºm</p>
+<p><strong>ðŸš½ Há»— Trá»£ TiÃªu HÃ³a Máº¡nh Máº½</strong> - Cháº¥t xÆ¡ cao, chá»‘ng tÃ¡o bÃ³n hiá»‡u quáº£</p>
+<p><strong>âœ¨ LÃ m Äáº¹p Da Tá»± NhiÃªn</strong> - Chá»‘ng oxy hÃ³a, giáº£m má»¥n, da sÃ¡ng</p>
+<p><strong>âš–ï¸ Há»— Trá»£ Giáº£m CÃ¢n</strong> - Ãt calo (220 kcal/100g), no lÃ¢u</p>
 
-<h3>Gợi Ý Sử Dụng</h3>
+<h3>Gá»£i Ã Sá»­ Dá»¥ng</h3>
 <ul>
-<li>🍬 Ăn vặt trực tiếp - Giải khát, giải ngán tuyệt vời</li>
-<li>🍵 Ngâm trà mận - Thêm đường phèn, uống mát lạnh</li>
-<li>🍲 Nấu chè mận - Món tráng miệng truyền thống</li>
-<li>🍰 Làm mứt, nhân bánh - Vị chua ngọt độc đáo</li>
+<li>ðŸ¬ Ä‚n váº·t trá»±c tiáº¿p - Giáº£i khÃ¡t, giáº£i ngÃ¡n tuyá»‡t vá»i</li>
+<li>ðŸµ NgÃ¢m trÃ  máº­n - ThÃªm Ä‘Æ°á»ng phÃ¨n, uá»‘ng mÃ¡t láº¡nh</li>
+<li>ðŸ² Náº¥u chÃ¨ máº­n - MÃ³n trÃ¡ng miá»‡ng truyá»n thá»‘ng</li>
+<li>ðŸ° LÃ m má»©t, nhÃ¢n bÃ¡nh - Vá»‹ chua ngá»t Ä‘á»™c Ä‘Ã¡o</li>
 </ul>",
-                    AuthorId = user2.UserId,
+                    AuthorId = user2.Id,
                     IsPublished = true,
                     PublishedDate = DateTime.Now.AddDays(-2),
                     CreatedDate = DateTime.Now
                 },
                 new Blog
                 {
-                    Title = "🥭 Xoài Mộc Châu - Ngọt Ngào, Thơm Nức & Giàu Vitamin A",
+                    Title = "ðŸ¥­ XoÃ i Má»™c ChÃ¢u - Ngá»t NgÃ o, ThÆ¡m Ná»©c & GiÃ u Vitamin A",
                     Slug = "xoai-moc-chau-ngot-ngao-thom-nuc-giau-vitamin-a",
-                    ShortDescription = "Xoài Mộc Châu sấy dẻo giữ nguyên màu vàng tự nhiên, ngọt thanh và đặc biệt tốt cho mắt!",
-                    Content = @"<h2>Xoài Mộc Châu - Hương Vị Nhiệt Đới</h2>
-<p>Xoài Mộc Châu có vị ngọt đậm đà, thơm nức mùi xoài chín. Sấy dẻo giữ nguyên màu vàng tự nhiên, mềm dai, không khô cứng.</p>
+                    ShortDescription = "XoÃ i Má»™c ChÃ¢u sáº¥y dáº»o giá»¯ nguyÃªn mÃ u vÃ ng tá»± nhiÃªn, ngá»t thanh vÃ  Ä‘áº·c biá»‡t tá»‘t cho máº¯t!",
+                    Content = @"<h2>XoÃ i Má»™c ChÃ¢u - HÆ°Æ¡ng Vá»‹ Nhiá»‡t Äá»›i</h2>
+<p>XoÃ i Má»™c ChÃ¢u cÃ³ vá»‹ ngá»t Ä‘áº­m Ä‘Ã , thÆ¡m ná»©c mÃ¹i xoÃ i chÃ­n. Sáº¥y dáº»o giá»¯ nguyÃªn mÃ u vÃ ng tá»± nhiÃªn, má»m dai, khÃ´ng khÃ´ cá»©ng.</p>
 
-<h3>Đặc Điểm Nổi Bật</h3>
+<h3>Äáº·c Äiá»ƒm Ná»•i Báº­t</h3>
 <ul>
-<li><strong>Màu Vàng Tự Nhiên:</strong> Không tẩm đường, không chất bảo quản</li>
-<li><strong>Vị Ngọt Đậm Đà:</strong> Thơm nức, ngon cực kỳ</li>
-<li><strong>Kết Cấu Mềm Dai:</strong> Không khô cứng, dễ chếu</li>
+<li><strong>MÃ u VÃ ng Tá»± NhiÃªn:</strong> KhÃ´ng táº©m Ä‘Æ°á»ng, khÃ´ng cháº¥t báº£o quáº£n</li>
+<li><strong>Vá»‹ Ngá»t Äáº­m ÄÃ :</strong> ThÆ¡m ná»©c, ngon cá»±c ká»³</li>
+<li><strong>Káº¿t Cáº¥u Má»m Dai:</strong> KhÃ´ng khÃ´ cá»©ng, dá»… cháº¿u</li>
 </ul>
 
-<h3>Giàu Vitamin A Cho Mắt Khỏe</h3>
+<h3>GiÃ u Vitamin A Cho Máº¯t Khá»e</h3>
 <ul>
-<li><strong>Vitamin A:</strong> Rất cao - Tốt cho mắt, da</li>
-<li><strong>Vitamin C:</strong> Cao - Tăng miễn dịch</li>
-<li><strong>Beta-Carotene:</strong> Chống oxy hóa mạnh</li>
-<li><strong>Chất Xơ:</strong> Hỗ trợ tiêu hóa tốt</li>
+<li><strong>Vitamin A:</strong> Ráº¥t cao - Tá»‘t cho máº¯t, da</li>
+<li><strong>Vitamin C:</strong> Cao - TÄƒng miá»…n dá»‹ch</li>
+<li><strong>Beta-Carotene:</strong> Chá»‘ng oxy hÃ³a máº¡nh</li>
+<li><strong>Cháº¥t XÆ¡:</strong> Há»— trá»£ tiÃªu hÃ³a tá»‘t</li>
 </ul>
 
-<h3>Lợi Ích Sức Khỏe</h3>
-<p><strong>👁️ Tốt Cho Mắt:</strong> Vitamin A cao, bảo vệ thị lực</p>
-<p><strong>✨ Làm Đẹp Da:</strong> Beta-carotene giúp da sáng khỏe</p>
-<p><strong>💪 Tăng Miễn Dịch:</strong> Vitamin C phòng bệnh</p>
-<p><strong>🚽 Hỗ Trợ Tiêu Hóa:</strong> Chất xơ cao</p>
+<h3>Lá»£i Ãch Sá»©c Khá»e</h3>
+<p><strong>ðŸ‘ï¸ Tá»‘t Cho Máº¯t:</strong> Vitamin A cao, báº£o vá»‡ thá»‹ lá»±c</p>
+<p><strong>âœ¨ LÃ m Äáº¹p Da:</strong> Beta-carotene giÃºp da sÃ¡ng khá»e</p>
+<p><strong>ðŸ’ª TÄƒng Miá»…n Dá»‹ch:</strong> Vitamin C phÃ²ng bá»‡nh</p>
+<p><strong>ðŸš½ Há»— Trá»£ TiÃªu HÃ³a:</strong> Cháº¥t xÆ¡ cao</p>
 
-<h3>Phù Hợp Cho Ai?</h3>
-<p>👶 Trẻ em - Vitamin A giúp phát triển mắt</p>
-<p>👨‍👩‍👧‍👦 Gia đình - An toàn cho cả nhà</p>
-<p>💼 Dân văn phòng - Snack lành mạnh</p>
-<p>🎁 Quà tặng - Giá hợp lý</p>",
-                    AuthorId = user2.UserId,
+<h3>PhÃ¹ Há»£p Cho Ai?</h3>
+<p>ðŸ‘¶ Tráº» em - Vitamin A giÃºp phÃ¡t triá»ƒn máº¯t</p>
+<p>ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦ Gia Ä‘Ã¬nh - An toÃ n cho cáº£ nhÃ </p>
+<p>ðŸ’¼ DÃ¢n vÄƒn phÃ²ng - Snack lÃ nh máº¡nh</p>
+<p>ðŸŽ QuÃ  táº·ng - GiÃ¡ há»£p lÃ½</p>",
+                    AuthorId = user2.Id,
                     IsPublished = true,
                     PublishedDate = DateTime.Now.AddDays(-1),
                     CreatedDate = DateTime.Now
                 },
                 new Blog
                 {
-                    Title = "🌿 Câu Chuyện Mộc Vị - Từ Nông Dân Tây Bắc Đến Thương Hiệu Cao Cấp",
+                    Title = "ðŸŒ¿ CÃ¢u Chuyá»‡n Má»™c Vá»‹ - Tá»« NÃ´ng DÃ¢n TÃ¢y Báº¯c Äáº¿n ThÆ°Æ¡ng Hiá»‡u Cao Cáº¥p",
                     Slug = "cau-chuyen-moc-vi-tu-nong-dan-tay-bac-den-thuong-hieu-cao-cap",
-                    ShortDescription = "Khám phá hành trình của Mộc Vị - thương hiệu hoa quả sấy cao cấp từ Mộc Châu, Sơn La!",
-                    Content = @"<h2>Mộc Vị - Hương Vị Nguyên Sơ Mộc Châu</h2>
-<p>Mộc Vị là thương hiệu hoa quả sấy cao cấp từ Mộc Châu, Sơn La. 'Mộc' gợi đến sự mộc mạc, tự nhiên, nguyên bản, gắn với hình ảnh núi rừng Tây Bắc. 'Vị' là hương vị, trải nghiệm khi thưởng thức. Mộc Vị = Hương vị Mộc Châu, nhấn mạnh sự nguyên bản, chân thật từ thiên nhiên.</p>
+                    ShortDescription = "KhÃ¡m phÃ¡ hÃ nh trÃ¬nh cá»§a Má»™c Vá»‹ - thÆ°Æ¡ng hiá»‡u hoa quáº£ sáº¥y cao cáº¥p tá»« Má»™c ChÃ¢u, SÆ¡n La!",
+                    Content = @"<h2>Má»™c Vá»‹ - HÆ°Æ¡ng Vá»‹ NguyÃªn SÆ¡ Má»™c ChÃ¢u</h2>
+<p>Má»™c Vá»‹ lÃ  thÆ°Æ¡ng hiá»‡u hoa quáº£ sáº¥y cao cáº¥p tá»« Má»™c ChÃ¢u, SÆ¡n La. 'Má»™c' gá»£i Ä‘áº¿n sá»± má»™c máº¡c, tá»± nhiÃªn, nguyÃªn báº£n, gáº¯n vá»›i hÃ¬nh áº£nh nÃºi rá»«ng TÃ¢y Báº¯c. 'Vá»‹' lÃ  hÆ°Æ¡ng vá»‹, tráº£i nghiá»‡m khi thÆ°á»Ÿng thá»©c. Má»™c Vá»‹ = HÆ°Æ¡ng vá»‹ Má»™c ChÃ¢u, nháº¥n máº¡nh sá»± nguyÃªn báº£n, chÃ¢n tháº­t tá»« thiÃªn nhiÃªn.</p>
 
-<h3>Câu Chuyện Ra Đời</h3>
-<p>Ở Mộc Châu, mỗi mùa quả chín mang trong mình nắng, gió và đất lành, nhưng hương vị ấy thường khó giữ trọn vẹn. Mộc Vị ra đời để níu lại khoảnh khắc ấy – giữ nguyên màu sắc, hương thơm và bản sắc của cao nguyên trong từng lát hoa quả sấy. Không chỉ là món ăn, Mộc Vị còn là câu chuyện về bàn tay người nông dân, về sự nâng niu trong chế biến và khát vọng đưa nông sản Việt vươn xa.</p>
+<h3>CÃ¢u Chuyá»‡n Ra Äá»i</h3>
+<p>á»ž Má»™c ChÃ¢u, má»—i mÃ¹a quáº£ chÃ­n mang trong mÃ¬nh náº¯ng, giÃ³ vÃ  Ä‘áº¥t lÃ nh, nhÆ°ng hÆ°Æ¡ng vá»‹ áº¥y thÆ°á»ng khÃ³ giá»¯ trá»n váº¹n. Má»™c Vá»‹ ra Ä‘á»i Ä‘á»ƒ nÃ­u láº¡i khoáº£nh kháº¯c áº¥y â€“ giá»¯ nguyÃªn mÃ u sáº¯c, hÆ°Æ¡ng thÆ¡m vÃ  báº£n sáº¯c cá»§a cao nguyÃªn trong tá»«ng lÃ¡t hoa quáº£ sáº¥y. KhÃ´ng chá»‰ lÃ  mÃ³n Äƒn, Má»™c Vá»‹ cÃ²n lÃ  cÃ¢u chuyá»‡n vá» bÃ n tay ngÆ°á»i nÃ´ng dÃ¢n, vá» sá»± nÃ¢ng niu trong cháº¿ biáº¿n vÃ  khÃ¡t vá»ng Ä‘Æ°a nÃ´ng sáº£n Viá»‡t vÆ°Æ¡n xa.</p>
 
-<h3>Giá Trị Cốt Lõi</h3>
-<p><strong>🌱 Giữ Trọn Tự Nhiên</strong><br/>Hương vị ngon nhất đến từ sự nguyên bản. Từng lát hoa quả sấy đều được làm ra từ trái chín Mộc Châu, giữ nguyên màu sắc, hương vị và dưỡng chất mà thiên nhiên ban tặng.</p>
+<h3>GiÃ¡ Trá»‹ Cá»‘t LÃµi</h3>
+<p><strong>ðŸŒ± Giá»¯ Trá»n Tá»± NhiÃªn</strong><br/>HÆ°Æ¡ng vá»‹ ngon nháº¥t Ä‘áº¿n tá»« sá»± nguyÃªn báº£n. Tá»«ng lÃ¡t hoa quáº£ sáº¥y Ä‘á»u Ä‘Æ°á»£c lÃ m ra tá»« trÃ¡i chÃ­n Má»™c ChÃ¢u, giá»¯ nguyÃªn mÃ u sáº¯c, hÆ°Æ¡ng vá»‹ vÃ  dÆ°á»¡ng cháº¥t mÃ  thiÃªn nhiÃªn ban táº·ng.</p>
 
-<p><strong>🏔️ Tôn Vinh Bản Sắc</strong><br/>Mỗi sản phẩm không chỉ là món ăn, mà còn là câu chuyện về núi rừng, về con người Tây Bắc cần mẫn. Chúng tôi muốn để mỗi miếng hoa quả sấy đều mang hơi thở vùng cao, gợi nhớ đến bản sắc Việt Nam.</p>
+<p><strong>ðŸ”ï¸ TÃ´n Vinh Báº£n Sáº¯c</strong><br/>Má»—i sáº£n pháº©m khÃ´ng chá»‰ lÃ  mÃ³n Äƒn, mÃ  cÃ²n lÃ  cÃ¢u chuyá»‡n vá» nÃºi rá»«ng, vá» con ngÆ°á»i TÃ¢y Báº¯c cáº§n máº«n. ChÃºng tÃ´i muá»‘n Ä‘á»ƒ má»—i miáº¿ng hoa quáº£ sáº¥y Ä‘á»u mang hÆ¡i thá»Ÿ vÃ¹ng cao, gá»£i nhá»› Ä‘áº¿n báº£n sáº¯c Viá»‡t Nam.</p>
 
-<p><strong>✅ Cam Kết Chất Lượng</strong><br/>Từ khâu chọn nguyên liệu đến quy trình chế biến, chúng tôi đặt sự minh bạch và an toàn lên hàng đầu. Chất lượng bền vững chính là cách chúng tôi xây dựng niềm tin lâu dài với khách hàng.</p>
+<p><strong>âœ… Cam Káº¿t Cháº¥t LÆ°á»£ng</strong><br/>Tá»« khÃ¢u chá»n nguyÃªn liá»‡u Ä‘áº¿n quy trÃ¬nh cháº¿ biáº¿n, chÃºng tÃ´i Ä‘áº·t sá»± minh báº¡ch vÃ  an toÃ n lÃªn hÃ ng Ä‘áº§u. Cháº¥t lÆ°á»£ng bá»n vá»¯ng chÃ­nh lÃ  cÃ¡ch chÃºng tÃ´i xÃ¢y dá»±ng niá»m tin lÃ¢u dÃ i vá»›i khÃ¡ch hÃ ng.</p>
 
-<p><strong>🚀 Sáng Tạo Để Lan Tỏa</strong><br/>Chúng tôi kết hợp công nghệ sấy hiện đại với tinh hoa truyền thống, để đặc sản vùng miền không chỉ được bảo tồn mà còn có cơ hội đến gần hơn với người tiêu dùng khắp cả nước.</p>
+<p><strong>ðŸš€ SÃ¡ng Táº¡o Äá»ƒ Lan Tá»a</strong><br/>ChÃºng tÃ´i káº¿t há»£p cÃ´ng nghá»‡ sáº¥y hiá»‡n Ä‘áº¡i vá»›i tinh hoa truyá»n thá»‘ng, Ä‘á»ƒ Ä‘áº·c sáº£n vÃ¹ng miá»n khÃ´ng chá»‰ Ä‘Æ°á»£c báº£o tá»“n mÃ  cÃ²n cÃ³ cÆ¡ há»™i Ä‘áº¿n gáº§n hÆ¡n vá»›i ngÆ°á»i tiÃªu dÃ¹ng kháº¯p cáº£ nÆ°á»›c.</p>
 
-<h3>Sứ Mệnh & Tầm Nhìn</h3>
-<p><strong>Sứ Mệnh:</strong> Lan tỏa bản sắc Mộc Châu – vùng đất của những mùa quả ngọt. Mỗi sản phẩm hoa quả sấy không chỉ giữ trọn vẹn hương vị nguyên sơ và dinh dưỡng thiên nhiên, mà còn là nhịp cầu kết nối con người Việt với tình yêu quê hương, tự hào về bản sắc Tây Bắc.</p>
+<h3>Sá»© Má»‡nh & Táº§m NhÃ¬n</h3>
+<p><strong>Sá»© Má»‡nh:</strong> Lan tá»a báº£n sáº¯c Má»™c ChÃ¢u â€“ vÃ¹ng Ä‘áº¥t cá»§a nhá»¯ng mÃ¹a quáº£ ngá»t. Má»—i sáº£n pháº©m hoa quáº£ sáº¥y khÃ´ng chá»‰ giá»¯ trá»n váº¹n hÆ°Æ¡ng vá»‹ nguyÃªn sÆ¡ vÃ  dinh dÆ°á»¡ng thiÃªn nhiÃªn, mÃ  cÃ²n lÃ  nhá»‹p cáº§u káº¿t ná»‘i con ngÆ°á»i Viá»‡t vá»›i tÃ¬nh yÃªu quÃª hÆ°Æ¡ng, tá»± hÃ o vá» báº£n sáº¯c TÃ¢y Báº¯c.</p>
 
-<p><strong>Tầm Nhìn:</strong> Trở thành thương hiệu tiên phong về hoa quả sấy vùng miền, biểu tượng cho sự kết hợp giữa truyền thống và công nghệ hiện đại. Từ dâu sấy Mộc Châu – sản phẩm khác biệt đầu tiên – chúng tôi khát vọng trở thành 'đại sứ nông sản Việt', góp phần nâng tầm giá trị nông sản và ẩm thực Việt trên thị trường quốc tế.</p>
+<p><strong>Táº§m NhÃ¬n:</strong> Trá»Ÿ thÃ nh thÆ°Æ¡ng hiá»‡u tiÃªn phong vá» hoa quáº£ sáº¥y vÃ¹ng miá»n, biá»ƒu tÆ°á»£ng cho sá»± káº¿t há»£p giá»¯a truyá»n thá»‘ng vÃ  cÃ´ng nghá»‡ hiá»‡n Ä‘áº¡i. Tá»« dÃ¢u sáº¥y Má»™c ChÃ¢u â€“ sáº£n pháº©m khÃ¡c biá»‡t Ä‘áº§u tiÃªn â€“ chÃºng tÃ´i khÃ¡t vá»ng trá»Ÿ thÃ nh 'Ä‘áº¡i sá»© nÃ´ng sáº£n Viá»‡t', gÃ³p pháº§n nÃ¢ng táº§m giÃ¡ trá»‹ nÃ´ng sáº£n vÃ  áº©m thá»±c Viá»‡t trÃªn thá»‹ trÆ°á»ng quá»‘c táº¿.</p>
 
-<h3>Những Điểm Khác Biệt</h3>
+<h3>Nhá»¯ng Äiá»ƒm KhÃ¡c Biá»‡t</h3>
 <ul>
-<li>✅ Tiên phong độc quyền – Thương hiệu đầu tiên đưa dâu tây Mộc Châu sấy ra thị trường</li>
-<li>✅ Nguồn gốc chuẩn vùng miền – Trực tiếp từ cao nguyên Mộc Châu 1200m</li>
-<li>✅ Bao bì xanh bền vững – Giấy phân hủy sinh học, bảo vệ môi trường</li>
-<li>✅ Công nghệ sấy hiện đại – Giữ 98% dinh dưỡng, không chất bảo quản</li>
-<li>✅ Liên tục đổi mới – Nhiều phiên bản, combo mix cho khách hàng chọn lựa</li>
+<li>âœ… TiÃªn phong Ä‘á»™c quyá»n â€“ ThÆ°Æ¡ng hiá»‡u Ä‘áº§u tiÃªn Ä‘Æ°a dÃ¢u tÃ¢y Má»™c ChÃ¢u sáº¥y ra thá»‹ trÆ°á»ng</li>
+<li>âœ… Nguá»“n gá»‘c chuáº©n vÃ¹ng miá»n â€“ Trá»±c tiáº¿p tá»« cao nguyÃªn Má»™c ChÃ¢u 1200m</li>
+<li>âœ… Bao bÃ¬ xanh bá»n vá»¯ng â€“ Giáº¥y phÃ¢n há»§y sinh há»c, báº£o vá»‡ mÃ´i trÆ°á»ng</li>
+<li>âœ… CÃ´ng nghá»‡ sáº¥y hiá»‡n Ä‘áº¡i â€“ Giá»¯ 98% dinh dÆ°á»¡ng, khÃ´ng cháº¥t báº£o quáº£n</li>
+<li>âœ… LiÃªn tá»¥c Ä‘á»•i má»›i â€“ Nhiá»u phiÃªn báº£n, combo mix cho khÃ¡ch hÃ ng chá»n lá»±a</li>
 </ul>",
-                    AuthorId = user2.UserId,
+                    AuthorId = user2.Id,
                     IsPublished = true,
                     PublishedDate = DateTime.Now,
                     CreatedDate = DateTime.Now
@@ -360,7 +360,7 @@ public static class DatabaseSeeder
             context.Blogs.AddRange(blogs);
             context.SaveChanges();
 
-            Console.WriteLine("✅ Database seeded successfully with products, employees, users and 5 blog posts!");
+            Console.WriteLine("âœ… Database seeded successfully with products, employees, users and 5 blog posts!");
         }
         catch (Exception ex)
         {
@@ -369,3 +369,4 @@ public static class DatabaseSeeder
         }
     }
 }
+

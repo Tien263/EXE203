@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Exe_Demo.Models;
 using Microsoft.EntityFrameworkCore;
@@ -66,8 +66,8 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // Connection string được cấu hình trong Program.cs từ appsettings.json
-        // Không cần hardcode ở đây
+        // Connection string Ä‘Æ°á»£c cáº¥u hÃ¬nh trong Program.cs tá»« appsettings.json
+        // KhÃ´ng cáº§n hardcode á»Ÿ Ä‘Ã¢y
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -184,7 +184,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.CustomerCode).HasMaxLength(50);
             entity.Property(e => e.CustomerType)
                 .HasMaxLength(50)
-                .HasDefaultValue("ThÆ°á»ng");
+                .HasDefaultValue("ThÃ†Â°Ã¡Â»Âng");
             entity.Property(e => e.District).HasMaxLength(100);
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FullName).HasMaxLength(100);
@@ -242,7 +242,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.ExpenseType).HasMaxLength(100);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
-                .HasDefaultValue("ÄÃ£ chi");
+                .HasDefaultValue("Ã„ÂÃƒÂ£ chi");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Expenses)
                 .HasForeignKey(d => d.EmployeeId)
@@ -313,14 +313,14 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.OrderCode).HasMaxLength(50);
             entity.Property(e => e.OrderStatus)
                 .HasMaxLength(50)
-                .HasDefaultValue("Chá» xÃ¡c nháº­n");
+                .HasDefaultValue("ChÃ¡Â»Â xÃƒÂ¡c nhÃ¡ÂºÂ­n");
             entity.Property(e => e.OrderType)
                 .HasMaxLength(50)
                 .HasDefaultValue("Online");
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
             entity.Property(e => e.PaymentStatus)
                 .HasMaxLength(50)
-                .HasDefaultValue("ChÆ°a thanh toÃ¡n");
+                .HasDefaultValue("ChÃ†Â°a thanh toÃƒÂ¡n");
             entity.Property(e => e.ShippingAddress).HasMaxLength(255);
             entity.Property(e => e.ShippingFee)
                 .HasDefaultValue(0m)
@@ -371,7 +371,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
-                .HasDefaultValue("ThÃ nh cÃ´ng");
+                .HasDefaultValue("ThÃƒÂ nh cÃƒÂ´ng");
             entity.Property(e => e.TransactionCode).HasMaxLength(100);
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Payments)
@@ -412,7 +412,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.StockQuantity).HasDefaultValue(0);
             entity.Property(e => e.Unit)
                 .HasMaxLength(50)
-                .HasDefaultValue("gÃ³i");
+                .HasDefaultValue("gÃƒÂ³i");
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
             entity.Property(e => e.ViewCount).HasDefaultValue(0);
             entity.Property(e => e.Weight).HasMaxLength(50);
@@ -446,7 +446,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
-                .HasDefaultValue("Chá» duyá»‡t");
+                .HasDefaultValue("ChÃ¡Â»Â duyÃ¡Â»â€¡t");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
@@ -527,7 +527,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.StartTime).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
-                .HasDefaultValue("Äang má»Ÿ");
+                .HasDefaultValue("Ã„Âang mÃ¡Â»Å¸");
             entity.Property(e => e.TotalOrders).HasDefaultValue(0);
             entity.Property(e => e.TotalSales)
                 .HasDefaultValue(0m)
@@ -566,7 +566,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C2A3ED859");
+            entity.HasKey(e => e.Id).HasName("PK__Users__1788CC4C2A3ED859");
 
             entity.HasIndex(e => e.Email, "UQ__Users__A9D10534D9539C96").IsUnique();
 
@@ -646,3 +646,4 @@ public partial class ApplicationDbContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+

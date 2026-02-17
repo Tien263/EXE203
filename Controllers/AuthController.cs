@@ -1,4 +1,4 @@
-using Exe_Demo.Data;
+﻿using Exe_Demo.Data;
 using Exe_Demo.Models;
 using Exe_Demo.Models.ViewModels;
 using Exe_Demo.Services;
@@ -44,10 +44,10 @@ namespace Exe_Demo.Controllers
 
             if (ModelState.IsValid)
             {
-                // Hash password để so sánh
+                // Hash password Ä‘á»ƒ so sÃ¡nh
                 var passwordHash = HashPassword(model.Password);
 
-                // Tìm user theo email
+                // TÃ¬m user theo email
                 var user = await _context.Users
                     .Include(u => u.Customer)
                     .Include(u => u.Employee)
@@ -59,14 +59,14 @@ namespace Exe_Demo.Controllers
                     if (user.IsActive == false)
                     {
                         TempData["Email"] = user.Email;
-                        TempData["ErrorMessage"] = "Tài khoản chưa được kích hoạt. Vui lòng xác thực OTP.";
+                        TempData["ErrorMessage"] = "TÃ i khoáº£n chÆ°a Ä‘Æ°á»£c kÃ­ch hoáº¡t. Vui lÃ²ng xÃ¡c thá»±c OTP.";
                         return RedirectToAction(nameof(ResendOtp));
                     }
 
-                    // Tạo claims
+                    // Táº¡o claims
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.FullName),
                         new Claim(ClaimTypes.Email, user.Email),
                         new Claim(ClaimTypes.Role, user.Role ?? "Customer")
@@ -94,7 +94,7 @@ namespace Exe_Demo.Controllers
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
 
-                    // Cập nhật last login
+                    // Cáº­p nháº­t last login
                     user.LastLoginDate = DateTime.Now;
                     await _context.SaveChangesAsync();
 
@@ -115,7 +115,7 @@ namespace Exe_Demo.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng.");
+                ModelState.AddModelError(string.Empty, "Email hoáº·c máº­t kháº©u khÃ´ng Ä‘Ãºng.");
             }
 
             return View(model);
@@ -135,25 +135,25 @@ namespace Exe_Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Kiểm tra email đã tồn tại
+                // Kiá»ƒm tra email Ä‘Ã£ tá»“n táº¡i
                 var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (existingUser != null)
                 {
-                    ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+                    ModelState.AddModelError("Email", "Email nÃ y Ä‘Ã£ Ä‘Æ°á»£c sá»­ dá»¥ng.");
                     return View(model);
                 }
 
                 try
                 {
-                    // Bắt đầu transaction
+                    // Báº¯t Ä‘áº§u transaction
                     using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
                         try
                         {
-                            // Tạo mã OTP 6 số
+                            // Táº¡o mÃ£ OTP 6 sá»‘
                             var otpCode = new Random().Next(100000, 999999).ToString();
 
-                            // Lưu OTP vào database
+                            // LÆ°u OTP vÃ o database
                             var otpVerification = new OtpVerification
                             {
                                 Email = model.Email,
@@ -165,7 +165,7 @@ namespace Exe_Demo.Controllers
                             _context.OtpVerifications.Add(otpVerification);
                             await _context.SaveChangesAsync();
 
-                            // Tạo customer mới
+                            // Táº¡o customer má»›i
                             var customer = new Customer
                             {
                                 CustomerCode = GenerateCustomerCode(),
@@ -174,7 +174,7 @@ namespace Exe_Demo.Controllers
                                 Email = model.Email,
                                 Address = model.Address,
                                 City = model.City,
-                                CustomerType = "Thường",
+                                CustomerType = "ThÆ°á»ng",
                                 LoyaltyPoints = 0,
                                 IsActive = true,
                                 CreatedDate = DateTime.Now
@@ -182,7 +182,7 @@ namespace Exe_Demo.Controllers
                             _context.Customers.Add(customer);
                             await _context.SaveChangesAsync();
 
-                            // Tạo user account (chưa active)
+                            // Táº¡o user account (chÆ°a active)
                             var user = new User
                             {
                                 Email = model.Email,
@@ -191,13 +191,13 @@ namespace Exe_Demo.Controllers
                                 PhoneNumber = model.PhoneNumber,
                                 Role = "Customer",
                                 CustomerId = customer.CustomerId,
-                                IsActive = false, // Chưa active, cần verify OTP
+                                IsActive = false, // ChÆ°a active, cáº§n verify OTP
                                 CreatedDate = DateTime.Now
                             };
                             _context.Users.Add(user);
                             await _context.SaveChangesAsync();
 
-                            // Gửi email OTP - nếu lỗi thì rollback
+                            // Gá»­i email OTP - náº¿u lá»—i thÃ¬ rollback
                             try
                             {
                                 await _emailService.SendOtpEmailAsync(model.Email, otpCode, model.FullName);
@@ -206,9 +206,9 @@ namespace Exe_Demo.Controllers
                             catch (Exception ex)
                             {
                                 _logger.LogError($"Error sending OTP email: {ex.Message}");
-                                // Rollback transaction nếu gửi email fail
+                                // Rollback transaction náº¿u gá»­i email fail
                                 await transaction.RollbackAsync();
-                                ModelState.AddModelError("", "Lỗi gửi email. Vui lòng thử lại sau.");
+                                ModelState.AddModelError("", "Lá»—i gá»­i email. Vui lÃ²ng thá»­ láº¡i sau.");
                                 return View(model);
                             }
 
@@ -216,14 +216,14 @@ namespace Exe_Demo.Controllers
                             await transaction.CommitAsync();
 
                             TempData["Email"] = model.Email;
-                            TempData["SuccessMessage"] = "Vui lòng kiểm tra email để lấy mã OTP!";
+                            TempData["SuccessMessage"] = "Vui lÃ²ng kiá»ƒm tra email Ä‘á»ƒ láº¥y mÃ£ OTP!";
                             return RedirectToAction(nameof(VerifyOtp));
                         }
                         catch (Exception ex)
                         {
                             await transaction.RollbackAsync();
                             _logger.LogError($"Error during registration: {ex.Message}");
-                            ModelState.AddModelError("", $"Lỗi đăng ký: {ex.Message}");
+                            ModelState.AddModelError("", $"Lá»—i Ä‘Äƒng kÃ½: {ex.Message}");
                             return View(model);
                         }
                     }
@@ -231,7 +231,7 @@ namespace Exe_Demo.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError($"Unexpected error during registration: {ex.Message}");
-                    ModelState.AddModelError("", "Có lỗi xảy ra. Vui lòng thử lại!");
+                    ModelState.AddModelError("", "CÃ³ lá»—i xáº£y ra. Vui lÃ²ng thá»­ láº¡i!");
                     return View(model);
                 }
             }
@@ -262,7 +262,7 @@ namespace Exe_Demo.Controllers
             {
                 try
                 {
-                    // Tìm OTP
+                    // TÃ¬m OTP
                     var otp = await _context.OtpVerifications
                         .Where(o => o.Email == model.Email && o.OtpCode == model.OtpCode && !o.IsUsed)
                         .OrderByDescending(o => o.CreatedAt)
@@ -270,13 +270,13 @@ namespace Exe_Demo.Controllers
 
                     if (otp == null)
                     {
-                        ModelState.AddModelError("OtpCode", "Mã OTP không đúng!");
+                        ModelState.AddModelError("OtpCode", "MÃ£ OTP khÃ´ng Ä‘Ãºng!");
                         return View(model);
                     }
 
                     if (otp.IsExpired)
                     {
-                        ModelState.AddModelError("OtpCode", "Mã OTP đã hết hạn! Vui lòng đăng ký lại.");
+                        ModelState.AddModelError("OtpCode", "MÃ£ OTP Ä‘Ã£ háº¿t háº¡n! Vui lÃ²ng Ä‘Äƒng kÃ½ láº¡i.");
                         return View(model);
                     }
 
@@ -284,20 +284,20 @@ namespace Exe_Demo.Controllers
                     var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                     if (user != null)
                     {
-                        // Sử dụng transaction để đảm bảo dữ liệu được lưu
+                        // Sá»­ dá»¥ng transaction Ä‘á»ƒ Ä‘áº£m báº£o dá»¯ liá»‡u Ä‘Æ°á»£c lÆ°u
                         using (var transaction = await _context.Database.BeginTransactionAsync())
                         {
                             try
                             {
                                 user.IsActive = true;
                                 
-                                // Đánh dấu OTP đã sử dụng
+                                // ÄÃ¡nh dáº¥u OTP Ä‘Ã£ sá»­ dá»¥ng
                                 otp.IsUsed = true;
                                 
                                 // Save changes for both user and OTP
                                 await _context.SaveChangesAsync();
 
-                                // Gửi email chào mừng
+                                // Gá»­i email chÃ o má»«ng
                                 try
                                 {
                                     await _emailService.SendWelcomeEmailAsync(model.Email, user.FullName);
@@ -305,32 +305,32 @@ namespace Exe_Demo.Controllers
                                 catch (Exception ex)
                                 {
                                     _logger.LogError($"Error sending welcome email: {ex.Message}");
-                                    // Không rollback nếu email fail vì user đã được activate
+                                    // KhÃ´ng rollback náº¿u email fail vÃ¬ user Ä‘Ã£ Ä‘Æ°á»£c activate
                                 }
 
                                 await transaction.CommitAsync();
 
                                 _logger.LogInformation($"User {user.Email} verified and activated.");
 
-                                TempData["SuccessMessage"] = "Xác thực thành công! Bạn có thể đăng nhập ngay.";
+                                TempData["SuccessMessage"] = "XÃ¡c thá»±c thÃ nh cÃ´ng! Báº¡n cÃ³ thá»ƒ Ä‘Äƒng nháº­p ngay.";
                                 return RedirectToAction(nameof(Login));
                             }
                             catch (Exception ex)
                             {
                                 await transaction.RollbackAsync();
                                 _logger.LogError($"Error verifying OTP: {ex.Message}");
-                                ModelState.AddModelError("", $"Lỗi xác thực: {ex.Message}");
+                                ModelState.AddModelError("", $"Lá»—i xÃ¡c thá»±c: {ex.Message}");
                                 return View(model);
                             }
                         }
                     }
 
-                    ModelState.AddModelError("", "Không tìm thấy tài khoản.");
+                    ModelState.AddModelError("", "KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n.");
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError($"Unexpected error in VerifyOtp: {ex.Message}");
-                    ModelState.AddModelError("", "Có lỗi xảy ra. Vui lòng thử lại!");
+                    ModelState.AddModelError("", "CÃ³ lá»—i xáº£y ra. Vui lÃ²ng thá»­ láº¡i!");
                 }
             }
 
@@ -357,7 +357,7 @@ namespace Exe_Demo.Controllers
                 var googleClientId = _configuration["Authentication:Google:ClientId"];
                 if (string.IsNullOrEmpty(googleClientId))
                 {
-                    TempData["ErrorMessage"] = "Google login chưa được cấu hình. Vui lòng đăng nhập bằng tài khoản thông thường.";
+                    TempData["ErrorMessage"] = "Google login chÆ°a Ä‘Æ°á»£c cáº¥u hÃ¬nh. Vui lÃ²ng Ä‘Äƒng nháº­p báº±ng tÃ i khoáº£n thÃ´ng thÆ°á»ng.";
                     return RedirectToAction(nameof(Login));
                 }
             }
@@ -379,7 +379,7 @@ namespace Exe_Demo.Controllers
                 if (remoteError != null)
                 {
                     _logger.LogWarning($"Remote error from Google: {remoteError}");
-                    TempData["ErrorMessage"] = $"Lỗi từ Google: {remoteError}";
+                    TempData["ErrorMessage"] = $"Lá»—i tá»« Google: {remoteError}";
                     return RedirectToAction(nameof(Login));
                 }
 
@@ -388,11 +388,11 @@ namespace Exe_Demo.Controllers
                 if (info?.Principal == null || !info.Succeeded)
                 {
                     _logger.LogWarning("External authentication failed or no principal found");
-                    TempData["ErrorMessage"] = "Không thể lấy thông tin từ Google. Vui lòng thử lại.";
+                    TempData["ErrorMessage"] = "KhÃ´ng thá»ƒ láº¥y thÃ´ng tin tá»« Google. Vui lÃ²ng thá»­ láº¡i.";
                     return RedirectToAction(nameof(Login));
                 }
 
-                // Lấy thông tin từ Google
+                // Láº¥y thÃ´ng tin tá»« Google
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 var name = info.Principal.FindFirstValue(ClaimTypes.Name);
                 var googleId = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -402,11 +402,11 @@ namespace Exe_Demo.Controllers
                 if (string.IsNullOrEmpty(email))
                 {
                     _logger.LogWarning("Email is null or empty from Google");
-                    TempData["ErrorMessage"] = "Không thể lấy email từ Google.";
+                    TempData["ErrorMessage"] = "KhÃ´ng thá»ƒ láº¥y email tá»« Google.";
                     return RedirectToAction(nameof(Login));
                 }
 
-                // Kiểm tra user đã tồn tại chưa
+                // Kiá»ƒm tra user Ä‘Ã£ tá»“n táº¡i chÆ°a
                 var user = await _context.Users
                     .Include(u => u.Customer)
                     .FirstOrDefaultAsync(u => u.Email == email);
@@ -414,7 +414,7 @@ namespace Exe_Demo.Controllers
                 if (user == null)
                 {
                     _logger.LogInformation($"New Google user, redirecting to CompleteProfile: {email}");
-                    // User mới từ Google → Redirect đến trang nhập thông tin
+                    // User má»›i tá»« Google â†’ Redirect Ä‘áº¿n trang nháº­p thÃ´ng tin
                     TempData["GoogleEmail"] = email;
                     TempData["GoogleName"] = name ?? email;
                     TempData["GoogleId"] = googleId;
@@ -423,10 +423,10 @@ namespace Exe_Demo.Controllers
 
                 _logger.LogInformation($"Existing user found, signing in: {email}");
 
-                // Tạo claims và đăng nhập
+                // Táº¡o claims vÃ  Ä‘Äƒng nháº­p
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.FullName),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role ?? "Customer")
@@ -449,7 +449,7 @@ namespace Exe_Demo.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                // Cập nhật last login
+                // Cáº­p nháº­t last login
                 user.LastLoginDate = DateTime.Now;
                 await _context.SaveChangesAsync();
 
@@ -465,7 +465,7 @@ namespace Exe_Demo.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error in ExternalLoginCallback: {ex.Message}\n{ex.StackTrace}");
-                TempData["ErrorMessage"] = "Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại.";
+                TempData["ErrorMessage"] = "CÃ³ lá»—i xáº£y ra khi Ä‘Äƒng nháº­p báº±ng Google. Vui lÃ²ng thá»­ láº¡i.";
                 return RedirectToAction(nameof(Login));
             }
         }
@@ -513,12 +513,12 @@ namespace Exe_Demo.Controllers
 
             try
             {
-                // Sử dụng transaction để đảm bảo dữ liệu được lưu
+                // Sá»­ dá»¥ng transaction Ä‘á»ƒ Ä‘áº£m báº£o dá»¯ liá»‡u Ä‘Æ°á»£c lÆ°u
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        // Tạo customer mới với đầy đủ thông tin
+                        // Táº¡o customer má»›i vá»›i Ä‘áº§y Ä‘á»§ thÃ´ng tin
                         var customer = new Customer
                         {
                             CustomerCode = GenerateCustomerCode(),
@@ -529,7 +529,7 @@ namespace Exe_Demo.Controllers
                             City = model.City,
                             District = model.District,
                             Ward = model.Ward,
-                            CustomerType = "Thường",
+                            CustomerType = "ThÆ°á»ng",
                             LoyaltyPoints = 0,
                             IsActive = true,
                             CreatedDate = DateTime.Now
@@ -537,7 +537,7 @@ namespace Exe_Demo.Controllers
                         _context.Customers.Add(customer);
                         await _context.SaveChangesAsync();
 
-                        // Tạo user mới
+                        // Táº¡o user má»›i
                         var user = new User
                         {
                             Email = email,
@@ -547,14 +547,14 @@ namespace Exe_Demo.Controllers
                             CustomerId = customer.CustomerId,
                             IsActive = true,
                             CreatedDate = DateTime.Now,
-                            PasswordHash = "" // Không cần password cho Google login
+                            PasswordHash = "" // KhÃ´ng cáº§n password cho Google login
                         };
                         _context.Users.Add(user);
                         await _context.SaveChangesAsync();
 
                         _logger.LogInformation($"New user registered via Google with complete profile: {email}");
 
-                        // Gửi email chào mừng (không rollback nếu email fail)
+                        // Gá»­i email chÃ o má»«ng (khÃ´ng rollback náº¿u email fail)
                         try
                         {
                             await _emailService.SendWelcomeEmailAsync(email, model.FullName);
@@ -567,10 +567,10 @@ namespace Exe_Demo.Controllers
                         // Commit transaction
                         await transaction.CommitAsync();
 
-                        // Tạo claims và đăng nhập
+                        // Táº¡o claims vÃ  Ä‘Äƒng nháº­p
                         var claims = new List<Claim>
                         {
-                            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                             new Claim(ClaimTypes.Name, user.FullName),
                             new Claim(ClaimTypes.Email, user.Email),
                             new Claim(ClaimTypes.Role, user.Role ?? "Customer")
@@ -593,18 +593,18 @@ namespace Exe_Demo.Controllers
                             new ClaimsPrincipal(claimsIdentity),
                             authProperties);
 
-                        // Cập nhật last login
+                        // Cáº­p nháº­t last login
                         user.LastLoginDate = DateTime.Now;
                         await _context.SaveChangesAsync();
 
-                        TempData["SuccessMessage"] = "Hoàn tất đăng ký! Chào mừng bạn đến với Mộc Vị Store.";
+                        TempData["SuccessMessage"] = "HoÃ n táº¥t Ä‘Äƒng kÃ½! ChÃ o má»«ng báº¡n Ä‘áº¿n vá»›i Má»™c Vá»‹ Store.";
                         return RedirectToAction("Index", "Home");
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _logger.LogError($"Error in CompleteProfile: {ex.Message}\n{ex.StackTrace}");
-                        ModelState.AddModelError("", $"Lỗi đăng ký: {ex.Message}");
+                        ModelState.AddModelError("", $"Lá»—i Ä‘Äƒng kÃ½: {ex.Message}");
                         return View(model);
                     }
                 }
@@ -612,7 +612,7 @@ namespace Exe_Demo.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Unexpected error in CompleteProfile: {ex.Message}");
-                ModelState.AddModelError("", "Có lỗi xảy ra. Vui lòng thử lại!");
+                ModelState.AddModelError("", "CÃ³ lá»—i xáº£y ra. Vui lÃ²ng thá»­ láº¡i!");
                 return View(model);
             }
         }
@@ -639,29 +639,29 @@ namespace Exe_Demo.Controllers
         {
             if (string.IsNullOrEmpty(email))
             {
-                TempData["ErrorMessage"] = "Email không hợp lệ.";
+                TempData["ErrorMessage"] = "Email khÃ´ng há»£p lá»‡.";
                 return RedirectToAction(nameof(Login));
             }
 
             try
             {
-                // Kiểm tra user tồn tại và chưa active
+                // Kiá»ƒm tra user tá»“n táº¡i vÃ  chÆ°a active
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsActive == false);
                 if (user == null)
                 {
-                    TempData["ErrorMessage"] = "Không tìm thấy tài khoản hoặc tài khoản đã được kích hoạt.";
+                    TempData["ErrorMessage"] = "KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n hoáº·c tÃ i khoáº£n Ä‘Ã£ Ä‘Æ°á»£c kÃ­ch hoáº¡t.";
                     return RedirectToAction(nameof(Login));
                 }
 
-                // Sử dụng transaction
+                // Sá»­ dá»¥ng transaction
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        // Tạo mã OTP mới
+                        // Táº¡o mÃ£ OTP má»›i
                         var otpCode = new Random().Next(100000, 999999).ToString();
 
-                        // Lưu OTP vào database
+                        // LÆ°u OTP vÃ o database
                         var otpVerification = new OtpVerification
                         {
                             Email = email,
@@ -673,7 +673,7 @@ namespace Exe_Demo.Controllers
                         _context.OtpVerifications.Add(otpVerification);
                         await _context.SaveChangesAsync();
 
-                        // Gửi email OTP - nếu fail thì rollback
+                        // Gá»­i email OTP - náº¿u fail thÃ¬ rollback
                         try
                         {
                             await _emailService.SendOtpEmailAsync(email, otpCode, user.FullName);
@@ -683,7 +683,7 @@ namespace Exe_Demo.Controllers
                         {
                             await transaction.RollbackAsync();
                             _logger.LogError($"Error resending OTP email: {ex.Message}");
-                            TempData["ErrorMessage"] = "Lỗi gửi email. Vui lòng thử lại sau.";
+                            TempData["ErrorMessage"] = "Lá»—i gá»­i email. Vui lÃ²ng thá»­ láº¡i sau.";
                             return View();
                         }
 
@@ -691,14 +691,14 @@ namespace Exe_Demo.Controllers
                         await transaction.CommitAsync();
 
                         TempData["Email"] = email;
-                        TempData["SuccessMessage"] = "Mã OTP mới đã được gửi đến email của bạn!";
+                        TempData["SuccessMessage"] = "MÃ£ OTP má»›i Ä‘Ã£ Ä‘Æ°á»£c gá»­i Ä‘áº¿n email cá»§a báº¡n!";
                         return RedirectToAction(nameof(VerifyOtp));
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
                         _logger.LogError($"Error in ResendOtp: {ex.Message}");
-                        TempData["ErrorMessage"] = "Có lỗi xảy ra. Vui lòng thử lại!";
+                        TempData["ErrorMessage"] = "CÃ³ lá»—i xáº£y ra. Vui lÃ²ng thá»­ láº¡i!";
                         return View();
                     }
                 }
@@ -706,7 +706,7 @@ namespace Exe_Demo.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Unexpected error in ResendOtp: {ex.Message}");
-                TempData["ErrorMessage"] = "Có lỗi xảy ra. Vui lòng thử lại!";
+                TempData["ErrorMessage"] = "CÃ³ lá»—i xáº£y ra. Vui lÃ²ng thá»­ láº¡i!";
                 return View();
             }
         }
@@ -741,3 +741,4 @@ namespace Exe_Demo.Controllers
         }
     }
 }
+

@@ -45,21 +45,42 @@ builder.Services.AddControllersWithViews(options =>
 // With Query Tracking optimization
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
+    // Configure Database with PostgreSQL
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
     if (builder.Environment.IsProduction())
     {
-        // Always use SQLite in Production
-        var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "mocvistore.db");
-        options.UseSqlite($"Data Source={dbPath}");
-        Console.WriteLine($"Using SQLite database at: {dbPath}");
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Connection string 'DefaultConnection' not found for Production environment.");
+        }
+        options.UseNpgsql(connectionString, npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorCodesToAdd: null);
+        });
+        Console.WriteLine("--> Using PostgreSQL Database (Production)");
     }
     else
     {
-        // Use SQL Server in Development
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        // Development - can also use Postgres or keep Sqlite
         if (!string.IsNullOrEmpty(connectionString))
         {
-            options.UseSqlServer(connectionString);
-            Console.WriteLine("Using SQL Server database");
+            // If a connection string is provided, assume it's for SQL Server or PostgreSQL
+            // For simplicity, let's assume SQL Server if not explicitly Npgsql
+            // Or, if you want to use Npgsql in dev too, change UseSqlServer to UseNpgsql
+            if (connectionString.Contains("Host=") || connectionString.Contains("Server=")) // Simple check for Npgsql/SqlServer
+            {
+                options.UseNpgsql(connectionString); // Use Npgsql for development if connection string points to it
+                Console.WriteLine("--> Using PostgreSQL Database (Development)");
+            }
+            else
+            {
+                options.UseSqlServer(connectionString); // Fallback to SQL Server if connection string is for it
+                Console.WriteLine("--> Using SQL Server Database (Development)");
+            }
         }
         else
         {

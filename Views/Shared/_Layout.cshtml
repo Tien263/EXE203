@@ -5,6 +5,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="@(ViewData["MetaDescription"] ?? "Mộc Vị Store - Chuyên cung cấp các sản phẩm hoa quả sấy Mộc Châu cao cấp, tự nhiên, không chất bảo quản. Quà tặng sức khỏe ý nghĩa từ thiên nhiên.")">
+    <meta name="keywords" content="@(ViewData["MetaKeywords"] ?? "hoa quả sấy, mộc châu, trái cây sấy dẻo, trái cây sấy giòn, quà tặng, mộc vị store, đặc sản tây bắc, healthy food")">
+    <meta name="author" content="Mộc Vị Store">
+    <link rel="canonical" href="https://mocvi.shop@(Context.Request.Path)" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mocvi.shop@(Context.Request.Path)">
+    <meta property="og:title" content="@(ViewData["Title"] ?? "Mộc Vị Store - Hoa quả sấy Mộc Châu")">
+    <meta property="og:description" content="@(ViewData["MetaDescription"] ?? "Hương vị tự nhiên từ núi rừng Tây Bắc. Mộc Vị Store mang đến những sản phẩm hoa quả sấy chất lượng nhất.")">
+    <meta property="og:image" content="https://mocvi.shop/images/logo_1_1.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="~/images/logo_1_1.png">
+    <link rel="shortcut icon" type="image/png" href="~/images/logo_1_1.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,700;0,800;1,200;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     

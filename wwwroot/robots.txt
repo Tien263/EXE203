@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /Admin/
+Disallow: /admin/
+Disallow: /Cart/
+Disallow: /Checkout/
+Disallow: /Profile/
+
+Sitemap: https://mocvi.shop/sitemap.xml

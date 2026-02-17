@@ -353,7 +353,7 @@ namespace Exe_Demo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Users__1788CC4C2A3ED859", x => x.UserId);
+                    table.PrimaryKey("PK__Users__1788CC4C2A3ED859", x => x.Id);
                     table.ForeignKey(
                         name: "FK__Users__CustomerI__71D1E811",
                         column: x => x.CustomerId,
@@ -916,3 +916,4 @@ namespace Exe_Demo.Migrations
         }
     }
 }
+
