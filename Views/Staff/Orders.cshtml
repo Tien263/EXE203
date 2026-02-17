@@ -22,6 +22,13 @@
                         <i class="fa fa-arrow-left"></i> Quay lại
                     </a>
                 </div>
+                <div class="col-auto">
+                    <form asp-action="ClearAllOrders" method="post" onsubmit="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn XÓA HẾT tất cả đơn hàng cũ không? Hành động này không thể hoàn tác!');" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i> Xóa Hết Đơn Hàng Cũ
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -158,8 +165,8 @@
                                             }
                                         </td>
                                         <td>
-                                            <small style="display: block;">@order.CreatedDate?.ToString("dd/MM/yyyy")</small>
-                                            <small class="text-muted">@order.CreatedDate?.ToString("HH:mm")</small>
+                                            <small style="display: block;">@order.CreatedDate?.AddHours(7).ToString("dd/MM/yyyy")</small>
+                                            <small class="text-muted">@order.CreatedDate?.AddHours(7).ToString("HH:mm")</small>
                                         </td>
                                         <td style="text-align: center;">
                                             <a asp-action="OrderDetail" asp-route-id="@order.OrderId" 

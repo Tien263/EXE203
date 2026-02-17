@@ -17,7 +17,7 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-body">
-            <form asp-action="CreateProduct" method="post">
+            <form asp-action="CreateProduct" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <!-- Thông tin cơ bản -->
                     <div class="col-md-8">
@@ -70,11 +70,11 @@
                                 <span asp-validation-for="Price" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <label asp-for="OriginalPrice" class="form-label">Giá gốc</label>
+                                <label asp-for="OriginalPrice" class="form-label">Giá vốn nhập hàng</label>
                                 <input asp-for="OriginalPrice" type="number" class="form-control" placeholder="0">
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="CostPrice" class="form-label">Giá vốn</label>
+                            <div class="col-md-4" style="display:none;">
+                                <label asp-for="CostPrice" class="form-label">Giá vốn cũ (Ẩn)</label>
                                 <input asp-for="CostPrice" type="number" class="form-control" placeholder="0">
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Weight" class="form-label">Trọng lượng</label>
-                                <input asp-for="Weight" class="form-control" placeholder="VD: 500g, 1kg">
+                                <input asp-for="Weight" class="form-control" placeholder="Nhập số kèm đơn vị (VD: 200g, 1kg)">
                             </div>
                         </div>
                     </div>
@@ -115,9 +115,10 @@
                         <h5 class="mb-3">Hình Ảnh & Trạng Thái</h5>
                         
                         <div class="mb-3">
-                            <label asp-for="ImageUrl" class="form-label">URL Hình ảnh</label>
-                            <input asp-for="ImageUrl" class="form-control" placeholder="/images/product.jpg">
-                            <small class="text-muted">Nhập đường dẫn hình ảnh</small>
+                            <label asp-for="ImageFile" class="form-label">Hình ảnh sản phẩm</label>
+                            <input asp-for="ImageFile" class="form-control" type="file" accept="image/*">
+                            <small class="text-muted">Tải lên hình ảnh sản phẩm</small>
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -165,10 +166,15 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         // Preview image
-        document.querySelector('input[name="ImageUrl"]').addEventListener('change', function(e) {
-            const url = e.target.value;
-            if (url) {
-                document.getElementById('preview').src = url;
+        // Preview image
+        document.querySelector('input[name="ImageFile"]').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
             }
         });
     </script>

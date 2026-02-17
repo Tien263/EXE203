@@ -80,7 +80,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.AuthorName).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.ImageUrl).HasMaxLength(255);
             entity.Property(e => e.IsPublished).HasDefaultValue(true);
@@ -102,7 +102,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.Comment).HasMaxLength(1000);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.CustomerEmail).HasMaxLength(100);
             entity.Property(e => e.CustomerName).HasMaxLength(100);
@@ -125,7 +125,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("Cart");
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
             entity.Property(e => e.SessionId).HasMaxLength(100);
@@ -146,7 +146,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CategoryName).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
@@ -160,7 +160,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.MessageId).HasName("PK__ContactM__C87C0C9C21A4A6C8");
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FullName).HasMaxLength(100);
@@ -179,7 +179,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.City).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.CustomerCode).HasMaxLength(50);
             entity.Property(e => e.CustomerType)
@@ -212,7 +212,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.BankAccount).HasMaxLength(50);
             entity.Property(e => e.BankName).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Department).HasMaxLength(100);
             entity.Property(e => e.Email).HasMaxLength(100);
@@ -235,7 +235,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.ExpenseCode).HasMaxLength(50);
@@ -254,7 +254,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.TransactionId).HasName("PK__Inventor__55433A6BA758D326");
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.ReferenceType).HasMaxLength(50);
@@ -273,7 +273,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("LoyaltyPointsHistory");
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.TransactionType).HasMaxLength(50);
@@ -297,7 +297,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.City).HasMaxLength(100);
             entity.Property(e => e.CompletedDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.CustomerEmail).HasMaxLength(100);
             entity.Property(e => e.CustomerName).HasMaxLength(100);
@@ -366,7 +366,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.PaymentDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
             entity.Property(e => e.Status)
@@ -392,7 +392,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CostPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.DiscountPercent).HasDefaultValue(0);
             entity.Property(e => e.ImageUrl).HasMaxLength(255);
@@ -430,11 +430,11 @@ public partial class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.PurchaseOrderCode, "UQ__Purchase__E282C5B440FB451B").IsUnique();
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.OrderDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.PaidAmount)
                 .HasDefaultValue(0m)
@@ -480,7 +480,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.Comment).HasMaxLength(1000);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.CustomerName).HasMaxLength(100);
             entity.Property(e => e.IsApproved).HasDefaultValue(false);
@@ -504,7 +504,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.SettingKey).HasMaxLength(100);
             entity.Property(e => e.UpdatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
         });
 
@@ -516,7 +516,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.ClosingCash).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.EndTime).HasColumnType("datetime");
             entity.Property(e => e.Notes).HasMaxLength(500);
@@ -551,7 +551,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.City).HasMaxLength(100);
             entity.Property(e => e.ContactPerson).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.District).HasMaxLength(100);
             entity.Property(e => e.Email).HasMaxLength(100);
@@ -571,7 +571,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.Email, "UQ__Users__A9D10534D9539C96").IsUnique();
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FullName).HasMaxLength(100);
@@ -599,7 +599,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.VoucherCode, "UQ__Vouchers__7F0ABCA91B0360D6").IsUnique();
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.DiscountType).HasMaxLength(20);
             entity.Property(e => e.DiscountValue).HasColumnType("decimal(18, 2)");
@@ -618,6 +618,7 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<OtpVerification>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
             entity.Property(e => e.Email)
                 .IsRequired()
@@ -628,7 +629,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(6);
 
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
 
             entity.Property(e => e.ExpiresAt)

@@ -18,8 +18,8 @@ namespace Exe_Demo.Controllers
             _logger = logger;
         }
 
-        // GET: Product - With Response Caching
-        [ResponseCache(CacheProfileName = "Default30")]
+        // GET: Product
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index(int? categoryId, string? search, string? sortBy, int pageNumber = 1)
         {
             try
@@ -40,8 +40,8 @@ namespace Exe_Demo.Controllers
             }
         }
 
-        // GET: Product/Details/5 - With caching
-        [ResponseCache(Duration = 600, VaryByQueryKeys = new[] { "id" })] // 10 minutes
+        // GET: Product/Details/5
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Details(int id)
         {
             try
@@ -53,8 +53,8 @@ namespace Exe_Demo.Controllers
                     return NotFound();
                 }
 
-                // Increment view count (async, non-blocking)
-                _ = Task.Run(() => _productService.IncrementViewCountAsync(id));
+                // Increment view count (sequentially to avoid DbContext threading issues)
+                await _productService.IncrementViewCountAsync(id);
 
                 // Get related products
                 var relatedProducts = await _productService.GetRelatedProductsAsync(

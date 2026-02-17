@@ -1,0 +1,29 @@
+# Version Control
+.git
+.gitignore
+
+# Build Results
+bin/
+obj/
+**/bin/
+**/obj/
+out/
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.bak
+*.tmp
+
+# Common junk/backup files
+*.csec*
+*Program.csec*
+*copy*
+
+# Secrets
+DEPLOY_SECRETS_TEMPLATE.txt
+*.env

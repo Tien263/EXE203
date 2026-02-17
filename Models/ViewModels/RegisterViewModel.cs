@@ -36,5 +36,11 @@ namespace Exe_Demo.Models.ViewModels
 
         [Display(Name = "Thành phố")]
         public string? City { get; set; }
+
+        [Display(Name = "Quận/Huyện")]
+        public string? District { get; set; }
+
+        [Display(Name = "Phường/Xã")]
+        public string? Ward { get; set; }
     }
 }

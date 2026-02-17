@@ -163,9 +163,13 @@
         const formData = new FormData();
         formData.append('productId', productId);
         formData.append('quantity', quantity);
+        formData.append('isAjax', 'true');
         
         fetch('/Cart/AddToCart', {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         })
         .then(response => {

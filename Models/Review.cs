@@ -17,6 +17,8 @@ public partial class Review
 
     public string? Comment { get; set; }
 
+    public string? MediaUrl { get; set; }
+
     public bool? IsApproved { get; set; }
 
     public DateTime? CreatedDate { get; set; }

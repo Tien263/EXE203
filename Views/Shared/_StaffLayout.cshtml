@@ -564,7 +564,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light ftco_navbar bg-white ftco-navbar-light shadow-sm" id="ftco-navbar">
         <div class="container">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+            <a class="navbar-brand" href="#" style="pointer-events: none; cursor: default;">
                 <img src="~/images/logo_1_1.png" alt="Mộc Vị Logo" class="navbar-logo" style="max-height: 50px;">
             </a>
 
@@ -625,6 +625,10 @@
                                 <i class="fa fa-newspaper-o"></i>
                                 <span>Blog</span>
                             </a>
+                            <a class="dropdown-item" asp-controller="Staff" asp-action="Reviews">
+                                <i class="fa fa-star-half-o"></i>
+                                <span>Đánh giá</span>
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" asp-controller="Staff" asp-action="DirectSale">
                                 <i class="fa fa-money"></i>
@@ -644,6 +648,26 @@
 
     <!-- Main Content -->
     <main>
+        <div class="container mt-3">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa fa-check-circle mr-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa fa-exclamation-circle mr-2"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+        </div>
         @RenderBody()
     </main>
 
@@ -654,7 +678,7 @@
                 <div class="col-sm-12 col-md">
                     <div class="ftco-footer-widget mb-4">
                         <h2 class="ftco-heading-2 logo">
-                            <a href="#">Mộc Vị Store</a>
+                            <a href="#" style="pointer-events: none; cursor: default;">Mộc Vị Store</a>
                         </h2>
                         <p>Hoa quả sấy Mộc Châu - Chất lượng từ thiên nhiên</p>
                         <ul class="ftco-footer-social list-unstyled mt-2">

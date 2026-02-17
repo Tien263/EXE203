@@ -288,3 +288,13 @@ Trainning_AI/chroma_db/
 # Sensitive scripts
 replace_secrets.sh
 replacements.txt
+
+# Root Environment Variables
+.env
+
+# Local Database
+DbStorage/
+docker_data/
+*.db
+*.db-shm
+*.db-wal

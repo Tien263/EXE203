@@ -44,7 +44,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(255)
@@ -95,7 +95,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "Slug" }, "UQ__Blogs__BC7B5FB6F961F801")
                         .IsUnique();
 
-                    b.ToTable("Blogs", (string)null);
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.BlogComment", b =>
@@ -117,7 +117,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("CustomerEmail")
                         .HasMaxLength(100)
@@ -143,7 +143,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("BlogComments", (string)null);
+                    b.ToTable("BlogComments");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Cart", b =>
@@ -157,7 +157,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -205,7 +205,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -237,7 +237,51 @@ namespace Exe_Demo.Migrations
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_Categories_IsActive");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Exe_Demo.Models.ChatHistory", b =>
+                {
+                    b.Property<int>("ChatHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChatHistoryId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOrderRelated")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChatHistoryId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("ChatHistories");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.ContactMessage", b =>
@@ -251,7 +295,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -288,7 +332,7 @@ namespace Exe_Demo.Migrations
                     b.HasKey("MessageId")
                         .HasName("PK__ContactM__C87C0C9C21A4A6C8");
 
-                    b.ToTable("ContactMessages", (string)null);
+                    b.ToTable("ContactMessages");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Customer", b =>
@@ -310,7 +354,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("CustomerCode")
                         .HasMaxLength(50)
@@ -397,7 +441,7 @@ namespace Exe_Demo.Migrations
                         .IsUnique()
                         .HasFilter("[CustomerCode] IS NOT NULL");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Employee", b =>
@@ -423,7 +467,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateOnly?>("DateOfBirth")
                         .HasColumnType("date");
@@ -488,7 +532,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "EmployeeCode" }, "UQ__Employee__1F64254817C2AECF")
                         .IsUnique();
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Expense", b =>
@@ -505,7 +549,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -540,7 +584,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "ExpenseCode" }, "UQ__Expenses__5064CAE114428009")
                         .IsUnique();
 
-                    b.ToTable("Expenses", (string)null);
+                    b.ToTable("Expenses");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.InventoryTransaction", b =>
@@ -554,7 +598,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
@@ -586,7 +630,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("InventoryTransactions", (string)null);
+                    b.ToTable("InventoryTransactions");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.LoyaltyPointsHistory", b =>
@@ -600,7 +644,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -647,7 +691,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("CustomerEmail")
                         .HasMaxLength(100)
@@ -765,7 +809,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "OrderCode" }, "UQ__Orders__999B52299F25A08F")
                         .IsUnique();
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.OrderDetail", b =>
@@ -810,7 +854,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex("ProductId")
                         .HasDatabaseName("IX_OrderDetails_ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.OtpVerification", b =>
@@ -824,7 +868,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -855,7 +899,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex("Email", "IsUsed")
                         .HasDatabaseName("IX_OtpVerifications_Email_IsUsed");
 
-                    b.ToTable("OtpVerifications", (string)null);
+                    b.ToTable("OtpVerifications");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Payment", b =>
@@ -882,7 +926,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("PaymentDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
@@ -906,7 +950,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Product", b =>
@@ -926,7 +970,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -1043,7 +1087,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "ProductCode" }, "UQ__Products__2F4E024F2D65F9C7")
                         .IsUnique();
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.PurchaseOrder", b =>
@@ -1057,7 +1101,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
@@ -1069,7 +1113,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<decimal?>("PaidAmount")
                         .ValueGeneratedOnAdd()
@@ -1112,7 +1156,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "PurchaseOrderCode" }, "UQ__Purchase__E282C5B440FB451B")
                         .IsUnique();
 
-                    b.ToTable("PurchaseOrders", (string)null);
+                    b.ToTable("PurchaseOrders");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.PurchaseOrderDetail", b =>
@@ -1145,7 +1189,7 @@ namespace Exe_Demo.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("PurchaseOrderDetails", (string)null);
+                    b.ToTable("PurchaseOrderDetails");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Review", b =>
@@ -1163,7 +1207,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -1177,6 +1221,9 @@ namespace Exe_Demo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
+
+                    b.Property<string>("MediaUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -1195,7 +1242,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex("ProductId")
                         .HasDatabaseName("IX_Reviews_ProductId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Setting", b =>
@@ -1221,7 +1268,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("SettingId")
                         .HasName("PK__Settings__54372B1DFC4958A2");
@@ -1229,7 +1276,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "SettingKey" }, "UQ__Settings__01E719AD5D4C6367")
                         .IsUnique();
 
-                    b.ToTable("Settings", (string)null);
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Shift", b =>
@@ -1246,7 +1293,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -1295,7 +1342,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "ShiftCode" }, "UQ__Shifts__9377D562DFAD97A7")
                         .IsUnique();
 
-                    b.ToTable("Shifts", (string)null);
+                    b.ToTable("Shifts");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Supplier", b =>
@@ -1329,7 +1376,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("District")
                         .HasMaxLength(100)
@@ -1375,7 +1422,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "SupplierCode" }, "UQ__Supplier__44BE981B6C09723B")
                         .IsUnique();
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.User", b =>
@@ -1389,7 +1436,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -1449,7 +1496,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "Email" }, "UQ__Users__A9D10534D9539C96")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Voucher", b =>
@@ -1463,7 +1510,7 @@ namespace Exe_Demo.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("DiscountType")
                         .HasMaxLength(20)
@@ -1514,7 +1561,7 @@ namespace Exe_Demo.Migrations
                     b.HasIndex(new[] { "VoucherCode" }, "UQ__Vouchers__7F0ABCA91B0360D6")
                         .IsUnique();
 
-                    b.ToTable("Vouchers", (string)null);
+                    b.ToTable("Vouchers");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Blog", b =>
@@ -1561,6 +1608,15 @@ namespace Exe_Demo.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Exe_Demo.Models.ChatHistory", b =>
+                {
+                    b.HasOne("Exe_Demo.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Exe_Demo.Models.Expense", b =>

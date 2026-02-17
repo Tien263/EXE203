@@ -10,8 +10,10 @@ class LLMService:
         self.client = None
         self.gemini_model = None
         self.model_type = "none"
+        self.init_error = None
         
         print(f"[DEBUG] Initializing LLM Service...")
+        print(f"[DEBUG] VERSION: 2026-01-25 Auto-Detect Functionality")
         
         # Check environment variables
         openai_key = os.getenv("OPENAI_API_KEY", "")
@@ -34,24 +36,81 @@ class LLMService:
                 return
                 
             except ImportError as e:
+                self.init_error = f"OpenAI Import Error: {str(e)}"
                 print(f"[ERROR] OpenAI import failed: {e}")
             except Exception as e:
+                self.init_error = f"OpenAI Init Error: {str(e)}"
                 print(f"[ERROR] OpenAI initialization failed: {e}")
         else:
             print("[DEBUG] No OpenAI API key found")
         
-        # Try Gemini as fallback
         if gemini_key:
             try:
                 print("[DEBUG] Attempting to use Gemini...")
                 import google.generativeai as genai
                 genai.configure(api_key=gemini_key)
-                self.gemini_model = genai.GenerativeModel('gemini-2.0-flash')
-                self.model_type = "gemini"
-                print("[OK] Sử dụng Google Gemini 2.0 Flash (miễn phí)")
-                return
+                
+                # List of models to try in order of preference
+                # List of models to try in order of preference
+                candidate_models = [
+                    'gemini-2.5-flash',
+                    'gemini-2.0-flash',
+                    'gemini-1.5-flash',
+                    'gemini-1.5-flash-latest',
+                    'gemini-flash-latest',
+                    'gemini-1.5-pro',
+                    'gemini-1.5-pro-latest',
+                    'gemini-2.0-flash-exp',
+                    'gemini-pro'
+                ]
+
+                
+                selected_model = None
+                error_logs = []
+                available_models_log = "Could not list models"
+                
+                # Try to list models to confirm availability (optional but good for debugging)
+                try:
+                    available_models = [m.name for m in genai.list_models()]
+                    available_models_log = ", ".join(available_models)
+                    print(f"[DEBUG] Available Gemini models: {available_models}")
+                except Exception as ex:
+                    print(f"[ERROR] Failed to list models: {ex}")
+                    error_logs.append(f"ListModels Error: {str(ex)}")
+
+                # Try initializing each model
+                for model_name in candidate_models:
+                    try:
+                        print(f"[DEBUG] Trying model: {model_name}")
+                        model = genai.GenerativeModel(model_name)
+                        
+                        # Test the model with a simple prompt to ensure it works
+                        response = model.generate_content("test")
+                        if response:
+                            selected_model = model_name
+                            self.gemini_model = model
+                            self.model_type = "gemini"
+                            print(f"[OK] ✅ Sử dụng thành công Google Gemini Model: {model_name}")
+                            return
+                    except Exception as e:
+                        error_msg = str(e)
+                        # Simplify error message to save space
+                        if "404" in error_msg: error_msg = "404 Not Found"
+                        elif "403" in error_msg: error_msg = "403 Permission Denied"
+                        
+                        error_logs.append(f"{model_name}: {error_msg}")
+                        print(f"[DEBUG] Model {model_name} failed: {e}")
+                        continue
+                
+                if not selected_model:
+                     raise Exception(f"All models failed. Available: [{available_models_log}]. Errors: {'; '.join(error_logs)}")
+                     
             except Exception as e:
+                self.init_error = f"Gemini Init Error: {str(e)}"
                 print(f"[ERROR] Gemini initialization failed: {e}")
+        else:
+            if not self.init_error:
+                self.init_error = "No API Key found"
         
         print("[WARNING] Không có AI API key hợp lệ. Sử dụng chế độ simple response.")
 
@@ -147,17 +206,28 @@ Hãy thân thiện, nhiệt tình và tập trung vào việc hỗ trợ khách 
             response = self.gemini_model.generate_content(message)
             return response.text.strip()
         except Exception as e:
-            print(f"[ERROR] Gemini chat error: {e}")
-            return f"Lỗi Gemini: {str(e)}"
+            error_msg = str(e)
+            print(f"[ERROR] Gemini chat error: {error_msg}")
+            
+            # Check for Quota Exceeded (429)
+            if "429" in error_msg or "Quota exceeded" in error_msg or "Resource has been exhausted" in error_msg:
+                return "⚠️ Hệ thống AI đang quá tải (Hết hạn mức miễn phí). Vui lòng thử lại sau 30 giây hoặc sử dụng tìm kiếm thông thường."
+            
+            return f"Lỗi Gemini: {error_msg}"
 
     def _simple_response(self, message: str) -> str:
         """Phản hồi đơn giản khi không có AI"""
         print("[DEBUG] Using simple response")
         
+        # Add debug info if available
+        debug_info = ""
+        if hasattr(self, 'init_error') and self.init_error:
+            debug_info = f"\n\n(Debug [v3]: {self.init_error})"
+
         message_lower = message.lower()
-        
+
         if any(word in message_lower for word in ['xin chào', 'hello', 'hi', 'chào']):
-            return """Xin chào! 👋 Chào mừng bạn đến với Mộc Vị Store! 
+            return f"""Xin chào! 👋 Chào mừng bạn đến với Mộc Vị Store! 
             
 Tôi có thể giúp bạn tìm hiểu về các sản phẩm hoa quả sấy cao cấp từ Mộc Châu:
 🍓 Sấy dẻo: Mận, Xoài, Đào, Dâu, Hồng
@@ -165,8 +235,29 @@ Tôi có thể giúp bạn tìm hiểu về các sản phẩm hoa quả sấy ca
 ✨ Sấy thăng hoa: Dâu, Sữa chua
 
 Bạn quan tâm loại nào nhất? 😊"""
-        else:
-            return f"Cảm ơn bạn đã nhắn tin: '{message}'. Tôi là AI assistant của Mộc Vị Store, sẵn sàng hỗ trợ bạn về các sản phẩm hoa quả sấy! 😊"
+
+        # Keyword matching for products (Fallback when AI is down)
+        products_db = {
+            'dâu': "🍓 **Dâu Tây Mộc Châu**:\n- Dâu sấy dẻo: 90k/200g (Chua ngọt tự nhiên)\n- Dâu sấy thăng hoa: 140k/100g (Giòn xốp, giữ nguyên hình dáng)",
+            'mận': "🍒 **Mận Hậu Mộc Châu**:\n- Mận sấy dẻo: 65k/200g\n- Vị chua ngọt đặc trưng, dẻo thơm.",
+            'xoài': "🥭 **Xoài Sấy Dẻo**:\n- Giá: 70k/200g\n- Miếng xoài vàng ươm, dẻo ngọt tự nhiên.",
+            'đào': "🍑 **Đào Sấy Dẻo**:\n- Giá: 65k/200g\n- Thơm lừng hương đào, vị ngọt thanh.",
+            'hồng': "🍅 **Hồng Giòn Sấy Dẻo**:\n- Giá: 95k/200g\n- Đặc sản Mộc Châu, ngọt đậm đà.",
+            'mít': "jackfruit **Mít Sấy Giòn**:\n- Giá: 80k/200g\n- Giòn tan, ngọt lịm.",
+            'chuối': "🍌 **Chuối Sấy Giòn**:\n- Giá: 80k/200g\n- Giòn rụm, thơm ngon.",
+            'sữa chua': "🥛 **Sữa Chua Sấy Thăng Hoa**:\n- Giá: 95k/100g\n- Tan ngay trong miệng, tốt cho tiêu hóa.",
+            'giá': "💰 **Bảng Giá Sản Phẩm**:\n- Mận/Đào sấy dẻo: 65k\n- Xoài sấy dẻo: 70k\n- Dâu sấy dẻo: 90k\n- Mít/Chuối sấy giòn: 80k\n- Dâu sấy thăng hoa: 140k"
+        }
+
+        response_parts = []
+        for key, info in products_db.items():
+            if key in message_lower:
+                response_parts.append(info)
+        
+        if response_parts:
+             return "🔍 **Thông tin sản phẩm bạn quan tâm:**\n\n" + "\n\n".join(response_parts) + "\n\n📞 Đặt hàng ngay: 0929.161.999"
+
+        return f"Cảm ơn bạn đã nhắn tin: '{message}'.\nHiện tại hệ thống AI đang bảo trì, vui lòng liên hệ Hotline 0929.161.999 để được hỗ trợ nhanh nhất! 😊"
 
     def detect_purchase_intent(self, query: str) -> Dict:
         """Phát hiện ý định mua hàng và trích xuất sản phẩm"""
@@ -297,13 +388,8 @@ CHỈ trả về JSON, không giải thích."""
 ✅ Tôi đã thêm sản phẩm vào giỏ hàng cho bạn!
 
 📞 Để hoàn tất đặt hàng, vui lòng:
-<<<<<<< HEAD
 1. Gọi hotline: 0929.161.999
 2. Hoặc nhắn tin Zalo: 0929.161.999
-=======
-1. Gọi hotline: 0912.345.678
-2. Hoặc nhắn tin Zalo: 0912.345.678
->>>>>>> 5c0a37643dba4ed53558e01db64b81ab4615dae9
 3. Thanh toán khi nhận hàng (COD)
 
 🚚 Miễn phí ship nội thành, giao hàng trong 24h!"""

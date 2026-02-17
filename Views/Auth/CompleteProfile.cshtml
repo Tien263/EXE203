@@ -13,6 +13,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     
     <style>
         * {
@@ -245,20 +246,15 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Address">
-                    <i class="fas fa-map-marker-alt"></i> Địa chỉ
-                </label>
-                <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường..." />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label asp-for="City">
                         <i class="fas fa-city"></i> Tỉnh/Thành phố
                     </label>
-                    <input asp-for="City" class="form-control" placeholder="VD: Hà Nội" />
+                    <select id="citySelect" class="form-control">
+                         <option value="">-- Chọn --</option>
+                    </select>
+                    <input type="hidden" asp-for="City" id="cityInput" />
                     <span asp-validation-for="City" class="text-danger"></span>
                 </div>
 
@@ -266,7 +262,10 @@
                     <label asp-for="District">
                         <i class="fas fa-building"></i> Quận/Huyện
                     </label>
-                    <input asp-for="District" class="form-control" placeholder="VD: Cầu Giấy" />
+                    <select id="districtSelect" class="form-control">
+                         <option value="">-- Chọn --</option>
+                    </select>
+                    <input type="hidden" asp-for="District" id="districtInput" />
                     <span asp-validation-for="District" class="text-danger"></span>
                 </div>
             </div>
@@ -275,8 +274,19 @@
                 <label asp-for="Ward">
                     <i class="fas fa-map-signs"></i> Phường/Xã
                 </label>
-                <input asp-for="Ward" class="form-control" placeholder="VD: Dịch Vọng" />
+                <select id="wardSelect" class="form-control">
+                     <option value="">-- Chọn --</option>
+                </select>
+                <input type="hidden" asp-for="Ward" id="wardInput" />
                 <span asp-validation-for="Ward" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address">
+                    <i class="fas fa-map-marker-alt"></i> Địa chỉ cụ thể
+                </label>
+                <input asp-for="Address" class="form-control" placeholder="Số nhà, ngõ, tên đường..." />
+                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn-submit">
@@ -288,5 +298,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="~/js/address-validation.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            AddressValidation.init(
+                "cityInput", "districtInput", "wardInput",
+                "citySelect", "districtSelect", "wardSelect"
+            );
+
+             // Initialize Select2
+            $('#citySelect').select2({ placeholder: "-- Chọn Tỉnh/TP --", width: '100%' });
+            $('#districtSelect').select2({ placeholder: "-- Chọn Quận/Huyện --", width: '100%' });
+            $('#wardSelect').select2({ placeholder: "-- Chọn Phường/Xã --", width: '100%' });
+
+            // Re-bind change events for Select2
+            $('#citySelect').on('select2:select', function (e) {
+                this.dispatchEvent(new Event('change'));
+            });
+            $('#districtSelect').on('select2:select', function (e) {
+                this.dispatchEvent(new Event('change'));
+            });
+             $('#wardSelect').on('select2:select', function (e) {
+                this.dispatchEvent(new Event('change'));
+            });
+        });
+    </script>
 </body>
 </html>

@@ -42,18 +42,10 @@ class AIChatWidget {
     }
 
     async loadAIConfig() {
-        try {
-            const response = await fetch('/Home/GetAIConfig');
-            const config = await response.json();
-            this.baseUrl = config.apiUrl;
-            this.apiUrl = `${this.baseUrl}/api/chat`;
-            this.healthUrl = `${this.baseUrl}/api/health`;
-        } catch (error) {
-            console.error('Failed to load AI config, using default:', error);
-            this.baseUrl = 'http://localhost:8000';
-            this.apiUrl = 'http://localhost:8000/api/chat';
-            this.healthUrl = 'http://localhost:8000/api/health';
-        }
+        // Point to internal proxy
+        this.baseUrl = ''; // Relative path
+        this.apiUrl = '/api/AIChat/chat';
+        this.healthUrl = '/api/AIChat/health';
     }
 
     createWidget() {

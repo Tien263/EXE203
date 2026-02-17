@@ -6,8 +6,19 @@ WORKDIR /src
 COPY ["Exe_Demo.csproj", "./"]
 RUN dotnet restore "Exe_Demo.csproj"
 
-# Copy the rest of the source code
-COPY . .
+# Copy only necessary folders (Whitelist approach to avoid junk files)
+COPY Program.cs .
+COPY appsettings.json .
+COPY Controllers/ ./Controllers/
+COPY Data/ ./Data/
+COPY Database/ ./Database/
+COPY Helpers/ ./Helpers/
+COPY Migrations/ ./Migrations/
+COPY Models/ ./Models/
+COPY Repositories/ ./Repositories/
+COPY Services/ ./Services/
+COPY Views/ ./Views/
+COPY wwwroot/ ./wwwroot/
 
 # Build the application
 RUN dotnet build "Exe_Demo.csproj" -c Release -o /app/build
@@ -18,6 +29,8 @@ RUN dotnet publish "Exe_Demo.csproj" -c Release -o /app/publish /p:UseAppHost=fa
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Ensure we run as root to have write permissions for mounted volumes
+USER root
 WORKDIR /app
 COPY --from=publish /app/publish .
 

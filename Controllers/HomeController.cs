@@ -8,11 +8,13 @@ namespace Exe_Demo.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly Services.IProductService _productService;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, Services.IProductService productService)
         {
             _logger = logger;
             _configuration = configuration;
+            _productService = productService;
         }
         
         [HttpGet]
@@ -22,9 +24,26 @@ namespace Exe_Demo.Controllers
             return Json(new { apiUrl = aiUrl });
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            try 
+            {
+                var featuredProducts = await _productService.GetFeaturedProductsAsync(8);
+                var newProducts = await _productService.GetNewProductsAsync(8);
+
+                var viewModel = new Models.ViewModels.HomeViewModel
+                {
+                    FeaturedProducts = featuredProducts,
+                    NewProducts = newProducts
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading home page data");
+                return View(new Models.ViewModels.HomeViewModel());
+            }
         }
 
         public IActionResult Privacy()

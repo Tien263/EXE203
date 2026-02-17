@@ -1,0 +1,83 @@
+@model Exe_Demo.Models.ViewModels.StaffUpdateProfileViewModel
+@{
+    ViewData["Title"] = "Cập Nhật Hồ Sơ Nhân Viên";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0 text-white font-weight-bold">Cập Nhật Thông Tin Nhân Viên</h3>
+                    <p class="mb-0 mt-2 small text-white-50">Vui lòng hoàn tất hồ sơ để truy cập hệ thống quản lý</p>
+                </div>
+                <div class="card-body p-5">
+                    <form asp-action="UpdateProfile" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="FullName" class="font-weight-bold">Họ và tên <span class="text-danger">*</span></label>
+                                <input asp-for="FullName" class="form-control form-control-lg" placeholder="Nhập họ tên đầy đủ" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="PhoneNumber" class="font-weight-bold">Số điện thoại <span class="text-danger">*</span></label>
+                                <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Nhập số điện thoại" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Gender" class="font-weight-bold">Giới tính <span class="text-danger">*</span></label>
+                            <select asp-for="Gender" class="form-control form-control-lg">
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-secondary">Địa chỉ liên hệ</h5>
+
+                        <div class="form-group">
+                            <label asp-for="Address" class="font-weight-bold">Địa chỉ cụ thể <span class="text-danger">*</span></label>
+                            <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP..." />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mt-4 mb-0">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block py-3 font-weight-bold section-btn">
+                                <i class="fa fa-save mr-2"></i> Lưu Hồ Sơ & Truy Cập
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <style>
+        .card-header {
+             background: linear-gradient(135deg, #2d5016 0%, #1a2f0d 100%) !important;
+        }
+        .btn-primary {
+            background-color: #82b440;
+            border-color: #82b440;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #6a9630;
+            border-color: #6a9630;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(130, 180, 64, 0.4);
+        }
+    </style>
+}

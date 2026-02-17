@@ -5,14 +5,24 @@ using Exe_Demo.Models;
 using Exe_Demo.Models.ViewModels;
 using Exe_Demo.Services;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Exe_Demo.Controllers
 {
-    public class StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : Controller
+    public class StaffController : Controller
     {
-        private readonly ApplicationDbContext _context = context;
-        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
-        private readonly ExcelOrderService _excelService = new ExcelOrderService(context);
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly Services.ICacheService _cacheService;
+
+        public StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, Services.ICacheService cacheService)
+        {
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            _cacheService = cacheService;
+        }
+
 
         // Kiểm tra quyền Staff
         private bool IsStaff()
@@ -31,82 +41,193 @@ namespace Exe_Demo.Controllers
             return null;
         }
 
-        // ==================== DASHBOARD ====================
+        // ==================== UPDATE PROFILE (FIRST LOGIN) ====================
         [HttpGet]
-        public async Task<IActionResult> Dashboard()
+        public IActionResult UpdateProfile()
         {
-            if (!IsStaff())
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            
+            // Check if already has EmployeeId
+            var employeeIdClaim = User.FindFirst("EmployeeId");
+            if (employeeIdClaim != null)
+            {
+                return RedirectToAction("Dashboard");
+            }
+
+            return View(new StaffUpdateProfileViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(StaffUpdateProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            var employeeId = GetEmployeeId();
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+            // Fix: Use AsTracking() to ensure changes are persisted even with Global NoTracking
+            var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) return RedirectToAction("Login", "Auth");
 
-            var today = DateTime.Today;
-            var startOfMonth = new DateTime(today.Year, today.Month, 1);
-
-            var model = new StaffDashboardViewModel
+            // Create new Employee record
+            var newEmployee = new Employee
             {
-                EmployeeName = employee?.FullName ?? "Staff",
-                EmployeeCode = employee?.EmployeeCode ?? "",
-                Position = employee?.Position ?? "",
+                EmployeeCode = "NV" + DateTime.Now.ToString("yyMMddHHmm"), // Auto-generate code
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address, // Fix: Save Address
+                Email = user.Email,
+                Position = "Nhân viên bán hàng",
+                Department = "Bán hàng",
+                Salary = 5000000, // Default starting salary
+                HireDate = DateOnly.FromDateTime(DateTime.Now),
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
 
-                // Doanh thu hôm nay
-                TodayRevenue = await _context.Orders
+            _context.Employees.Add(newEmployee);
+            await _context.SaveChangesAsync();
+
+            // Link to User
+            user.EmployeeId = newEmployee.EmployeeId;
+            user.PhoneNumber = model.PhoneNumber;
+            user.FullName = model.FullName;
+            
+            // Force update state to ensure EF Core tracks it
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            // Re-SignIn to update Claims (add EmployeeId)
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role ?? "Staff"),
+                new Claim("EmployeeId", newEmployee.EmployeeId.ToString()) // Critical for StaffController checks
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            // Standard SignInAsync call
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties { IsPersistent = true });
+            
+            TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
+            return RedirectToAction("Dashboard");
+        }
+
+        // ==================== DASHBOARD ====================
+        [HttpGet]
+        public async Task<IActionResult> Dashboard()
+        {
+            try
+            {
+                if (!IsStaff())
+                {
+                    return RedirectToAction("Login", "Auth");
+                }
+
+                var employeeId = GetEmployeeId();
+                var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+
+                var today = DateTime.Today;
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                // Client-Side Evaluation for SQLite Compatibility
+
+                // Doanh thu hôm nay (Fetch data first, then Sum)
+                var todayOrdersList = await _context.Orders
                     .Where(o => o.CreatedDate.HasValue && 
                                 o.CreatedDate.Value.Date == today &&
                                 o.PaymentStatus == "Đã thanh toán")
-                    .SumAsync(o => o.FinalAmount),
+                    .Select(o => o.FinalAmount)
+                    .ToListAsync();
+                var todayRevenue = todayOrdersList.Sum();
 
                 // Doanh thu tháng này
-                MonthRevenue = await _context.Orders
+                var monthOrdersList = await _context.Orders
                     .Where(o => o.CreatedDate.HasValue && 
                                 o.CreatedDate.Value >= startOfMonth &&
                                 o.PaymentStatus == "Đã thanh toán")
-                    .SumAsync(o => o.FinalAmount),
+                    .Select(o => o.FinalAmount)
+                    .ToListAsync();
+                var monthRevenue = monthOrdersList.Sum();
 
-                // Đơn hàng hôm nay
-                TodayOrders = await _context.Orders
-                    .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value.Date == today),
-
-                // Đơn hàng tháng này
-                MonthOrders = await _context.Orders
-                    .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value >= startOfMonth),
-
-                // Đơn hàng chờ xử lý
-                PendingOrders = await _context.Orders
-                    .CountAsync(o => o.OrderStatus == "Chờ xác nhận" || o.OrderStatus == "Đang xử lý"),
-
-                // Sản phẩm sắp hết hàng
-                LowStockProducts = await _context.Products
-                    .CountAsync(p => p.StockQuantity <= p.MinStockLevel),
-
-                // Đơn hàng gần đây
-                RecentOrders = await _context.Orders
-                    .Include(o => o.Customer)
-                    .OrderByDescending(o => o.CreatedDate)
-                    .Take(10)
-                    .ToListAsync(),
-
-                // Top sản phẩm bán chạy
-                TopSellingProducts = await _context.OrderDetails
+                // Top sản phẩm bán chạy (Fetch detail first, then GroupBy in memory)
+                var monthOrderDetails = await _context.OrderDetails
+                    .Include(od => od.Product)
                     .Where(od => od.Order.CreatedDate.HasValue && od.Order.CreatedDate.Value >= startOfMonth)
-                    .GroupBy(od => new { od.ProductId, od.Product.ProductName, od.Product.ImageUrl })
+                    .ToListAsync();
+
+                var topSellingProducts = monthOrderDetails
+                    .GroupBy(od => new { od.ProductId, od.Product?.ProductName, od.Product?.ImageUrl })
                     .Select(g => new ProductSalesViewModel
                     {
                         ProductId = g.Key.ProductId,
-                        ProductName = g.Key.ProductName,
+                        ProductName = g.Key.ProductName ?? "Unknown",
                         ImageUrl = g.Key.ImageUrl,
                         TotalSold = g.Sum(od => od.Quantity),
                         Revenue = g.Sum(od => od.TotalPrice)
                     })
                     .OrderByDescending(p => p.TotalSold)
                     .Take(5)
-                    .ToListAsync()
-            };
+                    .ToList();
 
-            return View(model);
+                var model = new StaffDashboardViewModel
+                {
+                    EmployeeName = employee?.FullName ?? "Staff",
+                    EmployeeCode = employee?.EmployeeCode ?? "",
+                    Position = employee?.Position ?? "",
+
+                    TodayRevenue = todayRevenue,
+                    MonthRevenue = monthRevenue,
+                    
+                    // Đơn hàng hôm nay
+                    TodayOrders = await _context.Orders
+                        .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value.Date == today),
+
+                    // Đơn hàng tháng này
+                    MonthOrders = await _context.Orders
+                        .CountAsync(o => o.CreatedDate.HasValue && o.CreatedDate.Value >= startOfMonth),
+
+                    // Đơn hàng chờ xử lý
+                    PendingOrders = await _context.Orders
+                        .CountAsync(o => o.OrderStatus == "Chờ xác nhận" || o.OrderStatus == "Đang xử lý"),
+
+                    // Sản phẩm sắp hết hàng
+                    LowStockProducts = await _context.Products
+                        .CountAsync(p => p.StockQuantity <= p.MinStockLevel),
+
+                    // Đơn hàng gần đây
+                    RecentOrders = await _context.Orders
+                        .Include(o => o.Customer)
+                        .OrderByDescending(o => o.CreatedDate)
+                        .Take(10)
+                        .ToListAsync(),
+
+                    TopSellingProducts = topSellingProducts
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                return Content($"LỖI DASHBOARD: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
+            }
         }
 
         // ==================== QUẢN LÝ SẢN PHẨM ====================
@@ -233,8 +354,33 @@ namespace Exe_Demo.Controllers
                     CreatedDate = DateTime.Now
                 };
 
+                // Handle Image Upload
+                if (model.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    product.ImageUrl = "/images/products/" + uniqueFileName;
+                }
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
+
+                // Clear Cache
+                await _cacheService.RemoveAsync("FeaturedProducts");
+                await _cacheService.RemoveAsync("NewProducts");
+                await _cacheService.RemoveByPrefixAsync("ProductList_");
 
                 TempData["SuccessMessage"] = "Thêm sản phẩm thành công!";
                 return RedirectToAction(nameof(Products));
@@ -243,6 +389,9 @@ namespace Exe_Demo.Controllers
             model.Categories = await _context.Categories.Where(c => c.IsActive == true).ToListAsync();
             return View(model);
         }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> EditProduct(int id)
@@ -285,7 +434,7 @@ namespace Exe_Demo.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken] // Temporary disabled for debugging
         public async Task<IActionResult> EditProduct(ProductFormViewModel model)
         {
             if (!IsStaff())
@@ -322,16 +471,69 @@ namespace Exe_Demo.Controllers
                 product.MinStockLevel = model.MinStockLevel;
                 product.Unit = model.Unit;
                 product.Weight = model.Weight;
-                product.ImageUrl = model.ImageUrl;
+                
+                // Handle Image Upload
+                Console.WriteLine($"[DEBUG] EditProduct POST. ID: {model.ProductId}");
+                Console.WriteLine($"[DEBUG] Content Type: {Request.ContentType}");
+                
+                // Fallback: Try retrieval from Request.Form if binding failed
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                    Console.WriteLine($"[DEBUG] Manually retrieved ImageFile from Request.Form.Files. Name: {model.ImageFile?.FileName}");
+                }
+                
+                Console.WriteLine($"[DEBUG] Has ImageFile: {model.ImageFile != null}");
+                
+                if (model.ImageFile != null)
+                {
+                    Console.WriteLine($"[DEBUG] File Name: {model.ImageFile.FileName}, Length: {model.ImageFile.Length}");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    product.ImageUrl = "/images/products/" + uniqueFileName;
+                }
+                else if (!string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    product.ImageUrl = model.ImageUrl;
+                }
+                
                 product.IsActive = model.IsActive;
                 product.IsFeatured = model.IsFeatured;
                 product.IsNew = model.IsNew;
                 product.UpdatedDate = DateTime.Now;
 
+                // FIX: Explicitly update entity because Global NoTracking is enabled
+                _context.Products.Update(product);
+
                 await _context.SaveChangesAsync();
+
+                // Clear Cache
+                await _cacheService.RemoveAsync("FeaturedProducts");
+                await _cacheService.RemoveAsync("NewProducts");
+                await _cacheService.RemoveByPrefixAsync("ProductList_");
+                await _cacheService.RemoveAsync($"Product_{product.ProductId}");
+                await _cacheService.RemoveAsync($"Product_Details_{product.ProductId}");
 
                 TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
                 return RedirectToAction(nameof(Products));
+            }
+            else 
+            {
+                // Debug ModelState Errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Console.WriteLine($"[ERROR] EditProduct POST Invalid ModelState: {string.Join(", ", errors)}");
             }
 
             model.Categories = await _context.Categories.Where(c => c.IsActive == true).ToListAsync();
@@ -339,7 +541,7 @@ namespace Exe_Demo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProductApi(int id)
         {
             if (!IsStaff())
             {
@@ -368,7 +570,53 @@ namespace Exe_Demo.Controllers
             return Json(new { success = true, message = "Xóa sản phẩm thành công" });
         }
 
+        [HttpGet]
+        public IActionResult DeleteProduct(int id)
+        {
+            // Fallback for old cached HTML links
+            TempData["ErrorMessage"] = "Hệ thống đã cập nhật. Vui lòng tải lại trang (Ctrl + F5) để sử dụng tính năng Xóa mới.";
+            return RedirectToAction(nameof(Products));
+        }
+
         // ==================== QUẢN LÝ ĐỚN HÀNG ====================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearAllOrders()
+        {
+            if (!IsStaff())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            try 
+            {
+                // Delete dependencies first
+                var points = await _context.LoyaltyPointsHistories.ToListAsync();
+                _context.LoyaltyPointsHistories.RemoveRange(points);
+
+                var payments = await _context.Payments.ToListAsync();
+                _context.Payments.RemoveRange(payments);
+
+                var orderDetails = await _context.OrderDetails.ToListAsync();
+                _context.OrderDetails.RemoveRange(orderDetails);
+
+                // Delete Orders
+                var orders = await _context.Orders.ToListAsync();
+                _context.Orders.RemoveRange(orders);
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Đã xóa toàn bộ dữ liệu đơn hàng cũ!";
+            }
+            catch(Exception ex) 
+            {
+                TempData["ErrorMessage"] = "Lỗi khi xóa dữ liệu: " + ex.Message;
+            }
+
+            return RedirectToAction(nameof(Orders));
+        }
+
         [HttpGet]
         public async Task<IActionResult> Orders(int page = 1, string? search = null, string? status = null, 
             string? paymentStatus = null, DateTime? fromDate = null, DateTime? toDate = null)
@@ -510,18 +758,56 @@ namespace Exe_Demo.Controllers
             {
                 order.CompletedDate = DateTime.Now;
                 
-                // Cộng điểm tích lũy khi đơn hàng hoàn thành (chỉ cộng 1 lần)
-                if (oldStatus != "Đã hoàn thành" && order.CustomerId.HasValue)
+                // Trừ tồn kho khi đơn hàng hoàn thành (chỉ trừ 1 lần)
+                if (oldStatus != "Đã hoàn thành")
                 {
-                    var customer = await _context.Customers
-                        .AsTracking()
-                        .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
-                        
-                    if (customer != null)
+                    // Fetch order details to update stock
+                    var orderDetails = await _context.OrderDetails
+                        .Include(od => od.Product)
+                        .Where(od => od.OrderId == order.OrderId)
+                        .ToListAsync();
+
+                    foreach (var detail in orderDetails)
                     {
-                        // Quy tắc: 10.000đ = 1 điểm
-                        int pointsToAdd = (int)(order.FinalAmount / 10000);
-                        customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
+                        if (detail.Product != null)
+                        {
+                            // 1. Cập nhật số lượng
+                            detail.Product.StockQuantity -= detail.Quantity;
+                            detail.Product.SoldCount = (detail.Product.SoldCount ?? 0) + detail.Quantity;
+                            
+                            // Đánh dấu đã thay đổi để chắc chắn lưu vào DB
+                            _context.Update(detail.Product);
+
+                            // 2. Ghi lịch sử kho (Inventory Log)
+                            var transaction = new InventoryTransaction
+                            {
+                                ProductId = detail.ProductId,
+                                TransactionType = "Xuất kho",
+                                Quantity = -detail.Quantity,
+                                ReferenceType = "Order",
+                                ReferenceId = order.OrderId,
+                                Notes = $"Xuất kho bán hàng đơn #{order.OrderCode}",
+                                CreatedDate = DateTime.Now,
+                                EmployeeId = GetEmployeeId()
+                            };
+                            _context.InventoryTransactions.Add(transaction);
+                        }
+                    }
+
+                    // Cộng điểm tích lũy khi đơn hàng hoàn thành
+                    if (order.CustomerId.HasValue)
+                    {
+                        var customer = await _context.Customers
+                            .AsTracking()
+                            .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId.Value);
+                            
+                        if (customer != null)
+                        {
+                            // Quy tắc: 10.000đ = 1 điểm
+                            int pointsToAdd = (int)(order.FinalAmount / 10000);
+                            customer.LoyaltyPoints = (customer.LoyaltyPoints ?? 0) + pointsToAdd;
+                            _context.Update(customer);
+                        }
                     }
                 }
             }
@@ -1160,6 +1446,12 @@ namespace Exe_Demo.Controllers
             if (ModelState.IsValid)
             {
                 // Xử lý upload ảnh
+                // Fallback: Try retrieval from Request.Form if model binding failed
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                }
+
                 if (model.ImageFile != null)
                 {
                     string uniqueFileName = UploadFile(model.ImageFile);
@@ -1235,6 +1527,12 @@ namespace Exe_Demo.Controllers
                 }
 
                 // Xử lý upload ảnh mới
+                // Fallback: Try retrieval from Request.Form if model binding failed
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                }
+
                 if (model.ImageFile != null)
                 {
                     // Xóa ảnh cũ nếu có (tùy chọn)
@@ -1403,7 +1701,8 @@ namespace Exe_Demo.Controllers
                     return Json(new { success = false, message = "Khoảng thời gian không hợp lệ" });
             }
 
-            var excelData = await _excelService.ExportOrdersToExcel(start, end);
+            var excelService = new ExcelOrderService(_context);
+            var excelData = await excelService.ExportOrdersToExcel(start, end);
             var fileName = $"DonHang_{start:yyyyMMdd}_{end:yyyyMMdd}.xlsx";
 
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
@@ -1430,7 +1729,8 @@ namespace Exe_Demo.Controllers
             try
             {
                 using var stream = file.OpenReadStream();
-                var result = await _excelService.ImportOrdersFromExcel(stream);
+                var excelService = new ExcelOrderService(_context);
+                var result = await excelService.ImportOrdersFromExcel(stream);
                     
                     if (result.failed > 0)
                     {
@@ -1449,6 +1749,43 @@ namespace Exe_Demo.Controllers
                 return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
             }
         }
+
+        // ==================== REVIEW MANAGEMENT ====================
+        public async Task<IActionResult> Reviews()
+        {
+            if (!IsStaff()) return RedirectToAction("Login", "Auth");
+
+            var reviews = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.Customer)
+                .OrderByDescending(r => r.CreatedDate)
+                .ToListAsync();
+
+            return View(reviews);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            if (!IsStaff()) return RedirectToAction("Login", "Auth");
+
+            var review = await _context.Reviews.FindAsync(id);
+            if (review != null)
+            {
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã xóa đánh giá thành công.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy đánh giá.";
+            }
+
+
+            return RedirectToAction(nameof(Reviews));
+        }
+
     }
 
     // ViewModel cho Adjust Loyalty Points

@@ -16,13 +16,18 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+// builder.Services.AddControllersWithViews(); // Removed duplicate call
 
 // Add Memory Cache for performance optimization
-builder.Services.AddMemoryCache();
+// Cấu hình Redis Cache
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "MocVi_";
+});
 
 // Add Response Caching
-builder.Services.AddResponseCaching();
+// builder.Services.AddResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
 
 // Configure Response Caching options
 builder.Services.AddControllersWithViews(options =>
@@ -85,7 +90,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         else
         {
             // Fallback to SQLite if no connection string in Development
-            var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "mocvistore.db");
+            // FIX: Always use DbStorage folder to ensure Docker persistence even in Dev mode
+            var dbFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "DbStorage");
+            if (!Directory.Exists(dbFolderPath))
+            {
+                Directory.CreateDirectory(dbFolderPath);
+            }
+            var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
             options.UseSqlite($"Data Source={dbPath}");
             Console.WriteLine($"Using SQLite database at: {dbPath}");
         }
@@ -105,6 +116,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
+// Add HttpClient for AI Proxy
+builder.Services.AddHttpClient();
 
 // Add Authentication
 var authBuilder = builder.Services.AddAuthentication(options =>
@@ -207,7 +222,16 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         // Apply any pending EF Core migrations to keep database schema in sync
-        context.Database.Migrate();
+        // context.Database.Migrate(); // Swapping to EnsureCreated to prevent migration mismatch
+        context.Database.EnsureCreated();
+
+        // MANUAL PATCH: Fix missing column in Production (SQLite)
+        try 
+        {
+            // Try to add the column. If it exists, this will throw/catch and continue safe.
+            context.Database.ExecuteSqlRaw("ALTER TABLE Reviews ADD COLUMN MediaUrl TEXT;");
+        } 
+        catch (Exception) { /* Column already exists */ }
 
         // Seed initial data if needed
         try
@@ -235,8 +259,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection(); // Disable HTTPS Redirection to fix Docker port mapping issues
 }
 
 // Configure static files with cache control
@@ -271,7 +296,7 @@ else
 }
 
 // Add Response Caching middleware (must be before UseRouting)
-app.UseResponseCaching();
+// app.UseResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
 
 app.UseRouting();
 

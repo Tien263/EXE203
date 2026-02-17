@@ -147,7 +147,7 @@
                                             <span class="badge bg-info">@blog.ViewCount</span>
                                         </td>
                                         <td>
-                                            <div>@blog.CreatedDate?.ToString("dd/MM/yyyy")</div>
+                                            <div>@blog.CreatedDate?.AddHours(7).ToString("dd/MM/yyyy")</div>
                                             <small class="text-muted">@blog.CreatedDate?.ToString("HH:mm")</small>
                                         </td>
                                         <td style="text-align: center;">
