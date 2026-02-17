@@ -113,17 +113,12 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            // Cáº­p nháº­t thÃ´ng tin User
+            // Cập nhật thông tin User
             user.FullName = model.FullName;
             user.PhoneNumber = model.PhoneNumber;
 
-<<<<<<< HEAD
-            // Cáº­p nháº­t thÃ´ng tin Customer
-            if (user.Customer != null)
-=======
             // Cập nhật thông tin Customer
             if (user.Customer == null)
->>>>>>> 7650166aaf1fb4bd630eef837bb6d4d837dcdfcd
             {
                 // Create new customer if not exists
                 var lastCustomer = await _context.Customers
@@ -161,7 +156,7 @@ namespace Exe_Demo.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Cáº­p nháº­t thÃ´ng tin thÃ nh cÃ´ng!";
+            TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -178,23 +173,23 @@ namespace Exe_Demo.Controllers
 
             if (profileImage == null || profileImage.Length == 0)
             {
-                TempData["ErrorMessage"] = "Vui lÃ²ng chá»n áº£nh!";
+                TempData["ErrorMessage"] = "Vui lòng chọn ảnh!";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Kiá»ƒm tra file type
+            // Kiểm tra file type
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
             var extension = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(extension))
             {
-                TempData["ErrorMessage"] = "Chá»‰ cháº¥p nháº­n file áº£nh (.jpg, .jpeg, .png, .gif)!";
+                TempData["ErrorMessage"] = "Chỉ chấp nhận file ảnh (.jpg, .jpeg, .png, .gif)!";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Kiá»ƒm tra kÃ­ch thÆ°á»›c (max 5MB)
+            // Kiểm tra kích thước (max 5MB)
             if (profileImage.Length > 5 * 1024 * 1024)
             {
-                TempData["ErrorMessage"] = "KÃ­ch thÆ°á»›c áº£nh khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ 5MB!";
+                TempData["ErrorMessage"] = "Kích thước ảnh không được vượt quá 5MB!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -206,14 +201,14 @@ namespace Exe_Demo.Controllers
 
             try
             {
-                // Táº¡o thÆ° má»¥c náº¿u chÆ°a cÃ³
+                // Tạo thư mục nếu chưa có
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                // XÃ³a áº£nh cÅ© náº¿u cÃ³
+                // Xóa ảnh cũ nếu có
                 if (!string.IsNullOrEmpty(user.ProfileImageUrl))
                 {
                     var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfileImageUrl.TrimStart('/'));
@@ -223,26 +218,26 @@ namespace Exe_Demo.Controllers
                     }
                 }
 
-                // Táº¡o tÃªn file unique
+                // Tạo tên file unique
                 var uniqueFileName = $"{userId}_{Guid.NewGuid()}{extension}";
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                // LÆ°u file
+                // Lưu file
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await profileImage.CopyToAsync(fileStream);
                 }
 
-                // Cáº­p nháº­t database
+                // Cập nhật database
                 user.ProfileImageUrl = $"/uploads/profiles/{uniqueFileName}";
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Cáº­p nháº­t áº£nh Ä‘áº¡i diá»‡n thÃ nh cÃ´ng!";
+                TempData["SuccessMessage"] = "Cập nhật ảnh đại diện thành công!";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error uploading profile image");
-                TempData["ErrorMessage"] = "CÃ³ lá»—i xáº£y ra khi upload áº£nh!";
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi upload ảnh!";
             }
 
             return RedirectToAction(nameof(Index));
@@ -266,7 +261,7 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            // Láº¥y danh sÃ¡ch Ä‘Æ¡n hÃ ng cá»§a khÃ¡ch hÃ ng
+            // Lấy danh sách đơn hàng của khách hàng
             var orders = await _context.Orders
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
@@ -278,4 +273,3 @@ namespace Exe_Demo.Controllers
         }
     }
 }
-
