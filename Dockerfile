@@ -13,7 +13,8 @@ COPY Controllers/ ./Controllers/
 COPY Data/ ./Data/
 COPY Database/ ./Database/
 COPY Helpers/ ./Helpers/
-COPY Migrations/ ./Migrations/
+# Migrations excluded - contains SQL Server types incompatible with PostgreSQL
+# App uses EnsureCreated() which generates correct schema for current provider
 COPY Models/ ./Models/
 COPY Repositories/ ./Repositories/
 COPY Services/ ./Services/
