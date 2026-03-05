@@ -12,7 +12,7 @@ services:
       - "8080"
     volumes:
       - ./docker_data:/app/DbStorage
-      - ./docker_data/images:/app/wwwroot/images
+      - ./docker_data/uploads:/app/wwwroot/images/uploads
       - ./dataprotection-keys:/app/dataprotection-keys
     environment:
       - ASPNETCORE_ENVIRONMENT=Production

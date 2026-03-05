@@ -357,7 +357,7 @@ namespace Exe_Demo.Controllers
                 // Handle Image Upload
                 if (model.ImageFile != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
@@ -371,7 +371,7 @@ namespace Exe_Demo.Controllers
                         await model.ImageFile.CopyToAsync(fileStream);
                     }
 
-                    product.ImageUrl = "/images/products/" + uniqueFileName;
+                    product.ImageUrl = "/images/uploads/" + uniqueFileName;
                 }
 
                 _context.Products.Add(product);
@@ -488,7 +488,7 @@ namespace Exe_Demo.Controllers
                 if (model.ImageFile != null)
                 {
                     Console.WriteLine($"[DEBUG] File Name: {model.ImageFile.FileName}, Length: {model.ImageFile.Length}");
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
@@ -502,7 +502,7 @@ namespace Exe_Demo.Controllers
                         await model.ImageFile.CopyToAsync(fileStream);
                     }
 
-                    product.ImageUrl = "/images/products/" + uniqueFileName;
+                    product.ImageUrl = "/images/uploads/" + uniqueFileName;
                 }
                 else if (!string.IsNullOrEmpty(model.ImageUrl))
                 {
