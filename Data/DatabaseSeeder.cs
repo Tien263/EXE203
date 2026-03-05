@@ -35,90 +35,66 @@ public static class DatabaseSeeder
 
         try
         {
-            if (!context.Categories.Any())
+            if (context.Categories.Any(c => c.CategoryName == "Hoa Quả Sấy Giòn" || c.CategoryName == "Hoa Quả Sấy Dẻo"))
         {
-             // ... (Keep existing Category seeding)
-             var categories = new List<Category>
-            {
-                new Category { CategoryName = "Hoa Quả Sấy Giòn", Description = "Các loại hoa quả sấy khô tự nhiên" },
-
-                new Category { CategoryName = "Hoa Quả Sấy Dẻo", Description = "Hoa quả sấy giữ độ mềm tự nhiên" },
-                new Category { CategoryName = "Hoa Quả Sấy Thăng Hoa", Description = "Hoa quả sấy công nghệ thăng hoa" },
-                new Category { CategoryName = "Combo Quà Tặng", Description = "Combo hoa quả sấy làm quà" }
-            };
-            context.Categories.AddRange(categories);
+            // If we find the OLD placeholder names, clear them to allow fresh seeding with REAL names
+            Console.WriteLine("Cleaning up placeholder data...");
+            context.Products.ExecuteDelete();
+            context.Categories.ExecuteDelete();
             context.SaveChanges();
         }
 
-        // Fix: Rename "Hoa Quả Sấy" to "Hoa Quả Sấy Giòn"
-        var oldCat = context.Categories.FirstOrDefault(c => c.CategoryName == "Hoa Quả Sấy");
-        if (oldCat != null)
+        if (!context.Categories.Any())
         {
-            oldCat.CategoryName = "Hoa Quả Sấy Giòn";
-            context.SaveChanges();
-            Console.WriteLine("Updated category 'Hoa Quả Sấy' to 'Hoa Quả Sấy Giòn'");
+            var categories = new List<Category>
+            {
+                new Category { CategoryId = 1, CategoryName = "Sản Phẩm Sấy Dẻo", Description = "Hoa quả sấy dẻo giữ nguyên vị ngọt tự nhiên, mềm mại", DisplayOrder = 1, IsActive = true },
+                new Category { CategoryId = 2, CategoryName = "Sản Phẩm Sấy Giòn", Description = "Hoa quả sấy giòn tan, thơm ngon, giàu chất xơ", DisplayOrder = 2, IsActive = true },
+                new Category { CategoryId = 3, CategoryName = "Sản Phẩm Sấy Thăng Hoa", Description = "Công nghệ sấy thăng hoa hiện đại, giữ nguyên dinh dưỡng", DisplayOrder = 3, IsActive = true },
+                new Category { CategoryId = 4, CategoryName = "Mini Size Mix", Description = "Gói nhỏ tiện lợi để mix nhiều loại (tối thiểu 4 pack)", DisplayOrder = 4, IsActive = true }
+            };
+            context.Categories.AddRange(categories);
+            context.Database.OpenConnection();
+            try {
+                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Categories ON;");
+                context.SaveChanges();
+                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Categories OFF;");
+            } catch {
+                context.SaveChanges(); // Fallback for PostgreSQL (no IDENTITY_INSERT)
+            } finally {
+                context.Database.CloseConnection();
+            }
         }
 
         if (!context.Products.Any())
         {
-             // ... (Keep existing Product seeding)
-             var products = new List<Product>
+            var products = new List<Product>
             {
-                new Product
-                {
-                    ProductCode = "MIT001",
-                    ProductName = "Mít Sấy Giòn",
-                    CategoryId = 1,
-                    Price = 150000,
-                    StockQuantity = 100,
-                    Description = "Mít sấy giòn tự nhiên, không chất bảo quản",
-                    ImageUrl = "/images/products/mit-say.jpg",
-                    IsActive = true
-                },
-                new Product
-                {
-                    ProductCode = "CHUOI001",
-                    ProductName = "Chuối Sấy Dẻo",
-                    CategoryId = 2,
-                    Price = 120000,
-                    StockQuantity = 150,
-                    Description = "Chuối sấy dẻo thơm ngon, giữ nguyên vị tự nhiên",
-                    ImageUrl = "/images/products/chuoi-say.jpg",
-                    IsActive = true
-                },
-                new Product
-                {
-                    ProductCode = "XOAI001",
-                    ProductName = "Xoài Sấy Dẻo",
-                    CategoryId = 2,
-                    Price = 180000,
-                    StockQuantity = 80,
-                    Description = "Xoài sấy dẻo chua ngọt đậm đà",
-                    ImageUrl = "/images/products/xoai-say.jpg",
-                    IsActive = true
-                },
-                new Product
-                {
-                    ProductCode = "DAU001",
-                    ProductName = "Dâu Tây Sấy Thăng Hoa",
-                    CategoryId = 3,
-                    Price = 250000,
-                    StockQuantity = 50,
-                    Description = "Dâu tây sấy thăng hoa giữ nguyên hương vị",
-                    ImageUrl = "/images/products/dau-say.jpg",
-                    IsActive = true
-                },
-                new Product
-                {
-                    ProductCode = "COMBO001",
-                    ProductName = "Combo Hoa Quả Sấy 5 Loại",
-                    CategoryId = 4,
-                    Price = 350000,
-                    StockQuantity = 30,
-                    Description = "Combo 5 loại hoa quả sấy đa dạng",
-                    ImageUrl = "/images/products/combo-5.jpg",
-                    IsActive = true
-                }
+                // SẤY DẺO
+                new Product { ProductCode = "SD-MAN-200", ProductName = "Mận Sấy Dẻo", CategoryId = 1, Price = 65000, StockQuantity = 100, Description = "Mận sấy dẻo Mộc Châu được chế biến từ những trái mận chín mọng, tươi ngon. Sản phẩm giữ nguyên vị chua ngọt tự nhiên, mềm mại, thơm ngon. Giàu vitamin C, chất xơ tốt cho sức khỏe.", ShortDescription = "Mận sấy dẻo giữ nguyên vị chua ngọt tự nhiên", ImageUrl = "/images/products/man-say-deo.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
+                new Product { ProductCode = "SD-XOAI-200", ProductName = "Xoài Sấy Dẻo", CategoryId = 1, Price = 70000, StockQuantity = 100, Description = "Xoài sấy dẻo từ xoài Mộc Châu thơm ngon, ngọt tự nhiên. Sản phẩm giữ nguyên hương vị đặc trưng của xoài tươi, mềm dẻo, không chất bảo quản.", ShortDescription = "Xoài Mộc Châu thơm ngon, ngọt tự nhiên", ImageUrl = "/images/products/xoai-say-deo.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
+                new Product { ProductCode = "SD-DAO-200", ProductName = "Đào Sấy Dẻo", CategoryId = 1, Price = 65000, StockQuantity = 100, Description = "Đào sấy dẻo Mộc Châu với vị ngọt thanh, thơm mát. Sản phẩm giữ nguyên màu sắc tự nhiên, mềm dẻo, giàu vitamin và khoáng chất.", ShortDescription = "Đào sấy dẻo vị ngọt thanh, thơm mát", ImageUrl = "/images/products/dao-say-deo.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = false },
+                new Product { ProductCode = "SD-DAU-200", ProductName = "Dâu Sấy Dẻo", CategoryId = 1, Price = 90000, StockQuantity = 80, Description = "Dâu sấy dẻo Mộc Châu từ dâu tây tươi ngon, giàu vitamin C. Sản phẩm có vị chua ngọt hài hòa, màu đỏ tự nhiên, mềm dẻo thơm ngon.", ShortDescription = "Dâu tây sấy dẻo giàu vitamin C", ImageUrl = "/images/products/dau-say-deo.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
+                new Product { ProductCode = "SD-HONG-200", ProductName = "Hồng Sấy Dẻo", CategoryId = 1, Price = 95000, StockQuantity = 80, Description = "Hồng sấy dẻo Mộc Châu từ hồng giòn cao cấp. Sản phẩm giữ nguyên vị ngọt thanh, thơm mát đặc trưng của hồng tươi, mềm dẻo, bổ dưỡng.", ShortDescription = "Hồng giòn sấy dẻo cao cấp", ImageUrl = "/images/products/hong-say-deo.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
+                
+                // SẤY GIÒN
+                new Product { ProductCode = "SG-MIT-200", ProductName = "Mít Sấy Giòn", CategoryId = 2, Price = 80000, StockQuantity = 100, Description = "Mít sấy giòn Mộc Châu từ mít tươi ngon, thơm ngọt. Sản phẩm giòn tan, thơm nức, giữ nguyên hương vị đặc trưng của mít tươi. Giàu chất xơ, vitamin.", ShortDescription = "Mít sấy giòn tan, thơm nức", ImageUrl = "/images/products/mit-say-gion.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
+                new Product { ProductCode = "SG-CHUOI-200", ProductName = "Chuối Sấy Giòn", CategoryId = 2, Price = 80000, StockQuantity = 100, Description = "Chuối sấy giòn Mộc Châu từ chuối già chín tự nhiên. Sản phẩm giòn rụm, ngọt thanh, giàu kali và năng lượng. Thích hợp làm snack healthy.", ShortDescription = "Chuối sấy giòn rụm, ngọt thanh", ImageUrl = "/images/products/chuoi-say-gion.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = false },
+                
+                // SẤY THĂNG HOA
+                new Product { ProductCode = "STH-DAU-100", ProductName = "Dâu Sấy Thăng Hoa", CategoryId = 3, Price = 140000, StockQuantity = 60, Description = "Dâu sấy thăng hoa với công nghệ hiện đại, giữ nguyên 98% dinh dưỡng. Sản phẩm giòn nhẹ, tan trong miệng, hương vị đậm đà. Không chất bảo quản.", ShortDescription = "Công nghệ thăng hoa giữ nguyên dinh dưỡng", ImageUrl = "/images/products/dau-say-thang-hoa.jpg", Unit = "Gói", Weight = "100g", IsActive = true, IsFeatured = true, IsNew = true },
+                new Product { ProductCode = "STH-SC-100", ProductName = "Sữa Chua Sấy Thăng Hoa", CategoryId = 3, Price = 95000, StockQuantity = 60, Description = "Sữa chua sấy thăng hoa độc đáo, mới lạ. Sản phẩm giòn tan, vị chua ngọt hài hòa, giàu men vi sinh có lợi. Thích hợp cho mọi lứa tuổi.", ShortDescription = "Sữa chua sấy giòn tan, giàu men vi sinh", ImageUrl = "/images/products/sua-chua-say-thang-hoa.jpg", Unit = "Gói", Weight = "100g", IsActive = true, IsFeatured = true, IsNew = true },
+                
+                // MINI SIZE
+                new Product { ProductCode = "SD-MAN-50", ProductName = "Mận Sấy Dẻo Mini", CategoryId = 4, Price = 18000, StockQuantity = 200, Description = "Mận sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/man-say-deo-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "SD-XOAI-50", ProductName = "Xoài Sấy Dẻo Mini", CategoryId = 4, Price = 20000, StockQuantity = 200, Description = "Xoài sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/xoai-say-deo-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "SD-DAO-50", ProductName = "Đào Sấy Dẻo Mini", CategoryId = 4, Price = 18000, StockQuantity = 200, Description = "Đào sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/dao-say-deo-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "SD-DAU-50", ProductName = "Dâu Sấy Dẻo Mini", CategoryId = 4, Price = 25000, StockQuantity = 200, Description = "Dâu sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/dau-say-deo-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "SD-HONG-50", ProductName = "Hồng Sấy Dẻo Mini", CategoryId = 4, Price = 28000, StockQuantity = 200, Description = "Hồng sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/hong-say-deo-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "SG-MIT-50", ProductName = "Mít Sấy Giòn Mini", CategoryId = 4, Price = 22000, StockQuantity = 200, Description = "Mít sấy giòn gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/mit-say-gion-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "SG-CHUOI-50", ProductName = "Chuối Sấy Giòn Mini", CategoryId = 4, Price = 22000, StockQuantity = 200, Description = "Chuối sấy giòn gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/chuoi-say-gion-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "STH-DAU-50", ProductName = "Dâu Sấy Thăng Hoa Mini", CategoryId = 4, Price = 75000, StockQuantity = 150, Description = "Dâu sấy thăng hoa gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/dau-say-thang-hoa-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
+                new Product { ProductCode = "STH-SC-50", ProductName = "Sữa Chua Sấy Thăng Hoa Mini", CategoryId = 4, Price = 50000, StockQuantity = 150, Description = "Sữa chua sấy thăng hoa gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/sua-chua-say-thang-hoa-mini.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false }
             };
             context.Products.AddRange(products);
             context.SaveChanges();
