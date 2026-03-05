@@ -81,14 +81,14 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.AuthorName).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.ImageUrl).HasMaxLength(255);
             entity.Property(e => e.IsPublished).HasDefaultValue(true);
-            entity.Property(e => e.PublishedDate).HasColumnType("datetime");
+            entity.Property(e => e.PublishedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.ShortDescription).HasMaxLength(500);
             entity.Property(e => e.Slug).HasMaxLength(255);
             entity.Property(e => e.Title).HasMaxLength(255);
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.ViewCount).HasDefaultValue(0);
 
             entity.HasOne(d => d.Author).WithMany(p => p.Blogs)
@@ -103,7 +103,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Comment).HasMaxLength(1000);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.CustomerEmail).HasMaxLength(100);
             entity.Property(e => e.CustomerName).HasMaxLength(100);
             entity.Property(e => e.IsApproved).HasDefaultValue(false);
@@ -126,7 +126,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
             entity.Property(e => e.SessionId).HasMaxLength(100);
 
@@ -147,12 +147,12 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.CategoryName).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
             entity.Property(e => e.ImageUrl).HasMaxLength(255);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<ContactMessage>(entity =>
@@ -161,7 +161,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FullName).HasMaxLength(100);
             entity.Property(e => e.IsRead).HasDefaultValue(false);
@@ -180,7 +180,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.City).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.CustomerCode).HasMaxLength(50);
             entity.Property(e => e.CustomerType)
                 .HasMaxLength(50)
@@ -190,7 +190,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.FullName).HasMaxLength(100);
             entity.Property(e => e.Gender).HasMaxLength(10);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.LastPurchaseDate).HasColumnType("datetime");
+            entity.Property(e => e.LastPurchaseDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.LoyaltyPoints).HasDefaultValue(0);
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
@@ -198,7 +198,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.TotalPurchased)
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.Ward).HasMaxLength(100);
         });
 
@@ -213,7 +213,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.BankName).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Department).HasMaxLength(100);
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.EmployeeCode).HasMaxLength(50);
@@ -224,7 +224,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.Position).HasMaxLength(100);
             entity.Property(e => e.Salary).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<Expense>(entity =>
@@ -236,7 +236,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.ExpenseCode).HasMaxLength(50);
             entity.Property(e => e.ExpenseType).HasMaxLength(100);
@@ -255,7 +255,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.ReferenceType).HasMaxLength(50);
             entity.Property(e => e.TransactionType).HasMaxLength(50);
@@ -274,7 +274,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.TransactionType).HasMaxLength(50);
 
@@ -295,10 +295,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.OrderCode, "UQ__Orders__999B52299F25A08F").IsUnique();
 
             entity.Property(e => e.City).HasMaxLength(100);
-            entity.Property(e => e.CompletedDate).HasColumnType("datetime");
+            entity.Property(e => e.CompletedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.CustomerEmail).HasMaxLength(100);
             entity.Property(e => e.CustomerName).HasMaxLength(100);
             entity.Property(e => e.CustomerPhone).HasMaxLength(20);
@@ -326,7 +326,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.VoucherCode).HasMaxLength(50);
             entity.Property(e => e.Ward).HasMaxLength(100);
 
@@ -367,7 +367,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.PaymentDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
@@ -393,7 +393,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.CostPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.DiscountPercent).HasDefaultValue(0);
             entity.Property(e => e.ImageUrl).HasMaxLength(255);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -413,7 +413,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Unit)
                 .HasMaxLength(50)
                 .HasDefaultValue("gÃƒÂ³i");
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.ViewCount).HasDefaultValue(0);
             entity.Property(e => e.Weight).HasMaxLength(50);
 
@@ -431,16 +431,16 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.PaidAmount)
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.PurchaseOrderCode).HasMaxLength(50);
-            entity.Property(e => e.ReceivedDate).HasColumnType("datetime");
+            entity.Property(e => e.ReceivedDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.RemainingAmount)
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
@@ -448,7 +448,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValue("ChÃ¡Â»Â duyÃ¡Â»â€¡t");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.PurchaseOrders)
                 .HasForeignKey(d => d.SupplierId)
@@ -481,7 +481,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Comment).HasMaxLength(1000);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.CustomerName).HasMaxLength(100);
             entity.Property(e => e.IsApproved).HasDefaultValue(false);
 
@@ -505,7 +505,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.SettingKey).HasMaxLength(100);
             entity.Property(e => e.UpdatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<Shift>(entity =>
@@ -517,14 +517,14 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.ClosingCash).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
-            entity.Property(e => e.EndTime).HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.EndTime).HasColumnType("timestamp without time zone");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.OpeningCash)
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ShiftCode).HasMaxLength(50);
-            entity.Property(e => e.StartTime).HasColumnType("datetime");
+            entity.Property(e => e.StartTime).HasColumnType("timestamp without time zone");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasDefaultValue("Ã„Âang mÃ¡Â»Å¸");
@@ -552,7 +552,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.ContactPerson).HasMaxLength(100);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.District).HasMaxLength(100);
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -561,7 +561,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.SupplierCode).HasMaxLength(50);
             entity.Property(e => e.SupplierName).HasMaxLength(200);
             entity.Property(e => e.TaxCode).HasMaxLength(50);
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -572,11 +572,11 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FullName).HasMaxLength(100);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.LastLoginDate).HasColumnType("datetime");
+            entity.Property(e => e.LastLoginDate).HasColumnType("timestamp without time zone");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.Role)
@@ -600,7 +600,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
             entity.Property(e => e.DiscountType).HasMaxLength(20);
             entity.Property(e => e.DiscountValue).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -609,8 +609,8 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UsedCount).HasDefaultValue(0);
-            entity.Property(e => e.ValidFrom).HasColumnType("datetime");
-            entity.Property(e => e.ValidTo).HasColumnType("datetime");
+            entity.Property(e => e.ValidFrom).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.ValidTo).HasColumnType("timestamp without time zone");
             entity.Property(e => e.VoucherCode).HasMaxLength(50);
             entity.Property(e => e.VoucherName).HasMaxLength(200);
         });
@@ -630,10 +630,10 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
 
             entity.Property(e => e.ExpiresAt)
-                .HasColumnType("datetime");
+                .HasColumnType("timestamp without time zone");
 
             entity.Property(e => e.IsUsed)
                 .HasDefaultValue(false);
