@@ -45,7 +45,7 @@ namespace Exe_Demo.Controllers
                     // Check specifically for Staff
                     var staff = _context.Users.FirstOrDefault(u => u.Email == "staff@mocvistore.com");
                     model.StaffStatus = staff != null 
-                        ? $"Found (Active: {staff.IsActive}, ID: {staff.UserId})" 
+                        ? $"Found (Active: {staff.IsActive}, ID: {staff.Id})" 
                         : "NOT FOUND";
                         
                     var emp = _context.Employees.FirstOrDefault(e => e.Email == "staff@mocvistore.com");

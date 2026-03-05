@@ -77,7 +77,7 @@ namespace Exe_Demo.Controllers
             }
 
             // Fix: Use AsTracking() to ensure changes are persisted even with Global NoTracking
-            var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+            var user = await _context.Users.AsTracking().FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null) return RedirectToAction("Login", "Auth");
 
             // Create new Employee record
@@ -111,7 +111,7 @@ namespace Exe_Demo.Controllers
             // Re-SignIn to update Claims (add EmployeeId)
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role ?? "Staff"),

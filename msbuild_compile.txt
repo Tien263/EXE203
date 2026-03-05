@@ -1,0 +1,15 @@
+MSBuild version 18.0.7+445250245 for .NET
+Build started 05/03/2026 11:21:11 CH.
+     1>Project "F:\FPTU\Ki8\EXE201\Exe_Demo_1\Exe_Demo_1\Exe_Demo\Exe_Demo.csproj" on node 1 (ListCompileItems target(s)).
+     1>F:\FPTU\Ki8\EXE201\Exe_Demo_1\Exe_Demo_1\Exe_Demo\Exe_Demo.csproj : error MSB4057: The target "ListCompileItems" does not exist in the project.
+     1>Done Building Project "F:\FPTU\Ki8\EXE201\Exe_Demo_1\Exe_Demo_1\Exe_Demo\Exe_Demo.csproj" (ListCompileItems target(s)) -- FAILED.
+
+Build FAILED.
+
+       "F:\FPTU\Ki8\EXE201\Exe_Demo_1\Exe_Demo_1\Exe_Demo\Exe_Demo.csproj" (ListCompileItems target) (1) ->
+         F:\FPTU\Ki8\EXE201\Exe_Demo_1\Exe_Demo_1\Exe_Demo\Exe_Demo.csproj : error MSB4057: The target "ListCompileItems" does not exist in the project.
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:03.10

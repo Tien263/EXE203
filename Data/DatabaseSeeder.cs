@@ -291,7 +291,7 @@ public static class DatabaseSeeder
     <li>🍨 Topping yogurt/kem - Trang trí đẹp mắt, tăng dinh dưỡng</li>
     <li>🎂 Làm bánh, trang trí món ăn - Màu đỏ tự nhiên bắt mắt</li>
     </ul>",
-                        AuthorId = adminUser.UserId,
+                        AuthorId = adminUser.Id,
                         IsPublished = true,
                         PublishedDate = DateTime.Now.AddDays(-5),
                         CreatedDate = DateTime.Now
@@ -328,7 +328,7 @@ public static class DatabaseSeeder
     <p>🏋️ Gymer, vận động viên</p>
     <p>🎁 Quà tặng cao cấp dịp lễ, Tết</p>
     <p>👨‍💼 Doanh nhân, CEO</p>",
-                        AuthorId = adminUser.UserId,
+                        AuthorId = adminUser.Id,
                         IsPublished = true,
                         PublishedDate = DateTime.Now.AddDays(-3),
                         CreatedDate = DateTime.Now

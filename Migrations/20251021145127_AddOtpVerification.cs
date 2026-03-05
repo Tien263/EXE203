@@ -338,7 +338,7 @@ namespace Exe_Demo.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
@@ -589,7 +589,7 @@ namespace Exe_Demo.Migrations
                         name: "FK__Blogs__AuthorId__2FCF1A8A",
                         column: x => x.AuthorId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
