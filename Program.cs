@@ -237,10 +237,11 @@ using (var scope = app.Services.CreateScope())
         try
         {
             DatabaseSeeder.SeedData(context);
+            Console.WriteLine("--> Database seeded successfully.");
         }
         catch (Exception seedEx)
         {
-            Console.WriteLine($"Database seeding skipped/failed: {seedEx.Message}");
+            Console.WriteLine($"--> Database seeding error: {seedEx.Message}");
         }
 
         Console.WriteLine("Database initialized successfully");
@@ -249,19 +250,6 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine($"Error initializing database: {ex.Message}");
     }
-}
-
-// Use forwarded headers FIRST
-app.UseForwardedHeaders();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-    // app.UseHttpsRedirection(); // Disable HTTPS Redirection to fix Docker port mapping issues
 }
 
 // Configure static files with cache control
