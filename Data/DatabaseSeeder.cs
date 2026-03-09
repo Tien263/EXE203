@@ -18,34 +18,49 @@ public static class DatabaseSeeder
 
     public static void SeedData(ApplicationDbContext context)
     {
-        Console.WriteLine("--> Aggressively cleaning and seeding database...");
-
+        Console.WriteLine("--> [SEEDER] Starting SeedData process...");
+        
         try
         {
-            // Clear existing data to ensure a clean state (handle FKs with CASCADE if supported, or sequence)
-            // Use raw SQL for Postgres-compatible truncation
+            // AGGRESSIVE CLEANUP: Clear old data to ensure new paths are used
             if (context.Database.IsNpgsql())
             {
-                // Clear products, categories and reset IDs
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE \"Products\", \"Categories\" RESTART IDENTITY CASCADE;");
-                Console.WriteLine("--> Cleared Products and Categories (Postgres)");
+                try
+                {
+                    Console.WriteLine("--> [SEEDER] Attempting to TRUNCATE Products and Categories (Postgres)...");
+                    // Try with double quotes (case-sensitive) first
+                    context.Database.ExecuteSqlRaw("TRUNCATE TABLE \"Products\", \"Categories\" RESTART IDENTITY CASCADE;");
+                    Console.WriteLine("--> [SEEDER] Successfully truncated Products and Categories.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> [SEEDER] TRUNCATE error (likely case sensitivity): {ex.Message}");
+                    try
+                    {
+                        Console.WriteLine("--> [SEEDER] Retrying TRUNCATE with lowercase names...");
+                        context.Database.ExecuteSqlRaw("TRUNCATE TABLE products, categories RESTART IDENTITY CASCADE;");
+                        Console.WriteLine("--> [SEEDER] Successfully truncated products and categories (lowercase).");
+                    }
+                    catch (Exception ex2)
+                    {
+                        Console.WriteLine($"--> [SEEDER] Final TRUNCATE attempt failed: {ex2.Message}");
+                    }
+                }
             }
             else if (context.Database.IsSqlServer())
             {
-                // SQL Server approach
-                context.Database.ExecuteSqlRaw("DELETE FROM Products; DELETE FROM Categories;");
-                context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Products', RESEED, 0); DBCC CHECKIDENT ('Categories', RESEED, 0);");
-                Console.WriteLine("--> Cleared Products and Categories (SQL Server)");
-            }
-            else 
-            {
-                // SQLite or other
+                Console.WriteLine("--> [SEEDER] Found SQL Server. Cleaning up via RemoveRange...");
                 context.Products.RemoveRange(context.Products);
                 context.Categories.RemoveRange(context.Categories);
                 context.SaveChanges();
-                Console.WriteLine("--> Cleared Products and Categories (Generic)");
             }
-
+            else if (context.Database.IsSqlite())
+            {
+                Console.WriteLine("--> [SEEDER] Found SQLite. Cleaning up via RemoveRange...");
+                context.Products.RemoveRange(context.Products);
+                context.Categories.RemoveRange(context.Categories);
+                context.SaveChanges();
+            }
             // 1. Seed Categories
             var categoryNames = new[] { "Sản Phẩm Sấy Dẻo", "Sản Phẩm Sấy Giòn", "Sản Phẩm Sấy Thăng Hoa", "Mini Size Mix" };
             foreach (var name in categoryNames)
@@ -64,10 +79,9 @@ public static class DatabaseSeeder
                     IsActive = true 
                 });
             }
-        }
-        context.SaveChanges();
+            context.SaveChanges();
 
-        // 2. Seed Products
+            // 2. Seed Products
         Console.WriteLine("--> Seeding products...");
         var categories = context.Categories.ToList();
         var catDeo = categories.First(c => c.CategoryName.Contains("Sấy Dẻo", StringComparison.OrdinalIgnoreCase));
@@ -75,38 +89,293 @@ public static class DatabaseSeeder
         var catThangHoa = categories.First(c => c.CategoryName.Contains("Thăng Hoa", StringComparison.OrdinalIgnoreCase));
         var catMini = categories.First(c => c.CategoryName.Contains("Mini Size", StringComparison.OrdinalIgnoreCase));
 
-        var productList = new List<Product>
-        {
-            // SẤY DẺO
-            new Product { ProductCode = "SD-MAN-200", ProductName = "Mận Sấy Dẻo", CategoryId = catDeo.CategoryId, Price = 65000, StockQuantity = 100, Description = "Mận sấy dẻo Mộc Châu được chế biến từ những trái mận chín mọng, tươi ngon. Sản phẩm giữ nguyên vị chua ngọt tự nhiên, mềm mại, thơm ngon. Giàu vitamin C, chất xơ tốt cho sức khỏe.", ShortDescription = "Mận sấy dẻo giữ nguyên vị chua ngọt tự nhiên", ImageUrl = "/images/products/man-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
-            new Product { ProductCode = "SD-XOAI-200", ProductName = "Xoài Sấy Dẻo", CategoryId = catDeo.CategoryId, Price = 70000, StockQuantity = 100, Description = "Xoài sấy dẻo từ xoài Mộc Châu thơm ngon, ngọt tự nhiên. Sản phẩm giữ nguyên hương vị đặc trưng của xoài tươi, mềm dẻo, không chất bảo quản.", ShortDescription = "Xoài Mộc Châu thơm ngon, ngọt tự nhiên", ImageUrl = "/images/products/xoai-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
-            new Product { ProductCode = "SD-DAO-200", ProductName = "Đào Sấy Dẻo", CategoryId = catDeo.CategoryId, Price = 65000, StockQuantity = 100, Description = "Đào sấy dẻo Mộc Châu với vị ngọt thanh, thơm mát. Sản phẩm giữ nguyên màu sắc tự nhiên, mềm dẻo, giàu vitamin và khoáng chất.", ShortDescription = "Đào sấy dẻo vị ngọt thanh, thơm mát", ImageUrl = "/images/products/dao-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = false },
-            new Product { ProductCode = "SD-DAU-200", ProductName = "Dâu Sấy Dẻo", CategoryId = catDeo.CategoryId, Price = 90000, StockQuantity = 80, Description = "Dâu sấy dẻo Mộc Châu từ dâu tây tươi ngon, giàu vitamin C. Sản phẩm có vị chua ngọt hài hòa, màu đỏ tự nhiên, mềm dẻo thơm ngon.", ShortDescription = "Dâu tây sấy dẻo giàu vitamin C", ImageUrl = "/images/products/dau-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
-            new Product { ProductCode = "SD-HONG-200", ProductName = "Hồng Sấy Dẻo", CategoryId = catDeo.CategoryId, Price = 95000, StockQuantity = 80, Description = "Hồng sấy dẻo Mộc Châu từ hồng giòn cao cấp. Sản phẩm giữ nguyên vị ngọt thanh, thơm mát đặc trưng của hồng tươi, mềm dẻo, bổ dưỡng.", ShortDescription = "Hồng giòn sấy dẻo cao cấp", ImageUrl = "/images/products/hong-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
-            
-            // SẤY GIÒN
-            new Product { ProductCode = "SG-MIT-200", ProductName = "Mít Sấy Giòn", CategoryId = catGion.CategoryId, Price = 80000, StockQuantity = 100, Description = "Mít sấy giòn Mộc Châu từ mít tươi ngon, thơm ngọt. Sản phẩm giòn tan, thơm nức, giữ nguyên hương vị đặc trưng của mít tươi. Giàu chất xơ, vitamin.", ShortDescription = "Mít sấy giòn tan, thơm nức", ImageUrl = "/images/products/mit-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = true },
-            new Product { ProductCode = "SG-CHUOI-200", ProductName = "Chuối Sấy Giòn", CategoryId = catGion.CategoryId, Price = 80000, StockQuantity = 100, Description = "Chuối sấy giòn Mộc Châu từ chuối già chín tự nhiên. Sản phẩm giòn rụm, ngọt thanh, giàu kali and năng lượng. Thích hợp làm snack healthy.", ShortDescription = "Chuối sấy giòn rụm, ngọt thanh", ImageUrl = "/images/products/chuoi-say.jpg", Unit = "Gói", Weight = "200g", IsActive = true, IsFeatured = true, IsNew = false },
-            
-            // SẤY THĂNG HOA
-            new Product { ProductCode = "STH-DAU-100", ProductName = "Dâu Sấy Thăng Hoa", CategoryId = catThangHoa.CategoryId, Price = 140000, StockQuantity = 60, Description = "Dâu sấy thăng hoa với công nghệ hiện đại, giữ nguyên 98% dinh dưỡng. Sản phẩm giòn nhẹ, tan trong miệng, hương vị đậm đà. Không chất bảo quản.", ShortDescription = "Công nghệ thăng hoa giữ nguyên dinh dưỡng", ImageUrl = "/images/products/dau-say-thang-hoa.jpg", Unit = "Gói", Weight = "100g", IsActive = true, IsFeatured = true, IsNew = true },
-            new Product { ProductCode = "STH-SC-100", ProductName = "Sữa Chua Sấy Thăng Hoa", CategoryId = catThangHoa.CategoryId, Price = 95000, StockQuantity = 60, Description = "Sữa chua sấy thăng hoa độc đáo, mới lạ. Sản phẩm giòn tan, vị chua ngọt hài hòa, giàu men vi sinh có lợi. Thích hợp cho mọi lứa tuổi.", ShortDescription = "Sữa chua sấy giòn tan, giàu men vi sinh", ImageUrl = "/images/products/sua-chua-say-thang-hoa.jpg", Unit = "Gói", Weight = "100g", IsActive = true, IsFeatured = true, IsNew = true },
-            
-            // MINI SIZE
-            new Product { ProductCode = "SD-MAN-50", ProductName = "Mận Sấy Dẻo Mini", CategoryId = catMini.CategoryId, Price = 18000, StockQuantity = 200, Description = "Mận sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/man-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "SD-XOAI-50", ProductName = "Xoài Sấy Dẻo Mini", CategoryId = catMini.CategoryId, Price = 20000, StockQuantity = 200, Description = "Xoài sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/xoai-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "SD-DAO-50", ProductName = "Đào Sấy Dẻo Mini", CategoryId = catMini.CategoryId, Price = 18000, StockQuantity = 200, Description = "Đào sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/dao-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "SD-DAU-50", ProductName = "Dâu Sấy Dẻo Mini", CategoryId = catMini.CategoryId, Price = 25000, StockQuantity = 200, Description = "Dâu sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/dau-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "SD-HONG-50", ProductName = "Hồng Sấy Dẻo Mini", CategoryId = catMini.CategoryId, Price = 28000, StockQuantity = 200, Description = "Hồng sấy dẻo gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/hong-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "SG-MIT-50", ProductName = "Mít Sấy Giòn Mini", CategoryId = catMini.CategoryId, Price = 22000, StockQuantity = 200, Description = "Mít sấy giòn gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/mit-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "SG-CHUOI-50", ProductName = "Chuối Sấy Giòn Mini", CategoryId = catMini.CategoryId, Price = 22000, StockQuantity = 200, Description = "Chuối sấy giòn gói mini 50g tiện lợi. Thích hợp để mix nhiều loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/chuoi-say.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "STH-DAU-50", ProductName = "Dâu Sấy Thăng Hoa Mini", CategoryId = catMini.CategoryId, Price = 75000, StockQuantity = 150, Description = "Dâu sấy thăng hoa gói mini 50g tiện lợi. Thích hợp để mix many loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/dau-say-thang-hoa.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false },
-            new Product { ProductCode = "STH-SC-50", ProductName = "Sữa Chua Sấy Thăng Hoa Mini", CategoryId = catMini.CategoryId, Price = 50000, StockQuantity = 150, Description = "Sữa chua sấy thăng hoa gói mini 50g tiện lợi. Thích hợp để mix many loại, mang theo du lịch. Tối thiểu đặt 4 pack.", ShortDescription = "Gói mini 50g tiện lợi (tối thiểu 4 pack)", ImageUrl = "/images/products/sua-chua-say-thang-hoa.jpg", Unit = "Gói", Weight = "50g", IsActive = true, IsFeatured = false, IsNew = false }
-        };
+            // ADD PRODUCTS
+            if (!context.Products.Any())
+            {
+                Console.WriteLine("--> [SEEDER] Seeding exactly 18 products...");
+                
+                var products = new List<Product>
+                {
+                    // 1. SÁº¤Y GIÃ’N (6 sáº£n pháº©m)
+                    new Product { 
+                        ProductName = "XoÃ i Sáº¥y Giá»n", 
+                        ProductCode = "XOAI-GION-01",
+                        Price = 55000, 
+                        OriginalPrice = 65000,
+                        StockQuantity = 100, 
+                        Unit = "GÃ³i", 
+                        Weight = "100g",
+                        ImageUrl = "/images/products/xoai-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        IsActive = true,
+                        IsNew = true,
+                        Rating = 5.0m,
+                        Description = "XoÃ i sáº¥y giá»n thÆ¡m ngon, giá»¯ trá» n hÆ°Æ¡ng vá»‹ tá»± nhiÃªn."
+                    },
+                    new Product { 
+                        ProductName = "MÃ­t Sáº¥y Giá»n", 
+                        ProductCode = "MIT-GION-01",
+                        Price = 45000, 
+                        OriginalPrice = 50000,
+                        StockQuantity = 100, 
+                        Unit = "GÃ³i", 
+                        Weight = "150g",
+                        ImageUrl = "/images/products/mit-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        IsActive = true,
+                        IsNew = true,
+                        Rating = 4.8m,
+                        Description = "MÃ­t sáº¥y giá»n vÃ ng á»‘m, giÃ²n tan."
+                    },
+                    new Product { 
+                        ProductName = "Chuá»‘i Sáº¥y Giá»n", 
+                        ProductCode = "CHUOI-GION-01",
+                        Price = 35000, 
+                        OriginalPrice = 40000,
+                        StockQuantity = 150, 
+                        Unit = "GÃ³i", 
+                        Weight = "200g",
+                        ImageUrl = "/images/products/chuoi-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        IsActive = true,
+                        Rating = 4.7m,
+                        Description = "Chuá»‘i sáº¥y giá»n truyá» n thá»‘ng."
+                    },
+                    new Product { 
+                        ProductName = "Khoai Lang Sáº¥y Giá»n", 
+                        ProductCode = "KHOAI-GION-01",
+                        Price = 40000, 
+                        OriginalPrice = 45000,
+                        StockQuantity = 80, 
+                        Unit = "GÃ³i", 
+                        Weight = "150g",
+                        ImageUrl = "/images/products/khoai-lang-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        IsActive = true,
+                        Rating = 4.6m,
+                        Description = "Khoai lang sáº¥y giá»n tá»± nhiÃªn."
+                    },
+                    new Product { 
+                        ProductName = "Tháº­p Cáº©m Sáº¥y Giá»n", 
+                        ProductCode = "THAP-CAM-01",
+                        Price = 60000, 
+                        OriginalPrice = 70000,
+                        StockQuantity = 200, 
+                        Unit = "GÃ³i", 
+                        Weight = "250g",
+                        ImageUrl = "/images/products/thap-cam-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        IsActive = true,
+                        Rating = 4.9m,
+                        Description = "Tháº­p cáº©m cÃ¡c loáº¡i cÅ© quáº£ sáº¥y giá»n."
+                    },
+                    new Product { 
+                        ProductName = "Tháº­p Cáº©m Sáº¥y Giá»n Mini", 
+                        ProductCode = "THAP-CAM-MINI",
+                        Price = 25000, 
+                        OriginalPrice = 30000,
+                        StockQuantity = 300, 
+                        Unit = "GÃ³i", 
+                        Weight = "100g",
+                        ImageUrl = "/images/products/thap-cam-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        IsActive = true,
+                        Rating = 4.8m,
+                        Description = "TÃºi nhá»  tiá»‡n lá»£i."
+                    },
 
-        context.Products.AddRange(productList);
-        context.SaveChanges();
-        Console.WriteLine($"--> Added {productList.Count} products.");
+                    // 2. Sáº¤Y THÄ‚NG HOA (6 sáº£n pháº©m)
+                    new Product { 
+                        ProductName = "DÃ¢u Sáº¥y ThÄƒng Hoa", 
+                        ProductCode = "DAU-TH-01",
+                        Price = 120000, 
+                        OriginalPrice = 140000,
+                        StockQuantity = 50, 
+                        Unit = "Há»™p", 
+                        Weight = "50g",
+                        ImageUrl = "/images/products/dau-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
+                        IsActive = true,
+                        IsNew = true,
+                        Rating = 5.0m,
+                        Description = "DÃ¢u tÃ¢y sáº¥y thÄƒng hoa cao cáº¥p."
+                    },
+                    new Product { 
+                        ProductName = "Sá»¯a Chua Sáº¥y ThÄƒng Hoa", 
+                        ProductCode = "SUA-CHUA-TH-01",
+                        Price = 85000, 
+                        OriginalPrice = 95000,
+                        StockQuantity = 70, 
+                        Unit = "GÃ³i", 
+                        Weight = "45g",
+                        ImageUrl = "/images/products/sua-chua-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
+                        IsActive = true,
+                        IsNew = true,
+                        Rating = 4.9m,
+                        Description = "ViÃªn sá»¯a chua sáº¥y giÃ²n tan, bá»• dÆ°á»¡ng."
+                    },
+                    new Product { 
+                        ProductName = "Na Sáº¥y ThÄƒng Hoa", 
+                        ProductCode = "NA-TH-01",
+                        Price = 150000, 
+                        OriginalPrice = 170000,
+                        StockQuantity = 30, 
+                        Unit = "Há»™p", 
+                        Weight = "50g",
+                        ImageUrl = "/images/products/na-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
+                        IsActive = true,
+                        Rating = 4.9m,
+                        Description = "Na sáº¥y thÄƒ hoa giá»¯ nguyÃªn cáº¥u trÃºc vÃ  dÆ°á»¡ng cháº¥t."
+                    },
+                    new Product { 
+                        ProductName = "Sáº§u RiÃªng Sáº¥y ThÄƒng Hoa", 
+                        ProductCode = "SAU-RIENG-TH-01",
+                        Price = 180000, 
+                        OriginalPrice = 200000,
+                        StockQuantity = 40, 
+                        Unit = "Há»™p", 
+                        Weight = "80g",
+                        ImageUrl = "/images/products/sau-rieng-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
+                        IsActive = true,
+                        Rating = 5.0m,
+                        Description = "Sáº§u riÃªng sáº¥y thÄƒng hoa thÆ¡m ná»©c."
+                    },
+                    new Product { 
+                        ProductName = "NhÃ£n Sáº¥y ThÄƒng Hoa", 
+                        ProductCode = "NHAN-TH-01",
+                        Price = 110000, 
+                        OriginalPrice = 125000,
+                        StockQuantity = 60, 
+                        Unit = "GÃ³i", 
+                        Weight = "100g",
+                        ImageUrl = "/images/products/nhan-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
+                        IsActive = true,
+                        Rating = 4.7m,
+                        Description = "CÆ¡i nhÃ£n sáº¥y thÄƒng hoa ngá» t thanh."
+                    },
+                    new Product { 
+                        ProductName = "Cam Sáº¥y ThÄƒng Hoa", 
+                        ProductCode = "CAM-TH-01",
+                        Price = 75000, 
+                        OriginalPrice = 85000,
+                        StockQuantity = 90, 
+                        Unit = "GÃ³i", 
+                        Weight = "100g",
+                        ImageUrl = "/images/products/cam-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
+                        IsActive = true,
+                        Rating = 4.6m,
+                        Description = "LÃ¡t cam sáº¥y thÄƒng hoa dÃ¹ng pha trÃ  hoáº·c Äƒn trá»±c tiáº¿p."
+                    },
+
+                    // 3. Sáº¤Y DáºmultiO (6 sáº£n pháº©m)
+                    new Product { 
+                        ProductName = "XoÃ i Sáº¥y Dáº»o", 
+                        ProductCode = "XOAI-DEO-01",
+                        Price = 65000, 
+                        OriginalPrice = 75000,
+                        StockQuantity = 120, 
+                        Unit = "GÃ³i", 
+                        Weight = "200g",
+                        ImageUrl = "/images/products/xoai-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
+                        IsActive = true,
+                        Rating = 4.9m,
+                        Description = "XoÃ i sáº¥y dáº»o chua ngá» t, dai ngon."
+                    },
+                    new Product { 
+                        ProductName = "Máº­n Sáº¥y Dáº»o", 
+                        ProductCode = "MAN-DEO-01",
+                        Price = 65000, 
+                        OriginalPrice = 75000,
+                        StockQuantity = 100, 
+                        Unit = "GÃ³i", 
+                        Weight = "200g",
+                        ImageUrl = "/images/products/man-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
+                        IsActive = true,
+                        Rating = 5.0m,
+                        Description = "Máº­n sáº¥y dáº»o khÃ´ng háº¡t."
+                    },
+                    new Product { 
+                        ProductName = "Ä Ã o Sáº¥y Dáº»o", 
+                        ProductCode = "DAO-DEO-01",
+                        Price = 70000, 
+                        OriginalPrice = 80000,
+                        StockQuantity = 80, 
+                        Unit = "GÃ³i", 
+                        Weight = "150g",
+                        ImageUrl = "/images/products/dao-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
+                        IsActive = true,
+                        Rating = 4.8m,
+                        Description = "Ä Ã o sáº¥y dáº»o thÆ¡m lÃ«ng."
+                    },
+                    new Product { 
+                        ProductName = "DÆ°á»£u Sáº¥y Dáº»o", 
+                        ProductCode = "DAU-DEO-01",
+                        Price = 90000, 
+                        OriginalPrice = 110000,
+                        StockQuantity = 60, 
+                        Unit = "GÃ³i", 
+                        Weight = "100g",
+                        ImageUrl = "/images/products/dau-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
+                        IsActive = true,
+                        Rating = 4.9m,
+                        Description = "DÃ¢u tÃ¢y sáº¥y dáº»o nguyÃªn trÃ¡i."
+                    },
+                    new Product { 
+                        ProductName = "Há»“ng Sáº¥y Dáº»o", 
+                        ProductCode = "HONG-DEO-01",
+                        Price = 130000, 
+                        OriginalPrice = 150000,
+                        StockQuantity = 50, 
+                        Unit = "Há»™p", 
+                        Weight = "250g",
+                        ImageUrl = "/images/products/hong-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
+                        IsActive = true,
+                        Rating = 5.0m,
+                        Description = "Há»“ng treo giÃ³ sáº¥y dáº»o Ä Ã  Láº¡t."
+                    },
+                    new Product { 
+                        ProductName = "MÃ­t Sáº¥y Dáº»o", 
+                        ProductCode = "MIT-DEO-01",
+                        Price = 75000, 
+                        OriginalPrice = 85000,
+                        StockQuantity = 90, 
+                        Unit = "GÃ³i", 
+                        Weight = "150g",
+                        ImageUrl = "/images/products/mit-say.jpg", // Corrected path
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
+                        IsActive = true,
+                        Rating = 4.7m,
+                        Description = "MÃ­t sáº¥y dáº»o ngá» t lán."
+                    }
+                };
+
+                foreach (var p in products)
+                {
+                    Console.WriteLine($"--> [SEEDER] Adding: {p.ProductName} | Path: {p.ImageUrl}");
+                }
+                
+                context.Products.AddRange(products);
+                context.SaveChanges();
+                Console.WriteLine("--> [SEEDER] All 18 products saved successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"--> [SEEDER] Products already exist ({context.Products.Count()}). Skipping product seed.");
+            }
+        
+        // context.Products.AddRange(productList);
+        // context.SaveChanges();
+        // Console.WriteLine($"--> Added {productList.Count} products.");
 
         var adminEmail = "admin@mocvistore.com";
         var staffEmail = "staff@mocvistore.com";
@@ -321,7 +590,7 @@ public static class DatabaseSeeder
                 context.Blogs.AddRange(blogs);
                 context.SaveChanges();
              }
-        }      Console.WriteLine("✅ Database seeded successfully with products, employees, users and 5 blog posts!");
+        Console.WriteLine("✅ Database seeded successfully with products, employees, users and 5 blog posts!");
         }
         catch (Exception ex)
         {
