@@ -225,13 +225,21 @@ using (var scope = app.Services.CreateScope())
         // context.Database.Migrate(); // Swapping to EnsureCreated to prevent migration mismatch
         context.Database.EnsureCreated();
 
-        // MANUAL PATCH: Fix missing column in Production (SQLite)
+        // MANUAL PATCH: Fix missing column in Production (PostgreSQL uses double quotes)
         try 
         {
             // Try to add the column. If it exists, this will throw/catch and continue safe.
-            context.Database.ExecuteSqlRaw("ALTER TABLE Reviews ADD COLUMN MediaUrl TEXT;");
+            // Using CASE to make it work for both SQL Server/SQLite and PostgreSQL
+            if (context.Database.IsNpgsql())
+            {
+                 context.Database.ExecuteSqlRaw("ALTER TABLE \"Reviews\" ADD COLUMN IF NOT EXISTS \"MediaUrl\" TEXT;");
+            }
+            else 
+            {
+                 context.Database.ExecuteSqlRaw("ALTER TABLE Reviews ADD COLUMN MediaUrl TEXT;");
+            }
         } 
-        catch (Exception) { /* Column already exists */ }
+        catch (Exception) { /* Column already exists or other safe error */ }
 
         // Seed initial data if needed
         try
