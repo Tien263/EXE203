@@ -21,21 +21,28 @@ builder.WebHost.ConfigureKestrel(options =>
 
 // Add Memory Cache for performance optimization
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-if (!string.IsNullOrEmpty(redisConnectionString))
+// Handle case where env var might literally be string "null" or empty spaces
+if (string.IsNullOrWhiteSpace(redisConnectionString) || redisConnectionString.Trim().ToLower() == "null")
 {
-    // Cấu hình Redis Cache
+    // Try to connect to docker 'redis:6379' by default for Production, fallback to memory
+    redisConnectionString = builder.Environment.IsProduction() ? "redis:6379" : "localhost:6379";
+    Console.WriteLine($"--> Redis connection string was missing or null. Defaulting to: {redisConnectionString}");
+}
+
+// Cấu hình Redis Cache
+try 
+{
     builder.Services.AddStackExchangeRedisCache(options =>
     {
         options.Configuration = redisConnectionString;
         options.InstanceName = "MocVi_";
     });
-    Console.WriteLine("--> Using Redis Distributed Cache");
-}
-else
+    Console.WriteLine($"--> Using Redis Distributed Cache at {redisConnectionString}");
+} 
+catch (Exception ex)
 {
-    // Cấu hình Memory Cache làm Fallback khi không có Redis
+    Console.WriteLine($"--> Failed to configure Redis: {ex.Message}. Falling back to MemoryCache.");
     builder.Services.AddDistributedMemoryCache();
-    Console.WriteLine("--> Using Memory Distributed Cache (Fallback)");
 }
 
 // Add Response Caching
