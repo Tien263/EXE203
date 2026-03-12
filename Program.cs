@@ -20,12 +20,23 @@ builder.WebHost.ConfigureKestrel(options =>
 // builder.Services.AddControllersWithViews(); // Removed duplicate call
 
 // Add Memory Cache for performance optimization
-// Cấu hình Redis Cache
-builder.Services.AddStackExchangeRedisCache(options =>
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+if (!string.IsNullOrEmpty(redisConnectionString))
 {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    options.InstanceName = "MocVi_";
-});
+    // Cấu hình Redis Cache
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = redisConnectionString;
+        options.InstanceName = "MocVi_";
+    });
+    Console.WriteLine("--> Using Redis Distributed Cache");
+}
+else
+{
+    // Cấu hình Memory Cache làm Fallback khi không có Redis
+    builder.Services.AddDistributedMemoryCache();
+    Console.WriteLine("--> Using Memory Distributed Cache (Fallback)");
+}
 
 // Add Response Caching
 // builder.Services.AddResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
