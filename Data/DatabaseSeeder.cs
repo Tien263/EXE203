@@ -22,7 +22,7 @@ public static class DatabaseSeeder
         
         try
         {
-            // AGGRESSIVE CLEANUP: Clear old data to ensure new paths are used
+            /* AGGRESSIVE CLEANUP: Clear old data to ensure new paths are used
             if (context.Database.IsNpgsql())
             {
                 try
@@ -61,6 +61,7 @@ public static class DatabaseSeeder
                 context.Categories.RemoveRange(context.Categories);
                 context.SaveChanges();
             }
+            */
             // 1. Seed Categories
             var categoryNames = new[] { "Sản Phẩm Sấy Dẻo", "Sản Phẩm Sấy Giòn", "Sản Phẩm Sấy Thăng Hoa", "Mini Size Mix" };
             foreach (var name in categoryNames)
@@ -96,266 +97,259 @@ public static class DatabaseSeeder
                 
                 var products = new List<Product>
                 {
-                    // 1. SÁº¤Y GIÃ’N (6 sáº£n pháº©m)
+                    // 1. SẤY GIÒN (6 sáº£n pháº©m)
                     new Product { 
-                        ProductName = "XoÃ i Sáº¥y Giá»n", 
-                        ProductCode = "XOAI-GION-01",
-                        Price = 55000, 
-                        OriginalPrice = 65000,
-                        StockQuantity = 100, 
-                        Unit = "GÃ³i", 
-                        Weight = "100g",
-                        ImageUrl = "/images/products/xoai-say.jpg", // Corrected path
-                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
+                        ImageUrl = "/images/products/xoai-say-deo.jpg", // Corrected to match production 404 patterns
+                        CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         IsNew = true,
                         Rating = 5.0m,
-                        Description = "XoÃ i sáº¥y giá»n thÆ¡m ngon, giá»¯ trá» n hÆ°Æ¡ng vá»‹ tá»± nhiÃªn."
+                        Description = "Xoài sấy dẻo thơm ngon, giữ trọn hương vị tự nhiên."
                     },
                     new Product { 
-                        ProductName = "MÃ­t Sáº¥y Giá»n", 
+                        ProductName = "Mít Sấy Giòn", 
                         ProductCode = "MIT-GION-01",
                         Price = 45000, 
                         OriginalPrice = 50000,
                         StockQuantity = 100, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "150g",
-                        ImageUrl = "/images/products/mit-say.jpg", // Corrected path
+                        ImageUrl = "/images/products/mit-say-gion.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
                         IsActive = true,
                         IsNew = true,
                         Rating = 4.8m,
-                        Description = "MÃ­t sáº¥y giá»n vÃ ng á»‘m, giÃ²n tan."
+                        Description = "Mít sấy giòn vàng ốm, giòn tan."
                     },
                     new Product { 
-                        ProductName = "Chuá»‘i Sáº¥y Giá»n", 
+                        ProductName = "Chuối Sấy Giòn", 
                         ProductCode = "CHUOI-GION-01",
                         Price = 35000, 
                         OriginalPrice = 40000,
                         StockQuantity = 150, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "200g",
-                        ImageUrl = "/images/products/chuoi-say.jpg", // Corrected path
+                        ImageUrl = "/images/products/chuoi-say-gion.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
                         IsActive = true,
                         Rating = 4.7m,
-                        Description = "Chuá»‘i sáº¥y giá»n truyá» n thá»‘ng."
+                        Description = "Chuối sấy giòn truyền thống."
                     },
                     new Product { 
-                        ProductName = "Khoai Lang Sáº¥y Giá»n", 
+                        ProductName = "Khoai Lang Sấy Giòn", 
                         ProductCode = "KHOAI-GION-01",
                         Price = 40000, 
                         OriginalPrice = 45000,
                         StockQuantity = 80, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "150g",
                         ImageUrl = "/images/products/khoai-lang-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
                         IsActive = true,
                         Rating = 4.6m,
-                        Description = "Khoai lang sáº¥y giá»n tá»± nhiÃªn."
+                        Description = "Khoai lang sấy giòn tự nhiên."
                     },
                     new Product { 
-                        ProductName = "Tháº­p Cáº©m Sáº¥y Giá»n", 
+                        ProductName = "Thập Cẩm Sấy Giòn", 
                         ProductCode = "THAP-CAM-01",
                         Price = 60000, 
                         OriginalPrice = 70000,
                         StockQuantity = 200, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "250g",
-                        ImageUrl = "/images/products/thap-cam-say.jpg", // Corrected path
+                        ImageUrl = "/images/products/mix-4.png", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
                         IsActive = true,
                         Rating = 4.9m,
-                        Description = "Tháº­p cáº©m cÃ¡c loáº¡i cÅ© quáº£ sáº¥y giá»n."
+                        Description = "Thập cẩm các loại củ quả sấy giòn."
                     },
                     new Product { 
-                        ProductName = "Tháº­p Cáº©m Sáº¥y Giá»n Mini", 
+                        ProductName = "Thập Cẩm Sấy Giòn Mini", 
                         ProductCode = "THAP-CAM-MINI",
                         Price = 25000, 
                         OriginalPrice = 30000,
                         StockQuantity = 300, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "100g",
-                        ImageUrl = "/images/products/thap-cam-say.jpg", // Corrected path
+                        ImageUrl = "/images/products/mix-4.png", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
                         IsActive = true,
                         Rating = 4.8m,
-                        Description = "TÃºi nhá»  tiá»‡n lá»£i."
+                        Description = "Túi nhỏ tiện lợi."
                     },
 
-                    // 2. Sáº¤Y THÄ‚NG HOA (6 sáº£n pháº©m)
+                    // 2. SẤY THĂNG HOA (6 sáº£n pháº©m)
                     new Product { 
-                        ProductName = "DÃ¢u Sáº¥y ThÄƒng Hoa", 
+                        ProductName = "Dâu Sấy Thăng Hoa", 
                         ProductCode = "DAU-TH-01",
                         Price = 120000, 
                         OriginalPrice = 140000,
                         StockQuantity = 50, 
-                        Unit = "Há»™p", 
+                        Unit = "Hộp", 
                         Weight = "50g",
                         ImageUrl = "/images/products/dau-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
                         IsActive = true,
                         IsNew = true,
                         Rating = 5.0m,
-                        Description = "DÃ¢u tÃ¢y sáº¥y thÄƒng hoa cao cáº¥p."
+                        Description = "Dâu tây sấy thăng hoa cao cấp."
                     },
                     new Product { 
-                        ProductName = "Sá»¯a Chua Sáº¥y ThÄƒng Hoa", 
+                        ProductName = "Sữa Chua Sấy Thăng Hoa", 
                         ProductCode = "SUA-CHUA-TH-01",
                         Price = 85000, 
                         OriginalPrice = 95000,
                         StockQuantity = 70, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "45g",
                         ImageUrl = "/images/products/sua-chua-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
                         IsActive = true,
                         IsNew = true,
                         Rating = 4.9m,
-                        Description = "ViÃªn sá»¯a chua sáº¥y giÃ²n tan, bá»• dÆ°á»¡ng."
+                        Description = "Viên sữa chua sấy giòn tan, bổ dưỡng."
                     },
                     new Product { 
-                        ProductName = "Na Sáº¥y ThÄƒng Hoa", 
+                        ProductName = "Na Sấy Thăng Hoa", 
                         ProductCode = "NA-TH-01",
                         Price = 150000, 
                         OriginalPrice = 170000,
                         StockQuantity = 30, 
-                        Unit = "Há»™p", 
+                        Unit = "Hộp", 
                         Weight = "50g",
                         ImageUrl = "/images/products/na-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
                         IsActive = true,
                         Rating = 4.9m,
-                        Description = "Na sáº¥y thÄƒ hoa giá»¯ nguyÃªn cáº¥u trÃºc vÃ  dÆ°á»¡ng cháº¥t."
+                        Description = "Na sấy thăng hoa giữ nguyên cấu trúc và dưỡng chất."
                     },
                     new Product { 
-                        ProductName = "Sáº§u RiÃªng Sáº¥y ThÄƒng Hoa", 
+                        ProductName = "Sầu Riêng Sấy Thăng Hoa", 
                         ProductCode = "SAU-RIENG-TH-01",
                         Price = 180000, 
                         OriginalPrice = 200000,
                         StockQuantity = 40, 
-                        Unit = "Há»™p", 
+                        Unit = "Hộp", 
                         Weight = "80g",
                         ImageUrl = "/images/products/sau-rieng-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
                         IsActive = true,
                         Rating = 5.0m,
-                        Description = "Sáº§u riÃªng sáº¥y thÄƒng hoa thÆ¡m ná»©c."
+                        Description = "Sầu riêng sấy thăng hoa thơm nức."
                     },
                     new Product { 
-                        ProductName = "NhÃ£n Sáº¥y ThÄƒng Hoa", 
+                        ProductName = "Nhãn Sấy Thăng Hoa", 
                         ProductCode = "NHAN-TH-01",
                         Price = 110000, 
                         OriginalPrice = 125000,
                         StockQuantity = 60, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "100g",
                         ImageUrl = "/images/products/nhan-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
                         IsActive = true,
                         Rating = 4.7m,
-                        Description = "CÆ¡i nhÃ£n sáº¥y thÄƒng hoa ngá» t thanh."
+                        Description = "Cùi nhãn sấy thăng hoa ngọt thanh."
                     },
                     new Product { 
-                        ProductName = "Cam Sáº¥y ThÄƒng Hoa", 
+                        ProductName = "Cam Sấy Thăng Hoa", 
                         ProductCode = "CAM-TH-01",
                         Price = 75000, 
                         OriginalPrice = 85000,
                         StockQuantity = 90, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "100g",
                         ImageUrl = "/images/products/cam-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
                         IsActive = true,
                         Rating = 4.6m,
-                        Description = "LÃ¡t cam sáº¥y thÄƒng hoa dÃ¹ng pha trÃ  hoáº·c Äƒn trá»±c tiáº¿p."
+                        Description = "Lát cam sấy thăng hoa dùng pha trà hoặc ăn trực tiếp."
                     },
 
-                    // 3. Sáº¤Y DáºmultiO (6 sáº£n pháº©m)
+                    // 3. SẤY DẺO (6 sáº£n pháº©m)
                     new Product { 
-                        ProductName = "XoÃ i Sáº¥y Dáº»o", 
+                        ProductName = "Xoài Sấy Dẻo", 
                         ProductCode = "XOAI-DEO-01",
                         Price = 65000, 
                         OriginalPrice = 75000,
                         StockQuantity = 120, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "200g",
-                        ImageUrl = "/images/products/xoai-say.jpg", // Corrected path
+                        ImageUrl = "/images/products/xoai-say-deo.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         Rating = 4.9m,
-                        Description = "XoÃ i sáº¥y dáº»o chua ngá» t, dai ngon."
+                        Description = "Xoài sấy dẻo chua ngọt, dai ngon."
                     },
                     new Product { 
-                        ProductName = "Máº­n Sáº¥y Dáº»o", 
+                        ProductName = "Mận Sấy Dẻo", 
                         ProductCode = "MAN-DEO-01",
                         Price = 65000, 
                         OriginalPrice = 75000,
                         StockQuantity = 100, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "200g",
                         ImageUrl = "/images/products/man-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         Rating = 5.0m,
-                        Description = "Máº­n sáº¥y dáº»o khÃ´ng háº¡t."
+                        Description = "Mận sấy dẻo không hạt."
                     },
                     new Product { 
-                        ProductName = "Ä Ã o Sáº¥y Dáº»o", 
+                        ProductName = "Đào Sấy Dẻo", 
                         ProductCode = "DAO-DEO-01",
                         Price = 70000, 
                         OriginalPrice = 80000,
                         StockQuantity = 80, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "150g",
                         ImageUrl = "/images/products/dao-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         Rating = 4.8m,
-                        Description = "Ä Ã o sáº¥y dáº»o thÆ¡m lÃ«ng."
+                        Description = "Đào sấy dẻo thơm lừng."
                     },
                     new Product { 
-                        ProductName = "DÆ°á»£u Sáº¥y Dáº»o", 
+                        ProductName = "Dâu Sấy Dẻo", 
                         ProductCode = "DAU-DEO-01",
                         Price = 90000, 
                         OriginalPrice = 110000,
                         StockQuantity = 60, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "100g",
                         ImageUrl = "/images/products/dau-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         Rating = 4.9m,
-                        Description = "DÃ¢u tÃ¢y sáº¥y dáº»o nguyÃªn trÃ¡i."
+                        Description = "Dâu tây sấy dẻo nguyên trái."
                     },
                     new Product { 
-                        ProductName = "Há»“ng Sáº¥y Dáº»o", 
+                        ProductName = "Hồng Sấy Dẻo", 
                         ProductCode = "HONG-DEO-01",
                         Price = 130000, 
                         OriginalPrice = 150000,
                         StockQuantity = 50, 
-                        Unit = "Há»™p", 
+                        Unit = "Hộp", 
                         Weight = "250g",
                         ImageUrl = "/images/products/hong-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         Rating = 5.0m,
-                        Description = "Há»“ng treo giÃ³ sáº¥y dáº»o Ä Ã  Láº¡t."
+                        Description = "Hồng treo gió sấy dẻo Đà Lạt."
                     },
                     new Product { 
-                        ProductName = "MÃ­t Sáº¥y Dáº»o", 
+                        ProductName = "Mít Sấy Dẻo", 
                         ProductCode = "MIT-DEO-01",
                         Price = 75000, 
                         OriginalPrice = 85000,
                         StockQuantity = 90, 
-                        Unit = "GÃ³i", 
+                        Unit = "Gói", 
                         Weight = "150g",
                         ImageUrl = "/images/products/mit-say.jpg", // Corrected path
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
                         Rating = 4.7m,
-                        Description = "MÃ­t sáº¥y dáº»o ngá» t lán."
+                        Description = "Mít sấy dẻo ngọt lịm."
                     }
                 };
 

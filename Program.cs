@@ -212,6 +212,10 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
+// Add Data Protection to persist keys across restarts (Fix CryptographicException)
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "dataprotection-keys")));
+
 var app = builder.Build();
 
 // Ensure database is created and migrated
@@ -228,18 +232,21 @@ using (var scope = app.Services.CreateScope())
         // MANUAL PATCH: Fix missing column in Production (PostgreSQL uses double quotes)
         try 
         {
-            // Try to add the column. If it exists, this will throw/catch and continue safe.
-            // Using CASE to make it work for both SQL Server/SQLite and PostgreSQL
             if (context.Database.IsNpgsql())
             {
                  context.Database.ExecuteSqlRaw("ALTER TABLE \"Reviews\" ADD COLUMN IF NOT EXISTS \"MediaUrl\" TEXT;");
             }
             else 
             {
-                 context.Database.ExecuteSqlRaw("ALTER TABLE Reviews ADD COLUMN MediaUrl TEXT;");
+                 // For SQL Server/SQLite, check if column exists before adding
+                 try
+                 {
+                     context.Database.ExecuteSqlRaw("ALTER TABLE Reviews ADD COLUMN MediaUrl TEXT;");
+                 }
+                 catch (Exception) { /* Column already exists - safe to ignore */ }
             }
         } 
-        catch (Exception) { /* Column already exists or other safe error */ }
+        catch (Exception ex) { Console.WriteLine($"MediaUrl column patch: {ex.Message} (safe to ignore)"); }
 
         // Seed initial data if needed
         try
@@ -259,6 +266,9 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Error initializing database: {ex.Message}");
     }
 }
+
+// Handle forwarded headers from Nginx reverse proxy (MUST be before other middleware)
+app.UseForwardedHeaders();
 
 // Configure static files with cache control
 if (app.Environment.IsDevelopment())
