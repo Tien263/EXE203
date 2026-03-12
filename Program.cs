@@ -79,12 +79,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found for Production environment.");
         }
         
-        // MANUALLY SANITIZE Connection String to protect against invalid SQL Server parameters passed in VPS env var
-        connectionString = connectionString
-            .Replace("MultipleActiveResultSets=true;", "", StringComparison.OrdinalIgnoreCase)
-            .Replace("MultipleActiveResultSets=True;", "", StringComparison.OrdinalIgnoreCase)
-            .Replace("TrustServerCertificate=true;", "", StringComparison.OrdinalIgnoreCase)
-            .Replace("TrustServerCertificate=True;", "", StringComparison.OrdinalIgnoreCase);
+        // MANUALLY TRANSLATE SQL Server connection string to PostgreSQL format 
+        // This protects against VPS environments that accidentally pass a SQL Server string to Npgsql
+        if (connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase))
+        {
+            var serverMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Server=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var dbMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Database=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var userMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"User Id=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var passMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Password=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            var server = serverMatch.Success ? serverMatch.Groups[1].Value : "localhost";
+            if (server == ".\\SQLEXPRESS" || server == "(localdb)\\mssqllocaldb") server = "localhost"; // Local host alias fix
+            
+            var db = dbMatch.Success ? dbMatch.Groups[1].Value : "MocViStoreDB";
+            var user = userMatch.Success ? userMatch.Groups[1].Value : "postgres";
+            var pass = passMatch.Success ? passMatch.Groups[1].Value : "DauTay@123"; // Default strong password just in case
+
+            connectionString = $"Host={server};Database={db};Username={user};Password={pass};";
+            Console.WriteLine($"--> Translated SQL Server string to Npgsql format: {connectionString.Replace(pass, "*****")}");
+        }
 
         options.UseNpgsql(connectionString, npgsqlOptions =>
         {
