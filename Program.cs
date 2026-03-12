@@ -78,6 +78,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found for Production environment.");
         }
+        
+        // MANUALLY SANITIZE Connection String to protect against invalid SQL Server parameters passed in VPS env var
+        connectionString = connectionString
+            .Replace("MultipleActiveResultSets=true;", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("MultipleActiveResultSets=True;", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("TrustServerCertificate=true;", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("TrustServerCertificate=True;", "", StringComparison.OrdinalIgnoreCase);
+
         options.UseNpgsql(connectionString, npgsqlOptions =>
         {
             npgsqlOptions.EnableRetryOnFailure(
