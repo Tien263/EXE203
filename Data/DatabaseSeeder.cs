@@ -99,6 +99,13 @@ public static class DatabaseSeeder
                 {
                     // 1. SẤY GIÒN (6 sáº£n pháº©m)
                     new Product { 
+                        ProductName = "Xoài Sấy Dẻo",
+                        ProductCode = "XOAI-DEO-01",
+                        Price = 50000,
+                        OriginalPrice = 60000,
+                        StockQuantity = 100,
+                        Unit = "Gói",
+                        Weight = "200g",
                         ImageUrl = "/images/products/xoai-say-deo.jpg", // Corrected to match production 404 patterns
                         CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
                         IsActive = true,
@@ -583,9 +590,11 @@ public static class DatabaseSeeder
                 };
                 context.Blogs.AddRange(blogs);
                 context.SaveChanges();
-             }
+             } // closes if (adminUser != null)
+        } // closes if (!context.Blogs.Any())
+        
         Console.WriteLine("✅ Database seeded successfully with products, employees, users and 5 blog posts!");
-        }
+        } // closes try block
         catch (Exception ex)
         {
             Console.WriteLine($"Error during seeding: {ex.Message}");
