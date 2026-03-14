@@ -1,8 +1,8 @@
 using Exe_Demo.Data;
 using Exe_Demo.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace Exe_Demo.Helpers
 {
@@ -12,10 +12,12 @@ namespace Exe_Demo.Helpers
     public class StaffAccountHelper
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public StaffAccountHelper(ApplicationDbContext context)
+        public StaffAccountHelper(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace Exe_Demo.Helpers
                 var user = new User
                 {
                     Email = email,
-                    PasswordHash = HashPassword(password),
+                    PasswordHash = _passwordHasher.HashPassword(null!, password),
                     FullName = fullName,
                     PhoneNumber = phoneNumber,
                     Role = role,
@@ -104,17 +106,6 @@ namespace Exe_Demo.Helpers
             return $"NV{nextNumber:D3}";
         }
 
-        /// <summary>
-        /// Hash password bằng SHA256
-        /// </summary>
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
-        }
 
         /// <summary>
         /// Tạo tài khoản Staff mẫu cho testing

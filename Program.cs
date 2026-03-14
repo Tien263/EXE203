@@ -51,10 +51,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     
-    // Check if the user explicitly provided a real PostgreSQL connection string (Host=...)
-    bool isPostgres = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase);
-    // Check if the user explicitly provided a real SQL Server string
-    bool isSqlServer = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase);
+    // Check if the user explicitly provided a real PostgreSQL connection string
+    bool isPostgres = !string.IsNullOrEmpty(connectionString) && 
+                     (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) || 
+                      connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase));
+
+    // Check if the user explicitly provided a real SQL Server string (don't match 'Server' alone as Postgres uses it too)
+    bool isSqlServer = !string.IsNullOrEmpty(connectionString) && 
+                      (connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase) || 
+                       connectionString.Contains("localdb", StringComparison.OrdinalIgnoreCase) ||
+                       connectionString.Contains("TrustServerCertificate", StringComparison.OrdinalIgnoreCase) ||
+                       connectionString.Contains("Integrated Security", StringComparison.OrdinalIgnoreCase));
 
     if (isPostgres)
     {
@@ -96,6 +103,8 @@ builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<Microsoft.AspNetCore.Identity.IPasswordHasher<Exe_Demo.Models.User>, Microsoft.AspNetCore.Identity.PasswordHasher<Exe_Demo.Models.User>>();
+builder.Services.AddScoped<Exe_Demo.Helpers.StaffAccountHelper>();
 
 // Add HttpClient for AI Proxy
 builder.Services.AddHttpClient();

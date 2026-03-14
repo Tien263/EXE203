@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace Exe_Demo.Controllers
 {
@@ -18,13 +19,15 @@ namespace Exe_Demo.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger, IEmailService emailService, IConfiguration configuration)
+        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger, IEmailService emailService, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
             _logger = logger;
             _emailService = emailService;
             _configuration = configuration;
+            _passwordHasher = passwordHasher;
         }
 
         // GET: Auth/Login
@@ -46,10 +49,6 @@ namespace Exe_Demo.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    // Hash password để so sánh
-                    var passwordHash = HashPassword(model.Password);
-
-                    // Tìm user theo email (có tracking để update LastLogin)
                     // Tìm user theo email trước
                     var user = await _context.Users
                         .AsTracking()
@@ -57,7 +56,16 @@ namespace Exe_Demo.Controllers
                         .Include(u => u.Employee)
                         .FirstOrDefaultAsync(u => u.Email == model.Email);
 
-                    if (user == null)
+                    if (user != null)
+                    {
+                        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+                        if (result != PasswordVerificationResult.Success)
+                        {
+                            ModelState.AddModelError("", $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs password cung cấp)");
+                            return View(model);
+                        }
+                    }
+                    else
                     {
                         // FEATURE: Just-In-Time Seeding (Auto-fix for missing Staff account)
                         if (model.Email == "staff@mocvistore.com" || model.Email == "admin@mocvistore.com")
@@ -80,18 +88,6 @@ namespace Exe_Demo.Controllers
                                  ModelState.AddModelError(string.Empty, $"Lỗi tự động tạo tài khoản (JIT): {ex.Message} - {ex.InnerException?.Message}");
                              }
                         }
-                    }
-
-                    if (user == null)
-                    {
-                        ModelState.AddModelError(string.Empty, "Email không tồn tại trong hệ thống.");
-                        return View(model);
-                    }
-
-                    if (user.PasswordHash != passwordHash)
-                    {
-                        ModelState.AddModelError(string.Empty, $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs Hash nhập: {passwordHash.Substring(0, 10)}...)");
-                        return View(model);
                     }
 
                     if (user != null)
@@ -241,7 +237,7 @@ namespace Exe_Demo.Controllers
                             var user = new User
                             {
                                 Email = model.Email,
-                                PasswordHash = HashPassword(model.Password),
+                                PasswordHash = _passwordHasher.HashPassword(null!, model.Password),
                                 FullName = model.FullName,
                                 PhoneNumber = model.PhoneNumber,
                                 Role = "Customer",
@@ -780,14 +776,6 @@ namespace Exe_Demo.Controllers
         }
 
         // Helper methods
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
-        }
 
         private string GenerateCustomerCode()
         {
