@@ -46,87 +46,43 @@ builder.Services.AddControllersWithViews(options =>
 
 // Add DbContext - Use SQLite in Production, SQL Server in Development
 // With Query Tracking optimization
+// Add DbContext - Prioritize SQLite for Docker/VPS deployments without a dedicated SQL server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    // Configure Database with PostgreSQL
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    // Check if the user explicitly provided a real PostgreSQL connection string (Host=...)
+    bool isPostgres = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase);
+    // Check if the user explicitly provided a real SQL Server string (but ignore the dummy SQLEXPRESS one)
+    bool isSqlServer = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase);
 
-    if (builder.Environment.IsProduction())
+    if (isPostgres)
     {
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            throw new InvalidOperationException("Connection string 'DefaultConnection' not found for Production environment.");
-        }
-        
-        // MANUALLY TRANSLATE SQL Server connection string to PostgreSQL format 
-        // This protects against VPS environments that accidentally pass a SQL Server string to Npgsql
-        if (connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase))
-        {
-            var serverMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Server=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var dbMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Database=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var userMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"User Id=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var passMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Password=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
-            var server = serverMatch.Success ? serverMatch.Groups[1].Value : "localhost";
-            // Local host alias fix - translate to host.docker.internal for docker access to host DB
-            if (server == ".\\SQLEXPRESS" || server == "(localdb)\\mssqllocaldb" || server.ToLower() == "localhost" || server == "127.0.0.1") 
-            {
-                server = "host.docker.internal";
-            }
-            
-            var db = dbMatch.Success ? dbMatch.Groups[1].Value : "MocViStoreDB";
-            var user = userMatch.Success ? userMatch.Groups[1].Value : "postgres";
-            var pass = passMatch.Success ? passMatch.Groups[1].Value : "DauTay@123"; // Default strong password just in case
-
-            connectionString = $"Host={server};Database={db};Username={user};Password={pass};";
-            Console.WriteLine($"--> Translated SQL Server string to Npgsql format: {connectionString.Replace(pass, "*****")}");
-        }
-
         options.UseNpgsql(connectionString, npgsqlOptions =>
         {
-            npgsqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorCodesToAdd: null);
+            npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorCodesToAdd: null);
         });
-        Console.WriteLine("--> Using PostgreSQL Database (Production)");
+        Console.WriteLine("--> Using PostgreSQL Database");
+    }
+    else if (isSqlServer)
+    {
+        options.UseSqlServer(connectionString);
+        Console.WriteLine("--> Using SQL Server Database");
     }
     else
     {
-        // Development - can also use Postgres or keep Sqlite
-        if (!string.IsNullOrEmpty(connectionString))
+        // Fallback to SQLite (Perfect for single-node Docker deployments like this one)
+        var dbFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "DbStorage");
+        if (!Directory.Exists(dbFolderPath))
         {
-            // If a connection string is provided, assume it's for SQL Server or PostgreSQL
-            // For simplicity, let's assume SQL Server if not explicitly Npgsql
-            // Or, if you want to use Npgsql in dev too, change UseSqlServer to UseNpgsql
-            if (connectionString.Contains("Host=") || connectionString.Contains("Server=")) // Simple check for Npgsql/SqlServer
-            {
-                options.UseNpgsql(connectionString); // Use Npgsql for development if connection string points to it
-                Console.WriteLine("--> Using PostgreSQL Database (Development)");
-            }
-            else
-            {
-                options.UseSqlServer(connectionString); // Fallback to SQL Server if connection string is for it
-                Console.WriteLine("--> Using SQL Server Database (Development)");
-            }
+            Directory.CreateDirectory(dbFolderPath);
         }
-        else
-        {
-            // Fallback to SQLite if no connection string in Development
-            // FIX: Always use DbStorage folder to ensure Docker persistence even in Dev mode
-            var dbFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "DbStorage");
-            if (!Directory.Exists(dbFolderPath))
-            {
-                Directory.CreateDirectory(dbFolderPath);
-            }
-            var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
-            options.UseSqlite($"Data Source={dbPath}");
-            Console.WriteLine($"Using SQLite database at: {dbPath}");
-        }
+        var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
+        options.UseSqlite($"Data Source={dbPath}");
+        Console.WriteLine($"--> Using SQLite Database at: {dbPath}");
     }
     
     // Performance optimization: Use NoTracking by default for read-only queries
-    // Individual queries can override this when needed
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
