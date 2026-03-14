@@ -1,4 +1,4 @@
-﻿using Exe_Demo.Data;
+using Exe_Demo.Data;
 using Exe_Demo.Models.ViewModels;
 using Exe_Demo.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,10 +9,11 @@ using System.Security.Claims;
 namespace Exe_Demo.Controllers
 {
     [Authorize]
-    public class ProfileController(ApplicationDbContext context, ILogger<ProfileController> logger) : Controller
+    public class ProfileController(ApplicationDbContext context, ILogger<ProfileController> logger, IWebHostEnvironment webHostEnvironment) : Controller
     {
         private readonly ApplicationDbContext _context = context;
         private readonly ILogger<ProfileController> _logger = logger;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         // GET: Profile/Index
         public async Task<IActionResult> Index()
@@ -202,7 +203,7 @@ namespace Exe_Demo.Controllers
             try
             {
                 // Tạo thư mục nếu chưa có
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profiles");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
@@ -211,7 +212,7 @@ namespace Exe_Demo.Controllers
                 // Xóa ảnh cũ nếu có
                 if (!string.IsNullOrEmpty(user.ProfileImageUrl))
                 {
-                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfileImageUrl.TrimStart('/'));
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, user.ProfileImageUrl.TrimStart('/'));
                     if (System.IO.File.Exists(oldImagePath))
                     {
                         System.IO.File.Delete(oldImagePath);

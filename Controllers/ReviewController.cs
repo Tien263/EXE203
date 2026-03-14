@@ -73,7 +73,7 @@ namespace Exe_Demo.Controllers
                     }
 
                     // Save file
-                    string uploadFolder = Path.Combine(_environment.WebRootPath, "images", "reviews");
+                    string uploadFolder = Path.Combine(_environment.WebRootPath, "uploads", "reviews");
                     if (!Directory.Exists(uploadFolder))
                     {
                         Directory.CreateDirectory(uploadFolder);
@@ -87,7 +87,7 @@ namespace Exe_Demo.Controllers
                         await reviewImage.CopyToAsync(fileStream);
                     }
 
-                    review.MediaUrl = "/images/reviews/" + uniqueFileName;
+                    review.MediaUrl = "/uploads/reviews/" + uniqueFileName;
                 }
 
                 _context.Reviews.Add(review);
