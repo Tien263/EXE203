@@ -33,6 +33,14 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+            {
+                var physicalPath = Path.Combine(_webHostEnvironment.WebRootPath, user.ProfileImageUrl.TrimStart('/'));
+                bool fileExists = System.IO.File.Exists(physicalPath);
+                _logger.LogInformation("Profile View - URL: {Url}, Physical Path: {Path}, Exists: {Exists}", 
+                    user.ProfileImageUrl, physicalPath, fileExists);
+            }
+
             var model = new ProfileViewModel
             {
                 UserId = user.Id,
