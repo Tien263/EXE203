@@ -51,30 +51,35 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     
-    // Check if the user explicitly provided a real PostgreSQL connection string
+    // Check for PostgreSQL (Npgsql) keywords
     bool isPostgres = !string.IsNullOrEmpty(connectionString) && 
                      (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) || 
-                      connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase));
+                      connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase) ||
+                      connectionString.Contains("Username=", StringComparison.OrdinalIgnoreCase) ||
+                      connectionString.Contains("SSL Mode=", StringComparison.OrdinalIgnoreCase));
 
-    // Check if the user explicitly provided a real SQL Server string (don't match 'Server' alone as Postgres uses it too)
-    bool isSqlServer = !string.IsNullOrEmpty(connectionString) && 
+    // Check for SQL Server (SqlClient) keywords
+    // We favor PostgreSQL if both are present in some weird string, as it's more common in Docker
+    bool isSqlServer = !isPostgres && !string.IsNullOrEmpty(connectionString) && 
                       (connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase) || 
                        connectionString.Contains("localdb", StringComparison.OrdinalIgnoreCase) ||
                        connectionString.Contains("TrustServerCertificate", StringComparison.OrdinalIgnoreCase) ||
-                       connectionString.Contains("Integrated Security", StringComparison.OrdinalIgnoreCase));
+                       connectionString.Contains("Trusted_Connection", StringComparison.OrdinalIgnoreCase) ||
+                       connectionString.Contains("Integrated Security", StringComparison.OrdinalIgnoreCase) ||
+                       connectionString.Contains("Initial Catalog=", StringComparison.OrdinalIgnoreCase));
 
     if (isPostgres)
     {
+        Console.WriteLine("--> [DB_MODE] Selected Provider: PostgreSQL");
         options.UseNpgsql(connectionString, npgsqlOptions =>
         {
             npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorCodesToAdd: null);
         });
-        Console.WriteLine("--> Using PostgreSQL Database");
     }
     else if (isSqlServer)
     {
+        Console.WriteLine("--> [DB_MODE] Selected Provider: SQL Server");
         options.UseSqlServer(connectionString);
-        Console.WriteLine("--> Using SQL Server Database");
     }
     else
     {
@@ -85,8 +90,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             Directory.CreateDirectory(dbFolderPath);
         }
         var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
+        Console.WriteLine($"--> [DB_MODE] Selected Provider: SQLite (Path: {dbPath})");
         options.UseSqlite($"Data Source={dbPath}");
-        Console.WriteLine($"--> Using SQLite Database at: {dbPath}");
+    }
+    
+    if (string.IsNullOrEmpty(connectionString)) {
+        Console.WriteLine("--> [WARNING] DefaultConnection string is EMPTY or NULL. Using SQLite fallback.");
     }
     
     // Performance optimization: Use NoTracking by default for read-only queries
