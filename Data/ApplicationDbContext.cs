@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Exe_Demo.Models;
 using Microsoft.EntityFrameworkCore;
@@ -638,6 +638,21 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.IsUsed)
                 .HasDefaultValue(false);
         });
+
+        // Fix for SQL Server/SQLite compatibility: remove PostgreSQL-specific "timestamp without time zone"
+        if (Database.ProviderName != "Npgsql.EntityFrameworkCore.PostgreSQL")
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.GetColumnType() == "timestamp without time zone")
+                    {
+                        property.SetColumnType(null);
+                    }
+                }
+            }
+        }
 
         // Configure performance indexes
         DatabaseIndexConfiguration.ConfigureIndexes(modelBuilder);

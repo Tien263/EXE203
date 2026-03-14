@@ -53,8 +53,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     
     // Check if the user explicitly provided a real PostgreSQL connection string (Host=...)
     bool isPostgres = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase);
-    // Check if the user explicitly provided a real SQL Server string (but ignore the dummy SQLEXPRESS one)
-    bool isSqlServer = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase);
+    // Check if the user explicitly provided a real SQL Server string
+    bool isSqlServer = !string.IsNullOrEmpty(connectionString) && connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase);
 
     if (isPostgres)
     {

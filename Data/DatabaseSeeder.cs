@@ -7,386 +7,111 @@ namespace Exe_Demo.Data;
 
 public static class DatabaseSeeder
 {
-    private static string HashPassword(string password)
-    {
-        using (var sha256 = SHA256.Create())
-        {
-            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(hashedBytes);
-        }
-    }
+    // Removed custom SHA256 HashPassword as it's incompatible with Identity
 
     public static void SeedData(ApplicationDbContext context)
     {
         Console.WriteLine("--> [SEEDER] Starting SeedData process...");
+        var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
         
         try
         {
-            /* AGGRESSIVE CLEANUP: Clear old data to ensure new paths are used
-            if (context.Database.IsNpgsql())
+            // DELETE ALL PRODUCTS as requested by user
+            Console.WriteLine("--> [SEEDER] Clearing all existing products...");
+            context.Database.ExecuteSqlRaw("DELETE FROM OrderDetails;");
+            context.Database.ExecuteSqlRaw("DELETE FROM Cart;");
+            context.Database.ExecuteSqlRaw("DELETE FROM Products;");
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+
+            // 0. Auto-Clean: Nuke ALL old categories + products if duplicates or wrong names exist
+            var expectedNames = new[] { "Hoa Quả Sấy Dẻo", "Hoa Quả Sấy Giòn", "Hoa Quả Sấy Thăng Hoa", "Giỏ Quà Tết" };
+            var existingCats = context.Categories.ToList();
+            bool needsReset = existingCats.Count != 4 || 
+                existingCats.Any(c => !expectedNames.Any(n => n.Trim().ToLower() == c.CategoryName.Trim().ToLower()));
+            
+            if (needsReset && existingCats.Count > 0)
             {
-                try
+                Console.WriteLine($"--> [SEEDER] Detected {existingCats.Count} categories (expected 4 correct ones). Cleaning up...");
+                try 
                 {
-                    Console.WriteLine("--> [SEEDER] Attempting to TRUNCATE Products and Categories (Postgres)...");
-                    // Try with double quotes (case-sensitive) first
-                    context.Database.ExecuteSqlRaw("TRUNCATE TABLE \"Products\", \"Categories\" RESTART IDENTITY CASCADE;");
-                    Console.WriteLine("--> [SEEDER] Successfully truncated Products and Categories.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"--> [SEEDER] TRUNCATE error (likely case sensitivity): {ex.Message}");
-                    try
+                    // Must delete dependent tables first (FK constraints)
+                    context.Database.ExecuteSqlRaw("DELETE FROM Cart");
+                    context.Database.ExecuteSqlRaw("DELETE FROM OrderDetails");
+                    context.Database.ExecuteSqlRaw("DELETE FROM Reviews");
+                    context.Database.ExecuteSqlRaw("DELETE FROM InventoryTransactions");
+                    context.Database.ExecuteSqlRaw("DELETE FROM PurchaseOrderDetails");
+                    context.Database.ExecuteSqlRaw("DELETE FROM Products");
+                    context.Database.ExecuteSqlRaw("DELETE FROM Categories");
+                    Console.WriteLine("--> [SEEDER] Old data cleaned successfully.");
+                    context.ChangeTracker.Clear(); // CRITICAL: Flush stale tracked entities
+                } 
+                catch (Exception ex) 
+                { 
+                    Console.WriteLine($"--> [SEEDER] Cleanup error (will try EF): {ex.Message}");
+                    // Fallback: try EF Core removal
+                    try 
                     {
-                        Console.WriteLine("--> [SEEDER] Retrying TRUNCATE with lowercase names...");
-                        context.Database.ExecuteSqlRaw("TRUNCATE TABLE products, categories RESTART IDENTITY CASCADE;");
-                        Console.WriteLine("--> [SEEDER] Successfully truncated products and categories (lowercase).");
-                    }
-                    catch (Exception ex2)
-                    {
-                        Console.WriteLine($"--> [SEEDER] Final TRUNCATE attempt failed: {ex2.Message}");
-                    }
+                        context.Products.RemoveRange(context.Products);
+                        context.SaveChanges();
+                        context.Categories.RemoveRange(context.Categories);
+                        context.SaveChanges();
+                        context.ChangeTracker.Clear(); // Flush stale tracked entities
+                    } catch { /* Last resort failed */ }
                 }
             }
-            else if (context.Database.IsSqlServer())
-            {
-                Console.WriteLine("--> [SEEDER] Found SQL Server. Cleaning up via RemoveRange...");
-                context.Products.RemoveRange(context.Products);
-                context.Categories.RemoveRange(context.Categories);
-                context.SaveChanges();
-            }
-            else if (context.Database.IsSqlite())
-            {
-                Console.WriteLine("--> [SEEDER] Found SQLite. Cleaning up via RemoveRange...");
-                context.Products.RemoveRange(context.Products);
-                context.Categories.RemoveRange(context.Categories);
-                context.SaveChanges();
-            }
-            */
+
             // 1. Seed Categories
-            var categoryNames = new[] { "Sản Phẩm Sấy Dẻo", "Sản Phẩm Sấy Giòn", "Sản Phẩm Sấy Thăng Hoa", "Mini Size Mix" };
-            int catAdded = 0;
+            var categoryNames = expectedNames;
             foreach (var name in categoryNames)
             {
-                if (!context.Categories.Any(c => c.CategoryName == name))
+                bool exists = context.Categories.ToList().Any(c => c.CategoryName.Trim().ToLower() == name.Trim().ToLower());
+                if (!exists)
                 {
                     context.Categories.Add(new Category 
                     { 
                         CategoryName = name, 
                         Description = name switch {
-                            "Sản Phẩm Sấy Dẻo" => "Hoa quả sấy dẻo giữ nguyên vị ngọt tự nhiên, mềm mại",
-                            "Sản Phẩm Sấy Giòn" => "Hoa quả sấy giòn tan, thơm ngon, giàu chất xơ",
-                            "Sản Phẩm Sấy Thăng Hoa" => "Công nghệ sấy thăng hoa hiện đại, giữ nguyên dinh dưỡng",
-                            "Mini Size Mix" => "Gói nhỏ tiện lợi để mix nhiều loại (tối thiểu 4 pack)",
+                            "Hoa Quả Sấy Dẻo" => "Hoa quả sấy dẻo giữ nguyên vị ngọt tự nhiên, mềm mại",
+                            "Hoa Quả Sấy Giòn" => "Hoa quả sấy giòn tan, thơm ngon, giàu chất xơ",
+                            "Hoa Quả Sấy Thăng Hoa" => "Công nghệ sấy thăng hoa hiện đại, giữ nguyên dinh dưỡng",
+                            "Giỏ Quà Tết" => "Giỏ quà tặng dịp Tết, phù hợp biếu tặng người thân",
                             _ => ""
                         },
                         DisplayOrder = Array.IndexOf(categoryNames, name) + 1, 
                         IsActive = true 
                     });
-                    catAdded++;
                 }
             }
-            if (catAdded > 0)
-            {
-                context.SaveChanges();
-            }
+            context.SaveChanges();
+            Console.WriteLine($"--> [SEEDER] After category seed: {context.Categories.Count()} categories in DB.");
 
             // 2. Seed Products
-        Console.WriteLine("--> Seeding products...");
-        var categories = context.Categories.ToList();
-        var catDeo = categories.First(c => c.CategoryName.Contains("Sấy Dẻo", StringComparison.OrdinalIgnoreCase));
-        var catGion = categories.First(c => c.CategoryName.Contains("Sấy Giòn", StringComparison.OrdinalIgnoreCase));
-        var catThangHoa = categories.First(c => c.CategoryName.Contains("Thăng Hoa", StringComparison.OrdinalIgnoreCase));
-        var catMini = categories.First(c => c.CategoryName.Contains("Mini Size", StringComparison.OrdinalIgnoreCase));
+            Console.WriteLine("--> Seeding products...");
+            var categories = context.Categories.OrderBy(c => c.CategoryId).ToList();
+            Console.WriteLine($"--> [SEEDER] Loaded {categories.Count} categories for product mapping:");
+            
+            // Map safely by Order or fallback to first
+            int catDeoId = categories.Count > 0 ? categories[0].CategoryId : 1;
+            int catGionId = categories.Count > 1 ? categories[1].CategoryId : 1;
+            int catThangHoaId = categories.Count > 2 ? categories[2].CategoryId : 1;
+            int catMiniId = categories.Count > 3 ? categories[3].CategoryId : 1;
+
+            // Optional explicit match if order wasn't exactly 1, 2, 3, 4
+            var sDeo = categories.FirstOrDefault(c => c.CategoryName.Contains("Dẻo") || c.CategoryName.Contains("Deo"));
+            var sGion = categories.FirstOrDefault(c => c.CategoryName.Contains("Giòn") || c.CategoryName.Contains("Gion"));
+            var sThangHoa = categories.FirstOrDefault(c => c.CategoryName.Contains("Thăng Hoa") || c.CategoryName.Contains("Thang Hoa"));
+            var sMini = categories.FirstOrDefault(c => c.CategoryName.Contains("Giỏ") || c.CategoryName.Contains("Tết") || c.CategoryName.Contains("Combo") || c.CategoryName.Contains("Mini"));
+
+            if(sDeo != null) catDeoId = sDeo.CategoryId;
+            if(sGion != null) catGionId = sGion.CategoryId;
+            if(sThangHoa != null) catThangHoaId = sThangHoa.CategoryId;
+            if(sMini != null) catMiniId = sMini.CategoryId;
 
             // ADD PRODUCTS
             Console.WriteLine("--> [SEEDER] Seeding exactly 18 products carefully (Upsert mode)...");
-            
-            var products = new List<Product>
-            {
-                // 1. SẤY GIÒN (6 sáº£n pháº©m)
-                new Product { 
-                    ProductName = "Xoài Sấy Dẻo",
-                    ProductCode = "XOAI-DEO-01",
-                    Price = 50000,
-                    OriginalPrice = 60000,
-                    StockQuantity = 100,
-                    Unit = "Gói",
-                    Weight = "200g",
-                    ImageUrl = "/images/products/xoai-say-deo.jpg", // Corrected to match production 404 patterns
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    IsNew = true,
-                    Rating = 5.0m,
-                    Description = "Xoài sấy dẻo thơm ngon, giữ trọn hương vị tự nhiên."
-                },
-                new Product { 
-                    ProductName = "Mít Sấy Giòn", 
-                    ProductCode = "MIT-GION-01",
-                    Price = 45000, 
-                    OriginalPrice = 50000,
-                    StockQuantity = 100, 
-                    Unit = "Gói", 
-                    Weight = "150g",
-                    ImageUrl = "/images/products/mit-say-gion.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
-                    IsActive = true,
-                    IsNew = true,
-                    Rating = 4.8m,
-                    Description = "Mít sấy giòn vàng ốm, giòn tan."
-                },
-                new Product { 
-                    ProductName = "Chuối Sấy Giòn", 
-                    ProductCode = "CHUOI-GION-01",
-                    Price = 35000, 
-                    OriginalPrice = 40000,
-                    StockQuantity = 150, 
-                    Unit = "Gói", 
-                    Weight = "200g",
-                    ImageUrl = "/images/products/chuoi-say-gion.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
-                    IsActive = true,
-                    Rating = 4.7m,
-                    Description = "Chuối sấy giòn truyền thống."
-                },
-                new Product { 
-                    ProductName = "Khoai Lang Sấy Giòn", 
-                    ProductCode = "KHOAI-GION-01",
-                    Price = 40000, 
-                    OriginalPrice = 45000,
-                    StockQuantity = 80, 
-                    Unit = "Gói", 
-                    Weight = "150g",
-                    ImageUrl = "/images/products/khoai-lang-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
-                    IsActive = true,
-                    Rating = 4.6m,
-                    Description = "Khoai lang sấy giòn tự nhiên."
-                },
-                new Product { 
-                    ProductName = "Thập Cẩm Sấy Giòn", 
-                    ProductCode = "THAP-CAM-01",
-                    Price = 60000, 
-                    OriginalPrice = 70000,
-                    StockQuantity = 200, 
-                    Unit = "Gói", 
-                    Weight = "250g",
-                    ImageUrl = "/images/products/mix-4.png", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
-                    IsActive = true,
-                    Rating = 4.9m,
-                    Description = "Thập cẩm các loại củ quả sấy giòn."
-                },
-                new Product { 
-                    ProductName = "Thập Cẩm Sấy Giòn Mini", 
-                    ProductCode = "THAP-CAM-MINI",
-                    Price = 25000, 
-                    OriginalPrice = 30000,
-                    StockQuantity = 300, 
-                    Unit = "Gói", 
-                    Weight = "100g",
-                    ImageUrl = "/images/products/mix-4.png", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Giòn").CategoryId,
-                    IsActive = true,
-                    Rating = 4.8m,
-                    Description = "Túi nhỏ tiện lợi."
-                },
-
-                // 2. SẤY THĂNG HOA (6 sáº£n pháº©m)
-                new Product { 
-                    ProductName = "Dâu Sấy Thăng Hoa", 
-                    ProductCode = "DAU-TH-01",
-                    Price = 120000, 
-                    OriginalPrice = 140000,
-                    StockQuantity = 50, 
-                    Unit = "Hộp", 
-                    Weight = "50g",
-                    ImageUrl = "/images/products/dau-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
-                    IsActive = true,
-                    IsNew = true,
-                    Rating = 5.0m,
-                    Description = "Dâu tây sấy thăng hoa cao cấp."
-                },
-                new Product { 
-                    ProductName = "Sữa Chua Sấy Thăng Hoa", 
-                    ProductCode = "SUA-CHUA-TH-01",
-                    Price = 85000, 
-                    OriginalPrice = 95000,
-                    StockQuantity = 70, 
-                    Unit = "Gói", 
-                    Weight = "45g",
-                    ImageUrl = "/images/products/sua-chua-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
-                    IsActive = true,
-                    IsNew = true,
-                    Rating = 4.9m,
-                    Description = "Viên sữa chua sấy giòn tan, bổ dưỡng."
-                },
-                new Product { 
-                    ProductName = "Na Sấy Thăng Hoa", 
-                    ProductCode = "NA-TH-01",
-                    Price = 150000, 
-                    OriginalPrice = 170000,
-                    StockQuantity = 30, 
-                    Unit = "Hộp", 
-                    Weight = "50g",
-                    ImageUrl = "/images/products/na-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
-                    IsActive = true,
-                    Rating = 4.9m,
-                    Description = "Na sấy thăng hoa giữ nguyên cấu trúc và dưỡng chất."
-                },
-                new Product { 
-                    ProductName = "Sầu Riêng Sấy Thăng Hoa", 
-                    ProductCode = "SAU-RIENG-TH-01",
-                    Price = 180000, 
-                    OriginalPrice = 200000,
-                    StockQuantity = 40, 
-                    Unit = "Hộp", 
-                    Weight = "80g",
-                    ImageUrl = "/images/products/sau-rieng-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
-                    IsActive = true,
-                    Rating = 5.0m,
-                    Description = "Sầu riêng sấy thăng hoa thơm nức."
-                },
-                new Product { 
-                    ProductName = "Nhãn Sấy Thăng Hoa", 
-                    ProductCode = "NHAN-TH-01",
-                    Price = 110000, 
-                    OriginalPrice = 125000,
-                    StockQuantity = 60, 
-                    Unit = "Gói", 
-                    Weight = "100g",
-                    ImageUrl = "/images/products/nhan-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
-                    IsActive = true,
-                    Rating = 4.7m,
-                    Description = "Cùi nhãn sấy thăng hoa ngọt thanh."
-                },
-                new Product { 
-                    ProductName = "Cam Sấy Thăng Hoa", 
-                    ProductCode = "CAM-TH-01",
-                    Price = 75000, 
-                    OriginalPrice = 85000,
-                    StockQuantity = 90, 
-                    Unit = "Gói", 
-                    Weight = "100g",
-                    ImageUrl = "/images/products/cam-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Thăng Hoa").CategoryId,
-                    IsActive = true,
-                    Rating = 4.6m,
-                    Description = "Lát cam sấy thăng hoa dùng pha trà hoặc ăn trực tiếp."
-                },
-
-                // 3. SẤY DẺO (6 sáº£n pháº©m)
-                new Product { 
-                    ProductName = "Xoài Sấy Dẻo (Lớn)", 
-                    ProductCode = "XOAI-DEO-02",
-                    Price = 65000, 
-                    OriginalPrice = 75000,
-                    StockQuantity = 120, 
-                    Unit = "Gói", 
-                    Weight = "200g",
-                    ImageUrl = "/images/products/xoai-say-deo.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    Rating = 4.9m,
-                    Description = "Xoài sấy dẻo chua ngọt, dai ngon."
-                },
-                new Product { 
-                    ProductName = "Mận Sấy Dẻo", 
-                    ProductCode = "MAN-DEO-01",
-                    Price = 65000, 
-                    OriginalPrice = 75000,
-                    StockQuantity = 100, 
-                    Unit = "Gói", 
-                    Weight = "200g",
-                    ImageUrl = "/images/products/man-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    Rating = 5.0m,
-                    Description = "Mận sấy dẻo không hạt."
-                },
-                new Product { 
-                    ProductName = "Đào Sấy Dẻo", 
-                    ProductCode = "DAO-DEO-01",
-                    Price = 70000, 
-                    OriginalPrice = 80000,
-                    StockQuantity = 80, 
-                    Unit = "Gói", 
-                    Weight = "150g",
-                    ImageUrl = "/images/products/dao-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    Rating = 4.8m,
-                    Description = "Đào sấy dẻo thơm lừng."
-                },
-                new Product { 
-                    ProductName = "Dâu Sấy Dẻo", 
-                    ProductCode = "DAU-DEO-01",
-                    Price = 90000, 
-                    OriginalPrice = 110000,
-                    StockQuantity = 60, 
-                    Unit = "Gói", 
-                    Weight = "100g",
-                    ImageUrl = "/images/products/dau-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    Rating = 4.9m,
-                    Description = "Dâu tây sấy dẻo nguyên trái."
-                },
-                new Product { 
-                    ProductName = "Hồng Sấy Dẻo", 
-                    ProductCode = "HONG-DEO-01",
-                    Price = 130000, 
-                    OriginalPrice = 150000,
-                    StockQuantity = 50, 
-                    Unit = "Hộp", 
-                    Weight = "250g",
-                    ImageUrl = "/images/products/hong-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    Rating = 5.0m,
-                    Description = "Hồng treo gió sấy dẻo Đà Lạt."
-                },
-                new Product { 
-                    ProductName = "Mít Sấy Dẻo", 
-                    ProductCode = "MIT-DEO-01",
-                    Price = 75000, 
-                    OriginalPrice = 85000,
-                    StockQuantity = 90, 
-                    Unit = "Gói", 
-                    Weight = "150g",
-                    ImageUrl = "/images/products/mit-say.jpg", // Corrected path
-                    CategoryId = categories.First(c => c.CategoryName == "Sản Phẩm Sấy Dẻo").CategoryId,
-                    IsActive = true,
-                    Rating = 4.7m,
-                    Description = "Mít sấy dẻo ngọt lịm."
-                }
-            };
-
-            int addedCount = 0;
-            foreach (var p in products)
-            {
-                // Check if product with this code already exists
-                if (!context.Products.Any(ep => ep.ProductCode == p.ProductCode))
-                {
-                    context.Products.Add(p);
-                    addedCount++;
-                    Console.WriteLine($"--> [SEEDER] Added: {p.ProductName} ({p.ProductCode})");
-                }
-            }
-            
-            if (addedCount > 0)
-            {
-                context.SaveChanges();
-                Console.WriteLine($"--> [SEEDER] {addedCount} new products saved successfully.");
-            }
-            else
-            {
-                Console.WriteLine($"--> [SEEDER] 0 new products added (All ProductCodes already exist).");
-            }
+            // USER REQUESTED TO DELETE ALL PRODUCTS
+            Console.WriteLine("--> [SEEDER] Skipping product seeding (Reset to empty as requested).");
         
         // context.Products.AddRange(productList);
         // context.SaveChanges();
@@ -445,7 +170,7 @@ public static class DatabaseSeeder
              var existingStaff = context.Users.FirstOrDefault(u => u.Email == staffEmail);
              if (existingStaff != null)
              {
-                 existingStaff.PasswordHash = HashPassword("Staff@123");
+                 existingStaff.PasswordHash = hasher.HashPassword(null!, "Staff@123");
                  existingStaff.EmployeeId = emp1?.EmployeeId; // Ensure link
              }
         }
@@ -456,7 +181,7 @@ public static class DatabaseSeeder
                 var user1 = new User
                 {
                     Email = staffEmail,
-                    PasswordHash = HashPassword("Staff@123"),
+                    PasswordHash = hasher.HashPassword(null!, "Staff@123"),
                     FullName = "Nguyễn Văn A",
                     PhoneNumber = "0901234567",
                     Role = "Staff",
@@ -479,7 +204,7 @@ public static class DatabaseSeeder
                 context.Users.Add(new User
                 {
                     Email = email,
-                    PasswordHash = HashPassword("Mocvi@123"),
+                    PasswordHash = hasher.HashPassword(null!, "Mocvi@123"),
                     FullName = "Nhân viên mới", // Placeholder
                     Role = "Staff",
                     EmployeeId = null, // IMPORTANT: Null to trigger Update Profile flow
@@ -496,7 +221,7 @@ public static class DatabaseSeeder
              var existingAdmin = context.Users.FirstOrDefault(u => u.Email == adminEmail);
              if (existingAdmin != null)
              {
-                 existingAdmin.PasswordHash = HashPassword("Admin@123");
+                 existingAdmin.PasswordHash = hasher.HashPassword(null!, "Admin@123");
                  existingAdmin.EmployeeId = emp2?.EmployeeId;
              }
         }
@@ -507,7 +232,7 @@ public static class DatabaseSeeder
                 var user2 = new User
                 {
                     Email = adminEmail,
-                    PasswordHash = HashPassword("Admin@123"),
+                    PasswordHash = hasher.HashPassword(null!, "Admin@123"),
                     FullName = "Quản Trị Viên",
                     PhoneNumber = "0912345678",
                     Role = "Admin",
