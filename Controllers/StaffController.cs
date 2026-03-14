@@ -355,9 +355,16 @@ namespace Exe_Demo.Controllers
                 };
 
                 // Handle Image Upload
+                if (model.ImageFile == null && Request.Form.Files.Count > 0)
+                {
+                    model.ImageFile = Request.Form.Files["ImageFile"] ?? Request.Form.Files[0];
+                    Console.WriteLine($"[DEBUG] CreateProduct: Manually retrieved ImageFile. Name: {model.ImageFile?.FileName}");
+                }
+
                 if (model.ImageFile != null)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
+                    Console.WriteLine($"[DEBUG] Saving product image to: {uploadsFolder}");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
@@ -489,6 +496,7 @@ namespace Exe_Demo.Controllers
                 {
                     Console.WriteLine($"[DEBUG] File Name: {model.ImageFile.FileName}, Length: {model.ImageFile.Length}");
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
+                    Console.WriteLine($"[DEBUG] EditProduct: Saving image to: {uploadsFolder}");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
@@ -1604,7 +1612,9 @@ namespace Exe_Demo.Controllers
 
         private string UploadFile(IFormFile file)
         {
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blog");
+            string folderName = "blog"; // Assuming 'blog' is the intended folder name based on original code
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", folderName);
+            Console.WriteLine($"[DEBUG] UploadFile helper: Saving file to: {uploadsFolder}");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -1617,7 +1627,7 @@ namespace Exe_Demo.Controllers
                 file.CopyTo(fileStream);
             }
 
-            return uniqueFileName;
+            return "/uploads/" + folderName + "/" + uniqueFileName;
         }
 
         // Helper method để tạo slug
