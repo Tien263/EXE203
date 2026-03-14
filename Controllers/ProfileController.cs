@@ -172,8 +172,15 @@ namespace Exe_Demo.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            if (profileImage == null && Request.Form.Files.Count > 0)
+            {
+                profileImage = Request.Form.Files["profileImage"] ?? Request.Form.Files[0];
+                _logger.LogInformation("Profile image manually retrieved from Request.Form.Files. Name: {FileName}", profileImage?.FileName);
+            }
+
             if (profileImage == null || profileImage.Length == 0)
             {
+                _logger.LogWarning("Profile image upload attempt with empty or null file.");
                 TempData["ErrorMessage"] = "Vui lòng chọn ảnh!";
                 return RedirectToAction(nameof(Index));
             }
@@ -183,6 +190,7 @@ namespace Exe_Demo.Controllers
             var extension = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(extension))
             {
+                _logger.LogWarning("Invalid file extension: {Extension}", extension);
                 TempData["ErrorMessage"] = "Chỉ chấp nhận file ảnh (.jpg, .jpeg, .png, .gif)!";
                 return RedirectToAction(nameof(Index));
             }
@@ -190,6 +198,7 @@ namespace Exe_Demo.Controllers
             // Kiểm tra kích thước (max 5MB)
             if (profileImage.Length > 5 * 1024 * 1024)
             {
+                _logger.LogWarning("File size exceeded: {Size} bytes", profileImage.Length);
                 TempData["ErrorMessage"] = "Kích thước ảnh không được vượt quá 5MB!";
                 return RedirectToAction(nameof(Index));
             }
@@ -204,9 +213,12 @@ namespace Exe_Demo.Controllers
             {
                 // Tạo thư mục nếu chưa có
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profiles");
+                _logger.LogInformation("Uploading profile image to: {Path}", uploadsFolder);
+                
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
+                    _logger.LogInformation("Created directory: {Path}", uploadsFolder);
                 }
 
                 // Xóa ảnh cũ nếu có
