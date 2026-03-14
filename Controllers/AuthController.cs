@@ -40,130 +40,138 @@ namespace Exe_Demo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-
-            if (ModelState.IsValid)
+            try 
             {
-                // Hash password để so sánh
-                var passwordHash = HashPassword(model.Password);
+                ViewData["ReturnUrl"] = returnUrl;
 
-                // Tìm user theo email (có tracking để update LastLogin)
-                // Tìm user theo email trước
-                var user = await _context.Users
-                    .AsTracking()
-                    .Include(u => u.Customer)
-                    .Include(u => u.Employee)
-                    .FirstOrDefaultAsync(u => u.Email == model.Email);
-
-                if (user == null)
+                if (ModelState.IsValid)
                 {
-                    // FEATURE: Just-In-Time Seeding (Auto-fix for missing Staff account)
-                    if (model.Email == "staff@mocvistore.com" || model.Email == "admin@mocvistore.com")
+                    // Hash password để so sánh
+                    var passwordHash = HashPassword(model.Password);
+
+                    // Tìm user theo email (có tracking để update LastLogin)
+                    // Tìm user theo email trước
+                    var user = await _context.Users
+                        .AsTracking()
+                        .Include(u => u.Customer)
+                        .Include(u => u.Employee)
+                        .FirstOrDefaultAsync(u => u.Email == model.Email);
+
+                    if (user == null)
                     {
-                         try 
-                         {
-                             _logger.LogWarning("Staff/Admin account not found. Triggering JIT Seeding...");
-                             DatabaseSeeder.SeedData(_context);
-                             
-                             // Retry retrieval
-                             user = await _context.Users
-                                .AsTracking()
-                                .Include(u => u.Customer)
-                                .Include(u => u.Employee)
-                                .FirstOrDefaultAsync(u => u.Email == model.Email);
-                         }
-                         catch(Exception ex)
-                         {
-                             _logger.LogError($"JIT Seeding failed: {ex.Message}");
-                             ModelState.AddModelError(string.Empty, $"Lỗi tự động tạo tài khoản (JIT): {ex.Message} - {ex.InnerException?.Message}");
-                         }
-                    }
-                }
-
-                if (user == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Email không tồn tại trong hệ thống.");
-                    return View(model);
-                }
-
-                if (user.PasswordHash != passwordHash)
-                {
-                    ModelState.AddModelError(string.Empty, $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs Hash nhập: {passwordHash.Substring(0, 10)}...)");
-                    return View(model);
-                }
-
-                if (user != null)
-                {
-                    // Check if user is not active (pending OTP verification)
-                    if (user.IsActive == false)
-                    {
-                        TempData["Email"] = user.Email;
-                        TempData["ErrorMessage"] = "Tài khoản chưa được kích hoạt. Vui lòng xác thực OTP.";
-                        return RedirectToAction(nameof(ResendOtp));
-                    }
-
-                    // Tạo claims
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.FullName),
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.Role, user.Role ?? "Customer")
-                    };
-
-                    if (user.CustomerId.HasValue)
-                    {
-                        claims.Add(new Claim("CustomerId", user.CustomerId.Value.ToString()));
-                    }
-
-                    if (user.EmployeeId.HasValue)
-                    {
-                        claims.Add(new Claim("EmployeeId", user.EmployeeId.Value.ToString()));
-                    }
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = model.RememberMe,
-                        ExpiresUtc = model.RememberMe ? DateTimeOffset.UtcNow.AddDays(30) : DateTimeOffset.UtcNow.AddHours(2)
-                    };
-
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        authProperties);
-
-                    // Cập nhật last login
-                    user.LastLoginDate = DateTime.Now;
-                    await _context.SaveChangesAsync();
-
-                    _logger.LogInformation($"User {user.Email} logged in.");
-
-                    // Redirect based on role
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    
-                    // Redirect Staff/Admin logic
-                    if (user.Role == "Staff" || user.Role == "Admin")
-                    {
-                        // Check if Staff profile is incomplete (First Login)
-                        if (user.Role == "Staff" && !user.EmployeeId.HasValue)
+                        // FEATURE: Just-In-Time Seeding (Auto-fix for missing Staff account)
+                        if (model.Email == "staff@mocvistore.com" || model.Email == "admin@mocvistore.com")
                         {
-                            return RedirectToAction("UpdateProfile", "Staff");
+                             try 
+                             {
+                                 _logger.LogWarning("Staff/Admin account not found. Triggering JIT Seeding...");
+                                 DatabaseSeeder.SeedData(_context);
+                                 
+                                 // Retry retrieval
+                                 user = await _context.Users
+                                    .AsTracking()
+                                    .Include(u => u.Customer)
+                                    .Include(u => u.Employee)
+                                    .FirstOrDefaultAsync(u => u.Email == model.Email);
+                             }
+                             catch(Exception ex)
+                             {
+                                 _logger.LogError($"JIT Seeding failed: {ex.Message}");
+                                 ModelState.AddModelError(string.Empty, $"Lỗi tự động tạo tài khoản (JIT): {ex.Message} - {ex.InnerException?.Message}");
+                             }
+                        }
+                    }
+
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Email không tồn tại trong hệ thống.");
+                        return View(model);
+                    }
+
+                    if (user.PasswordHash != passwordHash)
+                    {
+                        ModelState.AddModelError(string.Empty, $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs Hash nhập: {passwordHash.Substring(0, 10)}...)");
+                        return View(model);
+                    }
+
+                    if (user != null)
+                    {
+                        // Check if user is not active (pending OTP verification)
+                        if (user.IsActive == false)
+                        {
+                            TempData["Email"] = user.Email;
+                            TempData["ErrorMessage"] = "Tài khoản chưa được kích hoạt. Vui lòng xác thực OTP.";
+                            return RedirectToAction(nameof(ResendOtp));
                         }
 
-                        return RedirectToAction("Dashboard", "Staff");
+                        // Tạo claims
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                            new Claim(ClaimTypes.Name, user.FullName),
+                            new Claim(ClaimTypes.Email, user.Email),
+                            new Claim(ClaimTypes.Role, user.Role ?? "Customer")
+                        };
+
+                        if (user.CustomerId.HasValue)
+                        {
+                            claims.Add(new Claim("CustomerId", user.CustomerId.Value.ToString()));
+                        }
+
+                        if (user.EmployeeId.HasValue)
+                        {
+                            claims.Add(new Claim("EmployeeId", user.EmployeeId.Value.ToString()));
+                        }
+
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = model.RememberMe,
+                            ExpiresUtc = model.RememberMe ? DateTimeOffset.UtcNow.AddDays(30) : DateTimeOffset.UtcNow.AddHours(2)
+                        };
+
+                        await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity),
+                            authProperties);
+
+                        // Cập nhật last login
+                        user.LastLoginDate = DateTime.Now;
+                        await _context.SaveChangesAsync();
+
+                        _logger.LogInformation($"User {user.Email} logged in.");
+
+                        // Redirect based on role
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        
+                        // Redirect Staff/Admin logic
+                        if (user.Role == "Staff" || user.Role == "Admin")
+                        {
+                            // Check if Staff profile is incomplete (First Login)
+                            if (user.Role == "Staff" && !user.EmployeeId.HasValue)
+                            {
+                                return RedirectToAction("UpdateProfile", "Staff");
+                            }
+
+                            return RedirectToAction("Dashboard", "Staff");
+                        }
+                        
+                        return RedirectToAction("Index", "Home");
                     }
-                    
-                    return RedirectToAction("Index", "Home");
+
+                    ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng.");
                 }
 
-                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng.");
+                return View(model);
             }
-
-            return View(model);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during login");
+                return Content($"ERROR TRACE:\n{ex.ToString()}");
+            }
         }
 
         // GET: Auth/Register
