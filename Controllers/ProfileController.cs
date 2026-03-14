@@ -155,6 +155,8 @@ namespace Exe_Demo.Controllers
             user.Customer.District = model.District;
             user.Customer.Ward = model.Ward;
 
+            // FIX: Explicitly update entity because Global NoTracking is enabled
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
@@ -243,6 +245,9 @@ namespace Exe_Demo.Controllers
 
                 // Cập nhật database
                 user.ProfileImageUrl = $"/uploads/profiles/{uniqueFileName}";
+                
+                // FIX: Explicitly update entity because Global NoTracking is enabled
+                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Cập nhật ảnh đại diện thành công!";
