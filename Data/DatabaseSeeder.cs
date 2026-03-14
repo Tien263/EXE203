@@ -64,23 +64,31 @@ public static class DatabaseSeeder
             */
             // 1. Seed Categories
             var categoryNames = new[] { "Sản Phẩm Sấy Dẻo", "Sản Phẩm Sấy Giòn", "Sản Phẩm Sấy Thăng Hoa", "Mini Size Mix" };
+            int catAdded = 0;
             foreach (var name in categoryNames)
             {
-                context.Categories.Add(new Category 
-                { 
-                    CategoryName = name, 
-                    Description = name switch {
-                        "Sản Phẩm Sấy Dẻo" => "Hoa quả sấy dẻo giữ nguyên vị ngọt tự nhiên, mềm mại",
-                        "Sản Phẩm Sấy Giòn" => "Hoa quả sấy giòn tan, thơm ngon, giàu chất xơ",
-                        "Sản Phẩm Sấy Thăng Hoa" => "Công nghệ sấy thăng hoa hiện đại, giữ nguyên dinh dưỡng",
-                        "Mini Size Mix" => "Gói nhỏ tiện lợi để mix nhiều loại (tối thiểu 4 pack)",
-                        _ => ""
-                    },
-                    DisplayOrder = Array.IndexOf(categoryNames, name) + 1, 
-                    IsActive = true 
-                });
+                if (!context.Categories.Any(c => c.CategoryName == name))
+                {
+                    context.Categories.Add(new Category 
+                    { 
+                        CategoryName = name, 
+                        Description = name switch {
+                            "Sản Phẩm Sấy Dẻo" => "Hoa quả sấy dẻo giữ nguyên vị ngọt tự nhiên, mềm mại",
+                            "Sản Phẩm Sấy Giòn" => "Hoa quả sấy giòn tan, thơm ngon, giàu chất xơ",
+                            "Sản Phẩm Sấy Thăng Hoa" => "Công nghệ sấy thăng hoa hiện đại, giữ nguyên dinh dưỡng",
+                            "Mini Size Mix" => "Gói nhỏ tiện lợi để mix nhiều loại (tối thiểu 4 pack)",
+                            _ => ""
+                        },
+                        DisplayOrder = Array.IndexOf(categoryNames, name) + 1, 
+                        IsActive = true 
+                    });
+                    catAdded++;
+                }
             }
-            context.SaveChanges();
+            if (catAdded > 0)
+            {
+                context.SaveChanges();
+            }
 
             // 2. Seed Products
         Console.WriteLine("--> Seeding products...");
