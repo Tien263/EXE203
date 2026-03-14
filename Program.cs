@@ -50,27 +50,59 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    
-    // Check for PostgreSQL (Npgsql) keywords
-    bool isPostgres = !string.IsNullOrEmpty(connectionString) && 
-                     (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) || 
-                      connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase) ||
-                      connectionString.Contains("Username=", StringComparison.OrdinalIgnoreCase) ||
-                      connectionString.Contains("SSL Mode=", StringComparison.OrdinalIgnoreCase));
 
-    // Check for SQL Server (SqlClient) keywords
-    // We favor PostgreSQL if both are present in some weird string, as it's more common in Docker
-    bool isSqlServer = !isPostgres && !string.IsNullOrEmpty(connectionString) && 
-                      (connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase) || 
-                       connectionString.Contains("localdb", StringComparison.OrdinalIgnoreCase) ||
-                       connectionString.Contains("TrustServerCertificate", StringComparison.OrdinalIgnoreCase) ||
-                       connectionString.Contains("Trusted_Connection", StringComparison.OrdinalIgnoreCase) ||
-                       connectionString.Contains("Integrated Security", StringComparison.OrdinalIgnoreCase) ||
-                       connectionString.Contains("Initial Catalog=", StringComparison.OrdinalIgnoreCase));
+    // 🔍 SMART DATABASE DETECTION
+    bool isPostgres = false;
+    bool isSqlServer = false;
+
+    if (!string.IsNullOrEmpty(connectionString))
+    {
+        // 1. Check for EXCLUSIVE SQL Server keywords (These never appear in Postgres)
+        bool strictlySql = connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase) || 
+                          connectionString.Contains("localdb", StringComparison.OrdinalIgnoreCase) ||
+                          connectionString.Contains("Integrated Security", StringComparison.OrdinalIgnoreCase) ||
+                          connectionString.Contains("Trusted_Connection", StringComparison.OrdinalIgnoreCase);
+
+        // 2. Check for PostgreSQL keywords
+        bool hasPgKeywords = connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) || 
+                            connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase) ||
+                            connectionString.Contains("SSL Mode=", StringComparison.OrdinalIgnoreCase) ||
+                            connectionString.Contains("Username=", StringComparison.OrdinalIgnoreCase) ||
+                            connectionString.Contains("Search Path=", StringComparison.OrdinalIgnoreCase);
+
+        // 3. Logic based on Environment
+        bool isRunningInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
+        if (strictlySql)
+        {
+            isSqlServer = true;
+        }
+        else if (hasPgKeywords)
+        {
+            isPostgres = true;
+        }
+        else if (isRunningInDocker)
+        {
+            // In Docker/VPS, if we have a connection string but it's not strictly SQL Server, it's almost certainly Postgres
+            isPostgres = true;
+            Console.WriteLine("--> [DB_MODE] Docker detected - Favoring PostgreSQL provider");
+        }
+        else if (connectionString.Contains("Initial Catalog=", StringComparison.OrdinalIgnoreCase) || 
+                 connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase))
+        {
+            // Ambiguous fallback for Local Development
+            isSqlServer = true;
+        }
+    }
+
+    // Masked connection string for safe debugging
+    string maskedConn = string.IsNullOrEmpty(connectionString) ? "NULL" : 
+                       (connectionString.Length > 20 ? connectionString.Substring(0, 20) + "..." : "ShortString");
+    Console.WriteLine($"--> [DB_DEBUG] Connection String Detected: {maskedConn}");
 
     if (isPostgres)
     {
-        Console.WriteLine("--> [DB_MODE] Selected Provider: PostgreSQL");
+        Console.WriteLine("--> [DB_MODE] Using PostgreSQL Provider");
         options.UseNpgsql(connectionString, npgsqlOptions =>
         {
             npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorCodesToAdd: null);
@@ -78,24 +110,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
     else if (isSqlServer)
     {
-        Console.WriteLine("--> [DB_MODE] Selected Provider: SQL Server");
+        Console.WriteLine("--> [DB_MODE] Using SQL Server Provider");
         options.UseSqlServer(connectionString);
     }
     else
     {
-        // Fallback to SQLite (Perfect for single-node Docker deployments like this one)
+        // Fallback to SQLite
         var dbFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "DbStorage");
-        if (!Directory.Exists(dbFolderPath))
-        {
-            Directory.CreateDirectory(dbFolderPath);
-        }
+        if (!Directory.Exists(dbFolderPath)) Directory.CreateDirectory(dbFolderPath);
         var dbPath = Path.Combine(dbFolderPath, "mocvistore.db");
-        Console.WriteLine($"--> [DB_MODE] Selected Provider: SQLite (Path: {dbPath})");
+        Console.WriteLine($"--> [DB_MODE] Using SQLite Provider at: {dbPath}");
         options.UseSqlite($"Data Source={dbPath}");
-    }
-    
-    if (string.IsNullOrEmpty(connectionString)) {
-        Console.WriteLine("--> [WARNING] DefaultConnection string is EMPTY or NULL. Using SQLite fallback.");
     }
     
     // Performance optimization: Use NoTracking by default for read-only queries
