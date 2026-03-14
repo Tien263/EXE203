@@ -59,9 +59,31 @@ namespace Exe_Demo.Controllers
                     if (user != null)
                     {
                         var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+                        
+                        // FALLBACK: If Identity check fails, check if DB has old SHA256 format
                         if (result != PasswordVerificationResult.Success)
                         {
-                            ModelState.AddModelError("", $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs password cung cấp)");
+                            // Calculate legacy SHA256 hash
+                            string legacyHash;
+                            using (var sha256 = SHA256.Create())
+                            {
+                                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
+                                legacyHash = Convert.ToBase64String(hashedBytes);
+                            }
+
+                            if (user.PasswordHash == legacyHash)
+                            {
+                                // Migration logic: Update to new hash on successful legacy login
+                                user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+                                await _context.SaveChangesAsync();
+                                result = PasswordVerificationResult.Success;
+                                _logger.LogInformation($"Auto-migrated password for user {user.Email} to Identity format.");
+                            }
+                        }
+
+                        if (result != PasswordVerificationResult.Success)
+                        {
+                            ModelState.AddModelError("", $"Sai mật khẩu. (Hash trong DB: {user.PasswordHash?.Substring(0, 10)}... vs hash nhập: {(user.PasswordHash?.Length > 20 ? "Legacy/SHA256" : "Unknown")})");
                             return View(model);
                         }
                     }

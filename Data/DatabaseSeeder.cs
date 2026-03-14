@@ -198,19 +198,17 @@ public static class DatabaseSeeder
         var staffAccounts = new[] { "nv1@gmail.com", "nv2@gmail.com", "nv3@gmail.com" };
         foreach (var email in staffAccounts)
         {
-            var existingUser = context.Users.FirstOrDefault(u => u.Email == email);
-            if (existingUser != null)
-            {
-                // FORCE UPDATE to new Identity hash format if it's the old SHA256 format or just to be safe
-                existingUser.PasswordHash = hasher.HashPassword(null!, "Mocvi@123");
-                existingUser.Role = "Staff"; // Ensure role is correct
-            }
-            else
+            var newHash = hasher.HashPassword(null!, "Mocvi@123");
+            
+            // NUCLEAR OPTION: Use direct SQL to ensure the hash is updated regardless of EF tracker state
+            context.Database.ExecuteSqlRaw("UPDATE Users SET PasswordHash = {0}, Role = 'Staff' WHERE Email = {1}", newHash, email);
+            
+            if (!context.Users.Any(u => u.Email == email))
             {
                 context.Users.Add(new User
                 {
                     Email = email,
-                    PasswordHash = hasher.HashPassword(null!, "Mocvi@123"),
+                    PasswordHash = newHash,
                     FullName = "Nhân viên mới",
                     Role = "Staff",
                     EmployeeId = null,
@@ -221,13 +219,15 @@ public static class DatabaseSeeder
             }
         }
 
+        // Also update standard staff and admin emails
+        context.Database.ExecuteSqlRaw("UPDATE Users SET PasswordHash = {0} WHERE Email = {1}", hasher.HashPassword(null!, "Staff@123"), staffEmail);
+        context.Database.ExecuteSqlRaw("UPDATE Users SET PasswordHash = {0} WHERE Email = {1}", hasher.HashPassword(null!, "Admin@123"), adminEmail);
+
         if (context.Users.Any(u => u.Email == adminEmail))
         {
-             // Update password if exists
              var existingAdmin = context.Users.FirstOrDefault(u => u.Email == adminEmail);
              if (existingAdmin != null)
              {
-                 existingAdmin.PasswordHash = hasher.HashPassword(null!, "Admin@123");
                  existingAdmin.EmployeeId = emp2?.EmployeeId;
              }
         }
