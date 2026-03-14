@@ -733,8 +733,12 @@ namespace Exe_Demo.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateOrderStatus([FromBody] UpdateOrderStatusViewModel model)
         {
+            _logger.LogInformation("UpdateOrderStatus called for OrderId: {OrderId}, Status: {Status}, Payment: {Payment}", 
+                model.OrderId, model.OrderStatus, model.PaymentStatus);
+
             if (!IsStaff())
             {
+                _logger.LogWarning("Unauthorized access attempt to UpdateOrderStatus by user: {UserId}", User.FindFirstValue(ClaimTypes.NameIdentifier));
                 return Json(new { success = false, message = "Không có quyền truy cập" });
             }
 
@@ -745,6 +749,7 @@ namespace Exe_Demo.Controllers
                 
             if (order == null)
             {
+                _logger.LogWarning("Order not found: {OrderId}", model.OrderId);
                 return Json(new { success = false, message = "Không tìm thấy đơn hàng" });
             }
 
@@ -761,6 +766,9 @@ namespace Exe_Demo.Controllers
                 order.Note = model.Note;
             }
             order.UpdatedDate = DateTime.Now;
+
+            // FIX: Explicitly update entity because Global NoTracking is enabled
+            _context.Orders.Update(order);
 
             if (model.OrderStatus == "Đã hoàn thành")
             {
