@@ -16,50 +16,9 @@ public static class DatabaseSeeder
         
         try
         {
-            // DELETE ALL PRODUCTS as requested by user
-            Console.WriteLine("--> [SEEDER] Clearing all existing products...");
-            context.Database.ExecuteSqlRaw("DELETE FROM OrderDetails;");
-            context.Database.ExecuteSqlRaw("DELETE FROM Cart;");
-            context.Database.ExecuteSqlRaw("DELETE FROM Products;");
-            context.SaveChanges();
-            context.ChangeTracker.Clear();
-
-            // 0. Auto-Clean: Nuke ALL old categories + products if duplicates or wrong names exist
+            // 0. Prepare categories list
             var expectedNames = new[] { "Hoa Quả Sấy Dẻo", "Hoa Quả Sấy Giòn", "Hoa Quả Sấy Thăng Hoa", "Giỏ Quà Tết" };
             var existingCats = context.Categories.ToList();
-            bool needsReset = existingCats.Count != 4 || 
-                existingCats.Any(c => !expectedNames.Any(n => n.Trim().ToLower() == c.CategoryName.Trim().ToLower()));
-            
-            if (needsReset && existingCats.Count > 0)
-            {
-                Console.WriteLine($"--> [SEEDER] Detected {existingCats.Count} categories (expected 4 correct ones). Cleaning up...");
-                try 
-                {
-                    // Must delete dependent tables first (FK constraints)
-                    context.Database.ExecuteSqlRaw("DELETE FROM Cart");
-                    context.Database.ExecuteSqlRaw("DELETE FROM OrderDetails");
-                    context.Database.ExecuteSqlRaw("DELETE FROM Reviews");
-                    context.Database.ExecuteSqlRaw("DELETE FROM InventoryTransactions");
-                    context.Database.ExecuteSqlRaw("DELETE FROM PurchaseOrderDetails");
-                    context.Database.ExecuteSqlRaw("DELETE FROM Products");
-                    context.Database.ExecuteSqlRaw("DELETE FROM Categories");
-                    Console.WriteLine("--> [SEEDER] Old data cleaned successfully.");
-                    context.ChangeTracker.Clear(); // CRITICAL: Flush stale tracked entities
-                } 
-                catch (Exception ex) 
-                { 
-                    Console.WriteLine($"--> [SEEDER] Cleanup error (will try EF): {ex.Message}");
-                    // Fallback: try EF Core removal
-                    try 
-                    {
-                        context.Products.RemoveRange(context.Products);
-                        context.SaveChanges();
-                        context.Categories.RemoveRange(context.Categories);
-                        context.SaveChanges();
-                        context.ChangeTracker.Clear(); // Flush stale tracked entities
-                    } catch { /* Last resort failed */ }
-                }
-            }
 
             // 1. Seed Categories
             var categoryNames = expectedNames;
