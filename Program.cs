@@ -19,31 +19,10 @@ builder.WebHost.ConfigureKestrel(options =>
 // Add services to the container.
 // builder.Services.AddControllersWithViews(); // Removed duplicate call
 
-// Add Memory Cache for performance optimization
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-// Handle case where env var might literally be string "null" or empty spaces
-if (string.IsNullOrWhiteSpace(redisConnectionString) || redisConnectionString.Trim().ToLower() == "null")
-{
-    // Try to connect to docker 'redis:6379' by default for Production, fallback to memory
-    redisConnectionString = builder.Environment.IsProduction() ? "redis:6379" : "localhost:6379";
-    Console.WriteLine($"--> Redis connection string was missing or null. Defaulting to: {redisConnectionString}");
-}
+// Use Distributed Memory Cache for Session state (Much faster for single-node deployments and eliminates connection timeouts)
+builder.Services.AddDistributedMemoryCache();
+Console.WriteLine("--> Using Distributed Memory Cache for Sessions and Performance");
 
-// Cấu hình Redis Cache
-try 
-{
-    builder.Services.AddStackExchangeRedisCache(options =>
-    {
-        options.Configuration = redisConnectionString;
-        options.InstanceName = "MocVi_";
-    });
-    Console.WriteLine($"--> Using Redis Distributed Cache at {redisConnectionString}");
-} 
-catch (Exception ex)
-{
-    Console.WriteLine($"--> Failed to configure Redis: {ex.Message}. Falling back to MemoryCache.");
-    builder.Services.AddDistributedMemoryCache();
-}
 
 // Add Response Caching
 // builder.Services.AddResponseCaching(); // DISABLE CACHING TO FIX AUTH ISSUE
