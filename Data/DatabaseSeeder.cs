@@ -195,19 +195,25 @@ public static class DatabaseSeeder
         }
         
         // Seed 3 Staff Accounts for First-Login Flow (nv1, nv2, nv3)
-        // Moved outside to ensure execution even if main staff exists
         var staffAccounts = new[] { "nv1@gmail.com", "nv2@gmail.com", "nv3@gmail.com" };
         foreach (var email in staffAccounts)
         {
-            if (!context.Users.Any(u => u.Email == email))
+            var existingUser = context.Users.FirstOrDefault(u => u.Email == email);
+            if (existingUser != null)
+            {
+                // FORCE UPDATE to new Identity hash format if it's the old SHA256 format or just to be safe
+                existingUser.PasswordHash = hasher.HashPassword(null!, "Mocvi@123");
+                existingUser.Role = "Staff"; // Ensure role is correct
+            }
+            else
             {
                 context.Users.Add(new User
                 {
                     Email = email,
                     PasswordHash = hasher.HashPassword(null!, "Mocvi@123"),
-                    FullName = "Nhân viên mới", // Placeholder
+                    FullName = "Nhân viên mới",
                     Role = "Staff",
-                    EmployeeId = null, // IMPORTANT: Null to trigger Update Profile flow
+                    EmployeeId = null,
                     IsActive = true,
                     CreatedDate = DateTime.Now
                 });
