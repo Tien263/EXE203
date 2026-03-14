@@ -68,7 +68,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             var passMatch = System.Text.RegularExpressions.Regex.Match(connectionString, @"Password=([^;]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
             var server = serverMatch.Success ? serverMatch.Groups[1].Value : "localhost";
-            if (server == ".\\SQLEXPRESS" || server == "(localdb)\\mssqllocaldb") server = "localhost"; // Local host alias fix
+            // Local host alias fix - translate to host.docker.internal for docker access to host DB
+            if (server == ".\\SQLEXPRESS" || server == "(localdb)\\mssqllocaldb" || server.ToLower() == "localhost" || server == "127.0.0.1") 
+            {
+                server = "host.docker.internal";
+            }
             
             var db = dbMatch.Success ? dbMatch.Groups[1].Value : "MocViStoreDB";
             var user = userMatch.Success ? userMatch.Groups[1].Value : "postgres";
