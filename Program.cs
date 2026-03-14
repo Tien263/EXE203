@@ -204,9 +204,35 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        // Apply any pending EF Core migrations to keep database schema in sync
-        // context.Database.Migrate(); // Swapping to EnsureCreated to prevent migration mismatch
-        context.Database.EnsureCreated();
+        
+        // Self-Healing Mechanism for SQLite
+        // If we are using SQLite and the schema is fundamentally broken (e.g., from an old version before Identity)
+        // We need to nuke it and recreate it because SQL Server migrations can't run on SQLite
+        bool needsRecreate = false;
+        if (context.Database.IsSqlite())
+        {
+             try 
+             {
+                 // Try a simple query that requires the latest schema (e.g., checking for Identity columns)
+                 context.Users.FirstOrDefault();
+             }
+             catch(Exception)
+             {
+                 Console.WriteLine("--> [WARNING] Obsolete SQLite schema detected. Initiating database nuke & rebuild...");
+                 needsRecreate = true;
+             }
+        }
+
+        if (needsRecreate)
+        {
+             context.Database.EnsureDeleted();
+             context.Database.EnsureCreated();
+             Console.WriteLine("--> [SUCCESS] Obsolete SQLite database was successfully wiped and recreated with the latest schema.");
+        }
+        else 
+        {
+             context.Database.EnsureCreated();
+        }
 
         // MANUAL PATCH: Fix missing column in Production (PostgreSQL uses double quotes)
         try 
