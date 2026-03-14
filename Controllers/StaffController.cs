@@ -15,12 +15,14 @@ namespace Exe_Demo.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Services.ICacheService _cacheService;
+        private readonly ILogger<StaffController> _logger;
 
-        public StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, Services.ICacheService cacheService)
+        public StaffController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, Services.ICacheService cacheService, ILogger<StaffController> logger)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _cacheService = cacheService;
+            _logger = logger;
         }
 
 
