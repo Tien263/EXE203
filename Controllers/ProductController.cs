@@ -36,7 +36,7 @@ namespace Exe_Demo.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading products");
-                return View("Error");
+                return Content($"ERROR TRACE:\n{ex.ToString()}");
             }
         }
 
@@ -69,7 +69,7 @@ namespace Exe_Demo.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading product details: {ProductId}", id);
-                return View("Error");
+                return Content($"ERROR TRACE:\n{ex.ToString()}");
             }
         }
 
